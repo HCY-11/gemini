@@ -1,3 +1,3 @@
 # gemini-engine
 
-Lightweight game engine written in C++ and Vulkan
+Lightweight game engine written in C++ using GLFW/Vulkan.
