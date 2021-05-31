@@ -1,10 +1,12 @@
 #pragma once
 
-#include <gemini/gemini.h>
+#include <gemini/core/application.h>
 
-class App : public IApp
+class TestApp : public gm::Application
 {
 public:
-    App();
-    ~App();
+    TestApp();
+    ~TestApp();
+
+private:
 };

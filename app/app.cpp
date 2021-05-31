@@ -1,11 +1,11 @@
 #include "app.h"
 
-App::App()
+TestApp::TestApp()
 {
 
 }
 
-App::~App()
+TestApp::~TestApp()
 {
 
 }
