@@ -57,9 +57,22 @@ void Device::create(const Instance& instance, const GPU& gpu)
 
     vkGetDeviceQueue(m_device, gpu.getQueueFamilyIndices().graphics.value(), 0, &m_graphicsQueue);
     vkGetDeviceQueue(m_device, gpu.getQueueFamilyIndices().present.value(), 0, &m_presentQueue);
+
+    createAllocator(instance, gpu);
 }
 
 void Device::destroy()
 {
     vkDestroyDevice(m_device, nullptr);
+}
+
+void Device::createAllocator(const Instance& instance, const GPU& gpu)
+{
+    VmaAllocatorCreateInfo allocatorInfo        = {};
+    allocatorInfo.instance                      = instance.get();
+    allocatorInfo.physicalDevice                = gpu.get();
+    allocatorInfo.device                        = m_device;
+
+    CHECK_VK_RESULT(vmaCreateAllocator(&allocatorInfo, &m_allocator),
+                    "Failed to create allocator!");
 }

@@ -1,9 +1,12 @@
 #pragma once
 
 #include <vector>
+#include <memory>
 
 #include "renderpass.h"
 #include "pipelines.h"
+
+#include "entity/entity.h"
 
 class Renderer
 {
@@ -20,7 +23,9 @@ public:
 
     ~Renderer();
 
-    void draw();
+    void draw(std::vector<std::unique_ptr<Entity>>& entities);
+
+    void destroy();
 
 private:
     void createFramebuffers();

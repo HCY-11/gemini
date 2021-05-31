@@ -27,27 +27,10 @@ Renderer::Renderer(
 
 Renderer::~Renderer()
 {
-    vkDeviceWaitIdle(m_device.get());
-
-    for (auto buf : m_framebuffers)
-    {
-        vkDestroyFramebuffer(m_device.get(), buf, nullptr);
-    }
-
-    vkDestroyCommandPool(m_device.get(), m_commandPool, nullptr);
-
-    for (uint32_t i = 0; i < m_framesInFlight; i++)
-    {
-        vkDestroySemaphore(m_device.get(), m_imageAvailableSemaphores[i], nullptr);
-        vkDestroySemaphore(m_device.get(), m_renderFinishedSemaphores[i], nullptr);
-
-        vkDestroyFence(m_device.get(), m_inFlightFences[i], nullptr);
-    }
 
 }
 
-
-void Renderer::draw()
+void Renderer::draw(std::vector<std::unique_ptr<Entity>>& entities)
 {
     vkWaitForFences(m_device.get(), 1, &m_inFlightFences[m_currentFrame], VK_TRUE, UINT64_MAX);
 
@@ -74,7 +57,7 @@ void Renderer::draw()
     cmdBeginInfo.sType                          = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
     cmdBeginInfo.flags                          = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
-    VkClearValue clearColor                     = { 1.0, 1.0, 1.0, 1.0 };
+    VkClearValue clearColor                     = { 0.0f, 0.0f, 0.0f, 1.0f };
 
     CHECK_VK_RESULT(vkBeginCommandBuffer(m_commandBuffers[imageIndex], &cmdBeginInfo), "Failed to begin command buffer!");
 
@@ -87,12 +70,19 @@ void Renderer::draw()
     passBeginInfo.renderArea.offset             = { 0, 0 };
     passBeginInfo.renderArea.extent             = m_swapchain.getExtent();
 
-
     vkCmdBeginRenderPass(m_commandBuffers[imageIndex], &passBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
     vkCmdBindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, m_pipeline.value);
 
-    vkCmdDraw(m_commandBuffers[imageIndex], 3, 1, 0, 0);
+    for (const auto& entity : entities)
+    {
+        VkDeviceSize offset = 0;
+
+        vkCmdBindVertexBuffers(m_commandBuffers[imageIndex], 0, 1, &entity->mesh.vertexBuffer.buffer, &offset);
+
+        vkCmdDraw(m_commandBuffers[imageIndex], 3, 1, 0, 0);
+
+    }
 
     vkCmdEndRenderPass(m_commandBuffers[imageIndex]);
 
@@ -140,6 +130,26 @@ void Renderer::draw()
     }
 
     m_currentFrame = (m_currentFrame + 1) % m_framesInFlight;
+}
+
+void Renderer::destroy()
+{
+    vkDeviceWaitIdle(m_device.get());
+
+    for (auto buf : m_framebuffers)
+    {
+        vkDestroyFramebuffer(m_device.get(), buf, nullptr);
+    }
+
+    vkDestroyCommandPool(m_device.get(), m_commandPool, nullptr);
+
+    for (uint32_t i = 0; i < m_framesInFlight; i++)
+    {
+        vkDestroySemaphore(m_device.get(), m_imageAvailableSemaphores[i], nullptr);
+        vkDestroySemaphore(m_device.get(), m_renderFinishedSemaphores[i], nullptr);
+
+        vkDestroyFence(m_device.get(), m_inFlightFences[i], nullptr);
+    }
 }
 
 void Renderer::createFramebuffers()

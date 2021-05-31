@@ -1,6 +1,7 @@
 #pragma once
 
 #include "gpu.h"
+#include "vma.h"
 
 class Device
 {
@@ -12,15 +13,22 @@ public:
 
     void destroy();
 
-    inline VkDevice get() const { return m_device; }
+    VkDevice get() const { return m_device; }
 
-    inline VkQueue getGraphicsQueue() const { return m_graphicsQueue; }
+    VkQueue getGraphicsQueue() const { return m_graphicsQueue; }
 
-    inline VkQueue getPresentQueue() const { return m_presentQueue; }
+    VkQueue getPresentQueue() const { return m_presentQueue; }
+
+    VmaAllocator getAllocator() const { return m_allocator; }
+
+private:
+    void createAllocator(const Instance& instance, const GPU& gpu);
 
 private:
     VkDevice                            m_device                    = VK_NULL_HANDLE;
 
     VkQueue                             m_graphicsQueue             = VK_NULL_HANDLE;
     VkQueue                             m_presentQueue              = VK_NULL_HANDLE;
+
+    VmaAllocator                        m_allocator                 = VK_NULL_HANDLE;
 };

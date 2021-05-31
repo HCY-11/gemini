@@ -3,6 +3,9 @@
 #include "core/core.h"
 #include "graphics/graphics.h"
 #include "util/util.h"
+#include "entity/entity.h"
+
+#include <memory>
 
 class IApp
 {
@@ -19,15 +22,18 @@ public:
 protected:
     virtual void buildPipelines();
 
-protected:
-    Window                      m_window;
-    Instance                    m_instance;
-    Surface                     m_surface;
-    GPU                         m_gpu;
-    Device                      m_device;
-    Swapchain                   m_swapchain;
-    RenderPass                  m_renderPass;
-    Pipeline                    m_defaultPipeline;
+    virtual void initEntities();
 
-    Renderer*                   m_renderer          = nullptr;
+protected:
+    Window                                  m_window;
+    Instance                                m_instance;
+    Surface                                 m_surface;
+    GPU                                     m_gpu;
+    Device                                  m_device;
+    Swapchain                               m_swapchain;
+    RenderPass                              m_renderPass;
+    Pipeline                                m_defaultPipeline;
+
+    std::unique_ptr<Renderer>               m_renderer;
+    std::vector<std::unique_ptr<Entity>>    m_entities;
 };
