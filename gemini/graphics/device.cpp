@@ -63,6 +63,7 @@ void Device::create(const Instance& instance, const GPU& gpu)
 
 void Device::destroy()
 {
+    vmaDestroyAllocator(m_allocator);
     vkDestroyDevice(m_device, nullptr);
 }
 
