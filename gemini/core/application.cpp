@@ -1,4 +1,5 @@
 #include "application.h"
+#include "logging/logger.h"
 
 namespace gm
 {
@@ -16,7 +17,6 @@ namespace gm
     {
         while (true)
         {
-
         }
     }
 }

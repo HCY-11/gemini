@@ -9,4 +9,4 @@ Version: @PROJECT_VERSION@
 
 Requires:
 Libs: -L${libdir} -lEngine
-Cflags: -I${includedir} -g -lvulkan -lglfw -std=c++17
+Cflags: -I${includedir} -g -lvulkan -lglfw -std=c++20

@@ -1,8 +1,10 @@
 #pragma once
 
+#include "core.h"
+
 namespace gm
 {
-    class Application
+    class GM_API Application
     {
     public:
         Application();
@@ -10,7 +12,7 @@ namespace gm
 
         void run();
     
-    private:
-
     };
+
+    Application* createApplication();
 }
