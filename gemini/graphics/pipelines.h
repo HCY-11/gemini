@@ -3,6 +3,8 @@
 #include <string>
 #include <vector>
 
+#include "entity/vertex.h"
+
 #include "device.h"
 #include "swapchain.h"
 #include "renderpass.h"
@@ -24,6 +26,9 @@ struct PipelineInfo
 
     VkViewport                                          viewport;
     VkRect2D                                            scissor;
+
+    std::array<VkVertexInputAttributeDescription, 2>    attributeDescriptions;
+    VkVertexInputBindingDescription                     bindingDescription;
 };
 
 struct Pipeline

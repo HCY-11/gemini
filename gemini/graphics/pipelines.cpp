@@ -16,49 +16,52 @@ void PipelineBuilder::addShaderStage(PipelineInfo& info, VkShaderStageFlagBits s
 
 void PipelineBuilder::populateVertexInputStateInfo(PipelineInfo& info)
 {
-    info.vertexInputInfo.sType                                = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-    info.vertexInputInfo.vertexAttributeDescriptionCount      = 0;
-    info.vertexInputInfo.pVertexAttributeDescriptions         = nullptr;
-    info.vertexInputInfo.vertexBindingDescriptionCount        = 0;
-    info.vertexInputInfo.pVertexBindingDescriptions           = nullptr;
+    info.attributeDescriptions                              = Vertex::getAttributeDescriptions();
+    info.bindingDescription                                 = Vertex::getBindingDescription();
+
+    info.vertexInputInfo.sType                              = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
+    info.vertexInputInfo.vertexAttributeDescriptionCount    = info.attributeDescriptions.size();
+    info.vertexInputInfo.pVertexAttributeDescriptions       = info.attributeDescriptions.data();
+    info.vertexInputInfo.vertexBindingDescriptionCount      = 1;
+    info.vertexInputInfo.pVertexBindingDescriptions         = &info.bindingDescription;
 }
 
 void PipelineBuilder::populateInputAssemblyStateInfo(PipelineInfo& info, VkPrimitiveTopology topology, VkBool32 primitiveRestartEnable)
 {
-    info.inputAssemblyInfo.sType                              = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
-    info.inputAssemblyInfo.topology                           = topology;
-    info.inputAssemblyInfo.primitiveRestartEnable             = primitiveRestartEnable;
+    info.inputAssemblyInfo.sType                            = VK_STRUCTURE_TYPE_PIPELINE_INPUT_ASSEMBLY_STATE_CREATE_INFO;
+    info.inputAssemblyInfo.topology                         = topology;
+    info.inputAssemblyInfo.primitiveRestartEnable           = primitiveRestartEnable;
 }
 
 void PipelineBuilder::populateViewportStateInfo(PipelineInfo& info, const Swapchain& swapchain)
 {
-    info.viewport.width                                       = static_cast<float>(swapchain.getExtent().width);
-    info.viewport.height                                      = static_cast<float>(swapchain.getExtent().height);
-    info.viewport.x                                           = 0.0f;
-    info.viewport.y                                           = 0.0f;
-    info.viewport.maxDepth                                    = 1.0f;
-    info.viewport.minDepth                                    = 0.0f;
+    info.viewport.width                                     = static_cast<float>(swapchain.getExtent().width);
+    info.viewport.height                                    = static_cast<float>(swapchain.getExtent().height);
+    info.viewport.x                                         = 0.0f;
+    info.viewport.y                                         = 0.0f;
+    info.viewport.maxDepth                                  = 1.0f;
+    info.viewport.minDepth                                  = 0.0f;
 
-    info.scissor.extent                                       = swapchain.getExtent();
-    info.scissor.offset                                       = {0, 0};
+    info.scissor.extent                                     = swapchain.getExtent();
+    info.scissor.offset                                     = {0, 0};
 
-    info.viewportInfo.sType                                   = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
-    info.viewportInfo.viewportCount                           = 1;
-    info.viewportInfo.pViewports                              = &info.viewport;
-    info.viewportInfo.scissorCount                            = 1;
-    info.viewportInfo.pScissors                               = &info.scissor;
+    info.viewportInfo.sType                                 = VK_STRUCTURE_TYPE_PIPELINE_VIEWPORT_STATE_CREATE_INFO;
+    info.viewportInfo.viewportCount                         = 1;
+    info.viewportInfo.pViewports                            = &info.viewport;
+    info.viewportInfo.scissorCount                          = 1;
+    info.viewportInfo.pScissors                             = &info.scissor;
 }
 
 void PipelineBuilder::populateRasterizationStateInfo(PipelineInfo& info, VkPolygonMode polygonMode, VkCullModeFlagBits cullMode, float lineWidth)
 {
-    info.rasterizationInfo.sType                              = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
-    info.rasterizationInfo.depthBiasEnable                    = VK_FALSE;
-    info.rasterizationInfo.depthClampEnable                   = VK_FALSE;
-    info.rasterizationInfo.frontFace                          = VK_FRONT_FACE_COUNTER_CLOCKWISE;
-    info.rasterizationInfo.lineWidth                          = lineWidth;
-    info.rasterizationInfo.polygonMode                        = polygonMode;
-    info.rasterizationInfo.cullMode                           = cullMode;
-    info.rasterizationInfo.rasterizerDiscardEnable            = VK_FALSE;
+    info.rasterizationInfo.sType                            = VK_STRUCTURE_TYPE_PIPELINE_RASTERIZATION_STATE_CREATE_INFO;
+    info.rasterizationInfo.depthBiasEnable                  = VK_FALSE;
+    info.rasterizationInfo.depthClampEnable                 = VK_FALSE;
+    info.rasterizationInfo.frontFace                        = VK_FRONT_FACE_COUNTER_CLOCKWISE;
+    info.rasterizationInfo.lineWidth                        = lineWidth;
+    info.rasterizationInfo.polygonMode                      = polygonMode;
+    info.rasterizationInfo.cullMode                         = cullMode;
+    info.rasterizationInfo.rasterizerDiscardEnable          = VK_FALSE;
 }
 
 void PipelineBuilder::populateDepthStencilStateInfo(PipelineInfo& info)
@@ -68,32 +71,32 @@ void PipelineBuilder::populateDepthStencilStateInfo(PipelineInfo& info)
 
 void PipelineBuilder::populateColorBlendAttachmentStateInfo(PipelineInfo& info)
 {
-    info.colorAttachment.colorWriteMask                       = VK_COLOR_COMPONENT_R_BIT | 
-                                                                  VK_COLOR_COMPONENT_G_BIT | 
-                                                                  VK_COLOR_COMPONENT_B_BIT |
-                                                                  VK_COLOR_COMPONENT_A_BIT;
-    info.colorAttachment.blendEnable                          = VK_TRUE;
-    info.colorAttachment.srcAlphaBlendFactor                  = VK_BLEND_FACTOR_ONE;
-    info.colorAttachment.dstAlphaBlendFactor                  = VK_BLEND_FACTOR_ZERO;
-    info.colorAttachment.alphaBlendOp                         = VK_BLEND_OP_ADD;
-    info.colorAttachment.srcColorBlendFactor                  = VK_BLEND_FACTOR_SRC_ALPHA;
-    info.colorAttachment.dstColorBlendFactor                  = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
-    info.colorAttachment.colorBlendOp                         = VK_BLEND_OP_ADD;
+    info.colorAttachment.colorWriteMask                     = VK_COLOR_COMPONENT_R_BIT | 
+                                                                VK_COLOR_COMPONENT_G_BIT | 
+                                                                VK_COLOR_COMPONENT_B_BIT |
+                                                                VK_COLOR_COMPONENT_A_BIT;
+    info.colorAttachment.blendEnable                        = VK_TRUE;
+    info.colorAttachment.srcAlphaBlendFactor                = VK_BLEND_FACTOR_ONE;
+    info.colorAttachment.dstAlphaBlendFactor                = VK_BLEND_FACTOR_ZERO;
+    info.colorAttachment.alphaBlendOp                       = VK_BLEND_OP_ADD;
+    info.colorAttachment.srcColorBlendFactor                = VK_BLEND_FACTOR_SRC_ALPHA;
+    info.colorAttachment.dstColorBlendFactor                = VK_BLEND_FACTOR_ONE_MINUS_SRC_ALPHA;
+    info.colorAttachment.colorBlendOp                       = VK_BLEND_OP_ADD;
 }
 
 void PipelineBuilder::populateColorBlendStateInfo(PipelineInfo& info)
 {
-    info.colorBlendInfo.sType                                 = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
-    info.colorBlendInfo.attachmentCount                       = 1;
-    info.colorBlendInfo.pAttachments                          = &info.colorAttachment;
-    info.colorBlendInfo.logicOpEnable                         = VK_FALSE;
+    info.colorBlendInfo.sType                               = VK_STRUCTURE_TYPE_PIPELINE_COLOR_BLEND_STATE_CREATE_INFO;
+    info.colorBlendInfo.attachmentCount                     = 1;
+    info.colorBlendInfo.pAttachments                        = &info.colorAttachment;
+    info.colorBlendInfo.logicOpEnable                       = VK_FALSE;
 }
 
 void PipelineBuilder::populateMultiSampleStateInfo(PipelineInfo& info)
 {
-    info.multiSampleInfo.sType                                = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
-    info.multiSampleInfo.rasterizationSamples                 = VK_SAMPLE_COUNT_1_BIT;
-    info.multiSampleInfo.sampleShadingEnable                  = VK_FALSE;
+    info.multiSampleInfo.sType                              = VK_STRUCTURE_TYPE_PIPELINE_MULTISAMPLE_STATE_CREATE_INFO;
+    info.multiSampleInfo.rasterizationSamples               = VK_SAMPLE_COUNT_1_BIT;
+    info.multiSampleInfo.sampleShadingEnable                = VK_FALSE;
 }
 
 void PipelineBuilder::populateDynamicStateInfo(PipelineInfo& info)

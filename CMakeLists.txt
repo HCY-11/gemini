@@ -14,6 +14,7 @@ add_library(Gemini STATIC
     ./gemini/graphics/renderpass.cpp
     ./gemini/graphics/renderer.cpp
     ./gemini/graphics/pipelines.cpp
+    ./gemini/graphics/vma.cpp
     ./gemini/util/callbacks.cpp
     ./gemini/app/iapp.cpp
 )
