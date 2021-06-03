@@ -14,6 +14,8 @@
 #include <memory>
 #include <vector>
 #include <cstring>
+#include <string>
+#include <sstream>
 
 namespace gm
 {

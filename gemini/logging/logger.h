@@ -6,14 +6,14 @@
 
 namespace gm
 {
-    enum class LogLevel
+    enum class GM_API LogLevel
     {
-        FATAL       = 0,
-        ERROR       = 1,
-        WARN        = 2,
-        INFO        = 3,
-        DEBUG       = 4,
-        TRACE       = 5
+        kFatal,
+        kError,
+        kWarn,
+        kInfo,
+        kDebug,
+        kTrace
     };
 
     class GM_API Logger
@@ -38,16 +38,16 @@ namespace gm
     };
 }
 
-#define GM_CORE_FATAL(str)      ::gm::Logger::getInstance().coreLog(gm::LogLevel::FATAL, str)
-#define GM_CORE_ERROR(str)      ::gm::Logger::getInstance().coreLog(gm::LogLevel::ERROR, str)
-#define GM_CORE_WARN(str)       ::gm::Logger::getInstance().coreLog(gm::LogLevel::WARN, str)
-#define GM_CORE_INFO(str)       ::gm::Logger::getInstance().coreLog(gm::LogLevel::INFO, str)
-#define GM_CORE_DEBUG(str)      ::gm::Logger::getInstance().coreLog(gm::LogLevel::DEBUG, str)
-#define GM_CORE_TRACE(str)      ::gm::Logger::getInstance().coreLog(gm::LogLevel::TRACE, str)
+#define GM_CORE_FATAL(str)      ::gm::Logger::getInstance().coreLog(gm::LogLevel::kFatal, str)
+#define GM_CORE_ERROR(str)      ::gm::Logger::getInstance().coreLog(gm::LogLevel::kError, str)
+#define GM_CORE_WARN(str)       ::gm::Logger::getInstance().coreLog(gm::LogLevel::kWarn, str)
+#define GM_CORE_INFO(str)       ::gm::Logger::getInstance().coreLog(gm::LogLevel::kInfo, str)
+#define GM_CORE_DEBUG(str)      ::gm::Logger::getInstance().coreLog(gm::LogLevel::kDebug, str)
+#define GM_CORE_TRACE(str)      ::gm::Logger::getInstance().coreLog(gm::LogLevel::kTrace, str)
 
-#define GM_CLIENT_FATAL(str)    ::gm::Logger::getInstance().clientLog(gm::LogLevel::FATAL, str)
-#define GM_CLIENT_ERROR(str)    ::gm::Logger::getInstance().clientLog(gm::LogLevel::ERROR, str)
-#define GM_CLIENT_WARN(str)     ::gm::Logger::getInstance().clientLog(gm::LogLevel::WARN, str)
-#define GM_CLIENT_INFO(str)     ::gm::Logger::getInstance().clientLog(gm::LogLevel::INFO, str)
-#define GM_CLIENT_DEBUG(str)    ::gm::Logger::getInstance().clientLog(gm::LogLevel::DEBUG, str)
-#define GM_CLIENT_TRACE(str)    ::gm::Logger::getInstance().clientLog(gm::LogLevel::TRACE, str)
+#define GM_CLIENT_FATAL(str)    ::gm::Logger::getInstance().clientLog(gm::LogLevel::kFatal, str)
+#define GM_CLIENT_ERROR(str)    ::gm::Logger::getInstance().clientLog(gm::LogLevel::kError, str)
+#define GM_CLIENT_WARN(str)     ::gm::Logger::getInstance().clientLog(gm::LogLevel::kWarn, str)
+#define GM_CLIENT_INFO(str)     ::gm::Logger::getInstance().clientLog(gm::LogLevel::kInfo, str)
+#define GM_CLIENT_DEBUG(str)    ::gm::Logger::getInstance().clientLog(gm::LogLevel::kDebug, str)
+#define GM_CLIENT_TRACE(str)    ::gm::Logger::getInstance().clientLog(gm::LogLevel::kTrace, str)
