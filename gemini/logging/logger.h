@@ -51,8 +51,8 @@ namespace gm
             date.erase(date.find('\n'));
 
             std::cout << "[" << m_levelStr[static_cast<int>(logLevel)] << "]\t" 
-                    << name << ":\t" << std::setw(60) << args
-                    << "\t\t\t[" << date << "]" << std::endl;
+                    << name << ":\t" << std::setw(50) << args
+                    << "\t\t[" << date << "]" << std::endl;
         }
 
     private:
