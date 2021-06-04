@@ -1,6 +1,6 @@
 #pragma once
 
-#include "gemini/core/core.h"
+#include "core/core.h"
 
 namespace gm
 {

@@ -4,7 +4,6 @@ include(GNUInstallDirs)
 
 add_library(Gemini SHARED 
     ./gemini/core/application.cpp
-    ./gemini/logging/logger.cpp
 )
 
 set_target_properties(Gemini PROPERTIES

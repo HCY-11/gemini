@@ -16,6 +16,7 @@
 #include <cstring>
 #include <string>
 #include <sstream>
+#include <iomanip>
 
 namespace gm
 {

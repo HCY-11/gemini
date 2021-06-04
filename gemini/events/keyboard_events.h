@@ -1,7 +1,7 @@
 #pragma once
 
-#include "gemini/events/event.h"
-#include "gemini/core/keycodes.h"
+#include "events/event.h"
+#include "core/keycodes.h"
 
 namespace gm
 {
@@ -23,15 +23,15 @@ namespace gm
     class GM_API KeyPressEvent : public KeyEvent
     {
     public:
-        KeyPressEvent(KeyCode keyCode, uint32_t repeatCount) : KeyEvent(keyCode), m_repeatCount(repeatCount)
+        KeyPressEvent(KeyCode keyCode, uint16_t repeatCount) : KeyEvent(keyCode), m_repeatCount(repeatCount)
         {}
 
-        inline int getRepeatCount() const { return m_repeatCount; }
+        inline uint16_t getRepeatCount() const { return m_repeatCount; }
 
         inline std::string toString() const override
         {
             std::stringstream ss;
-            ss << "KeyPressEvent: " << m_keyCode << " (" << m_repeatCount << " repeats)";
+            ss << "KeyPressEvent: " << m_keyCode << " [" << m_repeatCount << " repeats]";
             return ss.str();
         }
 

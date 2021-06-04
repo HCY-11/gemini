@@ -2,8 +2,6 @@
 
 #include "core/core.h"
 
-#include <iostream>
-
 namespace gm
 {
     enum class GM_API LogLevel
@@ -19,11 +17,24 @@ namespace gm
     class GM_API Logger
     {
     public:
-        static Logger& getInstance();
+        static inline Logger& getInstance()
+        {
+            static Logger l;
 
-        void clientLog(LogLevel logLevel, const char* str);
+            return l;
+        }
 
-        void coreLog(LogLevel logLevel, const char* str);
+        template<typename T>
+        inline void clientLog(LogLevel logLevel, T& args)
+        {
+            log(logLevel, "Application", args);
+        }
+
+        template<typename T>
+        inline void coreLog(LogLevel logLevel, T& args)
+        {
+            log(logLevel, "Gemini", args);
+        }
 
         Logger(const Logger&) = delete;
         void operator=(const Logger&) = delete;
@@ -31,10 +42,21 @@ namespace gm
     private:
         Logger() {}
 
-        void log(LogLevel logLevel, const char* name, const char* str);
+        template<typename T>
+        inline void log(LogLevel logLevel, const std::string& name, T& args)
+        {
+            time_t now = time(0);
+            std::string date = std::string(ctime(&now));
+
+            date.erase(date.find('\n'));
+
+            std::cout << "[" << m_levelStr[static_cast<int>(logLevel)] << "]\t" 
+                    << name << ":\t" << std::setw(60) << args
+                    << "\t\t\t[" << date << "]" << std::endl;
+        }
 
     private:
-        const char* m_levelStr[6] = { "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE" };
+        std::string m_levelStr[6] = { "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE" };
     };
 }
 

@@ -1,8 +1,8 @@
 #pragma once
 
-#include "gemini/core/core.h"
+#include "core/core.h"
 
-#include "gemini/util/util.h"
+#include "util/util.h"
 
 namespace gm
 {
@@ -25,11 +25,11 @@ namespace gm
         kEventCategoryMouseButton    = BIT(4)
     };
 
-#define EVENT_CLASS_TYPE(type) static EventType getTypeStatic() { return EventType::##type; }\
-                               virtual EventType getEventType() { return getTypeStatic(); }\
-                               virtual const char* getName() { return #type; }
+#define EVENT_CLASS_TYPE(type) static inline EventType getTypeStatic() { return EventType::type; }\
+                               virtual inline EventType getType() const override { return getTypeStatic(); }\
+                               virtual inline const char* getName() const override { return #type; }
 
-#define EVENT_CLASS_CATEGORY(category) virtual int getCategoryFlags() const override { return category; }
+#define EVENT_CLASS_CATEGORY(category) virtual inline int getCategoryFlags() const override { return category; }
 
     class Event
     {
@@ -63,7 +63,7 @@ namespace gm
         {
             if (m_event.getType() == T::getTypeStatic())
             {
-                m_event.m_handled |= func(static_cast<T&>(m_event));
+                m_event.isHandled |= func(static_cast<T&>(m_event));
                 return true;
             }
 
