@@ -1,0 +1,103 @@
+[settings]
+    arch=x86_64
+    build_type=Debug
+    compiler=gcc
+    compiler.libcxx=libstdc++11
+    compiler.version=11
+    os=Linux
+
+[requires]
+    glfw/3.Y.Z
+    vulkan-headers/1.Y.Z
+    vulkan-loader/1.Y.Z
+    vulkan-memory-allocator/2.Y.Z
+
+[options]
+
+
+[full_settings]
+    arch=x86_64
+    arch_build=x86_64
+    build_type=Debug
+    compiler=gcc
+    compiler.libcxx=libstdc++11
+    compiler.version=11
+    os=Linux
+    os_build=Linux
+
+[full_requires]
+    expat/2.2.10:3242ee86fec793e7767fb97cb42848d950351d05
+    glfw/3.3.4:08f4c711a76082a8ca8e8d4783b15f190b7d8e79
+    libffi/3.3:be27726f9885116da1158027505be62e913cd585
+    libiconv/1.16:be27726f9885116da1158027505be62e913cd585
+    libxml2/2.9.10:668e0becb962aa20bfdc03e0659881cddcac57bb
+    opengl/system:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+    vulkan-headers/1.2.172:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+    vulkan-loader/1.2.172:79fcaccaa9d5c9ed5c230473143790b21f8097ef
+    vulkan-memory-allocator/2.3.0:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+    wayland/1.18.0:80005ee34d2869de5a771d2ae3ed205ad546e215
+    xorg/system:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+    zlib/1.2.11:be27726f9885116da1158027505be62e913cd585
+
+[full_options]
+    expat:char_type=char
+    expat:fPIC=True
+    expat:shared=False
+    glfw:fPIC=True
+    glfw:shared=False
+    glfw:vulkan_static=False
+    libffi:fPIC=True
+    libffi:shared=False
+    libiconv:fPIC=True
+    libiconv:shared=False
+    libxml2:c14n=True
+    libxml2:catalog=True
+    libxml2:docbook=True
+    libxml2:fPIC=True
+    libxml2:ftp=True
+    libxml2:html=True
+    libxml2:http=True
+    libxml2:iconv=True
+    libxml2:icu=False
+    libxml2:include_utils=True
+    libxml2:iso8859x=True
+    libxml2:legacy=True
+    libxml2:lzma=False
+    libxml2:mem-debug=False
+    libxml2:output=True
+    libxml2:pattern=True
+    libxml2:push=True
+    libxml2:python=False
+    libxml2:reader=True
+    libxml2:regexps=True
+    libxml2:run-debug=False
+    libxml2:sax1=True
+    libxml2:schemas=True
+    libxml2:schematron=True
+    libxml2:shared=False
+    libxml2:threads=True
+    libxml2:tree=True
+    libxml2:valid=True
+    libxml2:writer=True
+    libxml2:xinclude=True
+    libxml2:xpath=True
+    libxml2:xptr=True
+    libxml2:zlib=True
+    vulkan-loader:shared=True
+    vulkan-loader:with_wsi_directfb=False
+    vulkan-loader:with_wsi_wayland=True
+    vulkan-loader:with_wsi_xcb=True
+    vulkan-loader:with_wsi_xlib=True
+    wayland:enable_dtd_validation=True
+    wayland:enable_libraries=True
+    wayland:fPIC=True
+    wayland:shared=False
+    zlib:fPIC=True
+    zlib:minizip=deprecated
+    zlib:shared=False
+
+[recipe_hash]
+
+
+[env]
+
