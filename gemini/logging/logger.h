@@ -4,16 +4,6 @@
 
 namespace gm
 {
-    enum class GM_API LogLevel
-    {
-        kFatal,
-        kError,
-        kWarn,
-        kInfo,
-        kDebug,
-        kTrace
-    };
-
     class GM_API Logger
     {
     public:
@@ -24,17 +14,17 @@ namespace gm
             return l;
         }
 
-        template<typename T>
-        inline void clientLog(LogLevel logLevel, T& args)
+        inline void init()
         {
-            log(logLevel, "Application", args);
-        }
+            spdlog::set_pattern("%^[%l]\t%n: %=80v%$ [%8X]");
 
-        template<typename T>
-        inline void coreLog(LogLevel logLevel, T& args)
-        {
-            log(logLevel, "Gemini", args);
+            m_coreLogger->set_level(spdlog::level::trace);
+            m_clientLogger->set_level(spdlog::level::trace);
         }
+        
+        inline Reference<spdlog::logger> getCoreLogger() const { return m_coreLogger; }
+
+        inline Reference<spdlog::logger> getClientLogger() const { return m_clientLogger; }
 
         Logger(const Logger&) = delete;
         void operator=(const Logger&) = delete;
@@ -42,34 +32,20 @@ namespace gm
     private:
         Logger() {}
 
-        template<typename T>
-        inline void log(LogLevel logLevel, const std::string& name, T& args)
-        {
-            time_t now = time(0);
-            std::string date = std::string(ctime(&now));
-
-            date.erase(date.find('\n'));
-
-            std::cout << "[" << m_levelStr[static_cast<int>(logLevel)] << "]\t" 
-                    << name << ":\t" << std::setw(50) << args
-                    << "\t\t[" << date << "]" << std::endl;
-        }
-
     private:
-        std::string m_levelStr[6] = { "FATAL", "ERROR", "WARN", "INFO", "DEBUG", "TRACE" };
+        Reference<spdlog::logger> m_coreLogger      = spdlog::stdout_color_mt("gemini");
+        Reference<spdlog::logger> m_clientLogger    = spdlog::stdout_color_mt("client");
     };
 }
 
-#define GM_CORE_FATAL(str)      ::gm::Logger::getInstance().coreLog(gm::LogLevel::kFatal, str)
-#define GM_CORE_ERROR(str)      ::gm::Logger::getInstance().coreLog(gm::LogLevel::kError, str)
-#define GM_CORE_WARN(str)       ::gm::Logger::getInstance().coreLog(gm::LogLevel::kWarn, str)
-#define GM_CORE_INFO(str)       ::gm::Logger::getInstance().coreLog(gm::LogLevel::kInfo, str)
-#define GM_CORE_DEBUG(str)      ::gm::Logger::getInstance().coreLog(gm::LogLevel::kDebug, str)
-#define GM_CORE_TRACE(str)      ::gm::Logger::getInstance().coreLog(gm::LogLevel::kTrace, str)
+#define GM_CORE_FATAL(...)      ::gm::Logger::getInstance().getCoreLogger()->fatal(__VA_ARGS__)
+#define GM_CORE_ERROR(...)      ::gm::Logger::getInstance().getCoreLogger()->error(__VA_ARGS__)
+#define GM_CORE_WARN(...)       ::gm::Logger::getInstance().getCoreLogger()->warn(__VA_ARGS__)
+#define GM_CORE_INFO(...)       ::gm::Logger::getInstance().getCoreLogger()->info(__VA_ARGS__)
+#define GM_CORE_TRACE(...)      ::gm::Logger::getInstance().getCoreLogger()->trace(__VA_ARGS__)
 
-#define GM_CLIENT_FATAL(str)    ::gm::Logger::getInstance().clientLog(gm::LogLevel::kFatal, str)
-#define GM_CLIENT_ERROR(str)    ::gm::Logger::getInstance().clientLog(gm::LogLevel::kError, str)
-#define GM_CLIENT_WARN(str)     ::gm::Logger::getInstance().clientLog(gm::LogLevel::kWarn, str)
-#define GM_CLIENT_INFO(str)     ::gm::Logger::getInstance().clientLog(gm::LogLevel::kInfo, str)
-#define GM_CLIENT_DEBUG(str)    ::gm::Logger::getInstance().clientLog(gm::LogLevel::kDebug, str)
-#define GM_CLIENT_TRACE(str)    ::gm::Logger::getInstance().clientLog(gm::LogLevel::kTrace, str)
+#define GM_FATAL(...)    ::gm::Logger::getInstance().getClientLogger()->fatal(__VA_ARGS__)
+#define GM_ERROR(...)    ::gm::Logger::getInstance().getClientLogger()->error(__VA_ARGS__)
+#define GM_WARN(...)     ::gm::Logger::getInstance().getClientLogger()->warn(__VA_ARGS__)
+#define GM_INFO(...)     ::gm::Logger::getInstance().getClientLogger()->info(__VA_ARGS__)
+#define GM_TRACE(...)    ::gm::Logger::getInstance().getClientLogger()->trace(__VA_ARGS__)

@@ -8,7 +8,7 @@ namespace gm
 {
     Application::Application()
     {
-
+        m_window = makeScope<Window>();
     }
 
     Application::~Application()
@@ -22,6 +22,9 @@ namespace gm
 
         GM_CORE_TRACE(e);
 
-        while (true);
+        while (m_window->isOpen())
+        {
+            m_window->pollEvents();
+        }
     }
 }

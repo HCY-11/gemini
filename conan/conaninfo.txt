@@ -8,6 +8,8 @@
 
 [requires]
     glfw/3.Y.Z
+    imgui/1.Y.Z
+    spdlog/1.Y.Z
     vulkan-headers/1.Y.Z
     vulkan-loader/1.Y.Z
     vulkan-memory-allocator/2.Y.Z
@@ -27,11 +29,14 @@
 
 [full_requires]
     expat/2.2.10:3242ee86fec793e7767fb97cb42848d950351d05
+    fmt/7.1.3:958c3b440426d3de5c0972e7f507dbde401ac1a5
     glfw/3.3.4:08f4c711a76082a8ca8e8d4783b15f190b7d8e79
+    imgui/1.83:958c3b440426d3de5c0972e7f507dbde401ac1a5
     libffi/3.3:be27726f9885116da1158027505be62e913cd585
     libiconv/1.16:be27726f9885116da1158027505be62e913cd585
     libxml2/2.9.10:668e0becb962aa20bfdc03e0659881cddcac57bb
     opengl/system:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+    spdlog/1.8.5:6f6c1c296ac0bf7fe287d6f10eed38092574944e
     vulkan-headers/1.2.172:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
     vulkan-loader/1.2.172:79fcaccaa9d5c9ed5c230473143790b21f8097ef
     vulkan-memory-allocator/2.3.0:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
@@ -43,9 +48,15 @@
     expat:char_type=char
     expat:fPIC=True
     expat:shared=False
+    fmt:fPIC=True
+    fmt:header_only=False
+    fmt:shared=False
+    fmt:with_fmt_alias=False
     glfw:fPIC=True
     glfw:shared=False
     glfw:vulkan_static=False
+    imgui:fPIC=True
+    imgui:shared=False
     libffi:fPIC=True
     libffi:shared=False
     libiconv:fPIC=True
@@ -83,6 +94,12 @@
     libxml2:xpath=True
     libxml2:xptr=True
     libxml2:zlib=True
+    spdlog:fPIC=True
+    spdlog:header_only=False
+    spdlog:no_exceptions=False
+    spdlog:shared=False
+    spdlog:wchar_filenames=False
+    spdlog:wchar_support=False
     vulkan-loader:shared=True
     vulkan-loader:with_wsi_directfb=False
     vulkan-loader:with_wsi_wayland=True

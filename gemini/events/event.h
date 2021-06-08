@@ -2,8 +2,6 @@
 
 #include "core/core.h"
 
-#include "util/util.h"
-
 namespace gm
 {
     enum class EventType
@@ -74,7 +72,7 @@ namespace gm
         Event& m_event;
     };
 
-    inline std::ostream& operator<<(std::ostream& os, Event& e)
+    inline std::ostream& operator<<(std::ostream& os, const Event& e)
     {
         return os << e.toString();
     }

@@ -1,6 +1,7 @@
 #pragma once
 
 #include "core/core.h"
+#include "core/window.h"
 
 namespace gm
 {
@@ -11,7 +12,9 @@ namespace gm
         virtual ~Application();
 
         void run();
-    
+
+    protected:
+        Scope<Window>   m_window                    = nullptr;
     };
 
     Application* createApplication();

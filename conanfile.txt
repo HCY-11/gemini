@@ -1,5 +1,7 @@
 [requires]
 glfw/3.3.4
+spdlog/1.8.5
+imgui/1.83
 vulkan-headers/1.2.172
 vulkan-memory-allocator/2.3.0
 vulkan-loader/1.2.172

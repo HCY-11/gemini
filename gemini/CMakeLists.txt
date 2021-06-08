@@ -1,12 +1,18 @@
 set(HEADER_FILES
-    ./core/application.h
     ./core/core.h
-    ./core/entry.h
+    ./core/application.h
     ./core/keycodes.h
     ./core/mousecodes.h
+    ./core/window.h
+    ./events/keyboard_events.h
+    ./events/mouse_events.h
+    ./events/app_events.h
+    ./events/event.h
+    ./logging/logger.h
 )
 
 set(SOURCE_FILES 
+    ./core/window.cpp
     ./core/application.cpp
 )
 

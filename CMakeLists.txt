@@ -6,6 +6,7 @@ include(./conan/conanbuildinfo.cmake)
 
 add_definitions("-std=c++20")
 add_definitions("-g")
+add_definitions(-DGM_ENABLE_ASSERT)
 
 conan_basic_setup()
 
