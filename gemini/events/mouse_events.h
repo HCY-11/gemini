@@ -50,7 +50,7 @@ namespace gm
         inline std::string toString() const override
         {
             std::stringstream ss;
-            ss << "MouseButtonPressEvent: " << m_mouseCode;
+            ss << "MouseButtonReleaseEvent: " << m_mouseCode;
             return ss.str();
         }
 

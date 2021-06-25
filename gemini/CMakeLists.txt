@@ -9,11 +9,15 @@ set(HEADER_FILES
     ./events/app_events.h
     ./events/event.h
     ./logging/logger.h
+    ./layers/layer.h
+    ./layers/layer_stack.h
 )
 
 set(SOURCE_FILES 
     ./core/window.cpp
     ./core/application.cpp
+    ./layers/layer.cpp
+    ./layers/layer_stack.cpp
 )
 
 add_library(gemini SHARED 

@@ -8,6 +8,8 @@ int main()
 {
     gm::Logger::getInstance().init();
 
+    GM_CORE_TRACE("Gemini initialized");
+
     auto app = gm::createApplication();
 
     GM_CORE_INFO("Application initialized");

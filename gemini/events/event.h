@@ -57,7 +57,7 @@ namespace gm
         {}
 
         template<typename T, typename F>
-        bool dispatch(F& func)
+        bool dispatch(const F& func)
         {
             if (m_event.getType() == T::getTypeStatic())
             {
