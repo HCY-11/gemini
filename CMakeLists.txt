@@ -13,3 +13,5 @@ conan_basic_setup()
 add_subdirectory(app)
 
 add_subdirectory(gemini)
+
+set(CMAKE_EXPORT_COMPILE_COMMANDS ON)
