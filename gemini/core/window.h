@@ -2,7 +2,11 @@
 
 #include "logging/logger.h"
 #include "core/core.h"
+
 #include "events/event.h"
+#include "events/app_events.h"
+#include "events/keyboard_events.h"
+#include "events/mouse_events.h"
 
 namespace gm
 {
