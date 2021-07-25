@@ -15,6 +15,10 @@
 #include <string>
 #include <sstream>
 #include <iomanip>
+#include <optional>
+#include <fstream>
+#include <deque>
+#include <set>
 
 #ifdef GM_PLATFORM_WINDOWS
     #ifdef GM_BUILD_DLL
@@ -35,8 +39,8 @@
     #define GM_API
     #ifdef GM_ENABLE_ASSERT
         #include <signal.h>
-        #define GM_CORE_ASSERT(c, ...) if (!(c)) { GM_CORE_ERROR("Assertion Failed {0}: ", __VA_ARGS__); raise(SIGTRAP); }
-        #define GM_ASSERT(c, ...) if (!(c)) { GM_ERROR("Assertion Failed {0}: ", __VA_ARGS__); raise(SIGTRAP); }
+        #define GM_CORE_ASSERT(c, ...) if (!(c)) { GM_CORE_ERROR("{0}: ", __VA_ARGS__); raise(SIGTRAP); }
+        #define GM_ASSERT(c, ...) if (!(c)) { GM_ERROR("{0}: ", __VA_ARGS__); raise(SIGTRAP); }
     #else
         #define GM_CORE_ASSERT(c, ...)
         #define GM_ASSERT(c, ...)

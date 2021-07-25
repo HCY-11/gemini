@@ -10,14 +10,35 @@ set(HEADER_FILES
     ./events/event.h
     ./logging/logger.h
     ./layers/layer.h
+    ./layers/graphics_layer.h
     ./layers/layer_stack.h
+    ./graphics/device.h
+    ./graphics/deletion_queue.h
+    ./graphics/gpu.h
+    ./graphics/instance.h
+    ./graphics/pipelines.h
+    ./graphics/render_pass.h
+    ./graphics/surface.h
+    ./graphics/swapchain.h
+    ./graphics/callbacks.h
+    ./graphics/deletion_queue.h
 )
 
 set(SOURCE_FILES 
     ./core/window.cpp
     ./core/application.cpp
     ./layers/layer.cpp
+    ./layers/graphics_layer.cpp
     ./layers/layer_stack.cpp
+    ./graphics/device.cpp
+    ./graphics/gpu.cpp
+    ./graphics/instance.cpp
+    ./graphics/pipelines.cpp
+    ./graphics/renderer.cpp
+    ./graphics/render_pass.cpp
+    ./graphics/surface.cpp
+    ./graphics/swapchain.cpp
+    ./graphics/callbacks.cpp
 )
 
 add_library(gemini SHARED 

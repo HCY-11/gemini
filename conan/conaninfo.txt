@@ -1,6 +1,6 @@
 [settings]
     arch=x86_64
-    build_type=Debug
+    build_type=Release
     compiler=gcc
     compiler.libcxx=libstdc++11
     compiler.version=11
@@ -20,7 +20,7 @@
 [full_settings]
     arch=x86_64
     arch_build=x86_64
-    build_type=Debug
+    build_type=Release
     compiler=gcc
     compiler.libcxx=libstdc++11
     compiler.version=11
@@ -28,21 +28,21 @@
     os_build=Linux
 
 [full_requires]
-    expat/2.2.10:3242ee86fec793e7767fb97cb42848d950351d05
-    fmt/7.1.3:958c3b440426d3de5c0972e7f507dbde401ac1a5
-    glfw/3.3.4:08f4c711a76082a8ca8e8d4783b15f190b7d8e79
-    imgui/1.83:958c3b440426d3de5c0972e7f507dbde401ac1a5
-    libffi/3.3:be27726f9885116da1158027505be62e913cd585
-    libiconv/1.16:be27726f9885116da1158027505be62e913cd585
-    libxml2/2.9.10:668e0becb962aa20bfdc03e0659881cddcac57bb
+    expat/2.2.10:2bf99ee01cda593d5986afc64acf262ad576354f
+    fmt/7.1.3:6557f18ca99c0b6a233f43db00e30efaa525e27e
+    glfw/3.3.4:3e7c626a326fdadc4c93f195efa1603f300bf722
+    imgui/1.83:6557f18ca99c0b6a233f43db00e30efaa525e27e
+    libffi/3.3:dfbe50feef7f3c6223a476cd5aeadb687084a646
+    libiconv/1.16:dfbe50feef7f3c6223a476cd5aeadb687084a646
+    libxml2/2.9.10:c61ca912b16446c0f482bc52de12394fa7e40f1d
     opengl/system:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
-    spdlog/1.8.5:6f6c1c296ac0bf7fe287d6f10eed38092574944e
+    spdlog/1.8.5:9451767843c5bfb2f2cab883e38fce1040a9cf5a
     vulkan-headers/1.2.172:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
-    vulkan-loader/1.2.172:79fcaccaa9d5c9ed5c230473143790b21f8097ef
+    vulkan-loader/1.2.172:4e7002e5f4df25945a2013e2f82418a3ba8ba05c
     vulkan-memory-allocator/2.3.0:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
-    wayland/1.18.0:80005ee34d2869de5a771d2ae3ed205ad546e215
+    wayland/1.18.0:75fce0356cb5cb051db7304f58922551d4ffb052
     xorg/system:5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
-    zlib/1.2.11:be27726f9885116da1158027505be62e913cd585
+    zlib/1.2.11:dfbe50feef7f3c6223a476cd5aeadb687084a646
 
 [full_options]
     expat:char_type=char

@@ -19,7 +19,7 @@ namespace gm
 
         glfwSetWindowUserPointer(m_window, &m_data);
 
-        glfwSetWindowSizeCallback(m_window, [](GLFWwindow* win, int w, int h) 
+        glfwSetWindowSizeCallback(m_window, [] (GLFWwindow* win, int w, int h) 
         {
             WindowData* data = reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(win));
 
@@ -31,7 +31,7 @@ namespace gm
             data->eventCallback(e);
         });
 
-        glfwSetWindowFocusCallback(m_window, [](GLFWwindow* win, int focused)
+        glfwSetWindowFocusCallback(m_window, [] (GLFWwindow* win, int focused)
         {
             WindowData* data = reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(win));
 
@@ -47,7 +47,7 @@ namespace gm
             }
         });
 
-        glfwSetWindowCloseCallback(m_window, [](GLFWwindow* win)
+        glfwSetWindowCloseCallback(m_window, [] (GLFWwindow* win)
         {
             WindowData* data = reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(win));
 
@@ -56,7 +56,7 @@ namespace gm
             data->eventCallback(e);
         });
 
-        glfwSetKeyCallback(m_window, [](GLFWwindow* win, int key, int scancode, int action, int mods)
+        glfwSetKeyCallback(m_window, [] (GLFWwindow* win, int key, int scancode, int action, int mods)
         {
             WindowData* data = reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(win));
 
@@ -85,7 +85,7 @@ namespace gm
             }
         });
 
-        glfwSetMouseButtonCallback(m_window, [](GLFWwindow* win, int button, int action, int mods)
+        glfwSetMouseButtonCallback(m_window, [] (GLFWwindow* win, int button, int action, int mods)
         {
             WindowData* data = reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(win));
 
@@ -114,7 +114,7 @@ namespace gm
             }
         });
 
-        glfwSetCursorPosCallback(m_window, [](GLFWwindow* win, double x, double y)
+        glfwSetCursorPosCallback(m_window, [] (GLFWwindow* win, double x, double y)
         {
             WindowData* data = reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(win));
 
@@ -123,7 +123,7 @@ namespace gm
             data->eventCallback(e);
         });
 
-        glfwSetScrollCallback(m_window, [](GLFWwindow* win, double xOffset, double yOffset)
+        glfwSetScrollCallback(m_window, [] (GLFWwindow* win, double xOffset, double yOffset)
         {
             WindowData* data = reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(win));
 

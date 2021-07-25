@@ -23,9 +23,9 @@ public:
 class SandBoxApp : public gm::Application
 {
 public:
-    SandBoxApp() 
-    {
+    SandBoxApp() {
         pushLayer(new ExampleLayer());
+        pushLayer(new gm::GraphicsLayer(m_window.get()));
     }
 
     ~SandBoxApp() {}

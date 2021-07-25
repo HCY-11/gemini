@@ -10,6 +10,7 @@
 #include "events/app_events.h"
 
 #include "layers/layer.h"
+#include "layers/graphics_layer.h"
 
 /***ENTRY POINT***/
 #include "core/entry.h"
