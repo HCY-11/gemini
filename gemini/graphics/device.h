@@ -1,7 +1,6 @@
 #pragma once
 
 #include "graphics/gpu.h"
-#include "graphics/deletion_queue.h"
 
 namespace gm
 {

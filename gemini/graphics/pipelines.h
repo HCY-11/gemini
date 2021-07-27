@@ -3,7 +3,6 @@
 #include "graphics/device.h"
 #include "graphics/swapchain.h"
 #include "graphics/render_pass.h"
-#include "graphics/deletion_queue.h"
 
 namespace gm
 {
@@ -39,11 +38,7 @@ namespace gm
             layout          = VK_NULL_HANDLE;
         }
 
-        void destroy(Device* device)
-        {
-            vkDestroyPipelineLayout(device->get(), layout, nullptr);
-            vkDestroyPipeline(device->get(), value, nullptr);
-        }
+        ~Pipeline() = default;
     };
 
     class PipelineBuilder
@@ -80,7 +75,9 @@ namespace gm
         static void populateStateInfosDefault(PipelineInfo* info, Swapchain* swapchain);
 
         // Can only be called once all other create* functions are called.
-        static void build(Device* device, RenderPass* renderPass, Pipeline* dst);
+        static void buildPipeline(Device* device, RenderPass* renderPass, Pipeline* dst);
+
+        static void destroyPipeline(Device* device, Pipeline* pipeline);
 
     private:
         static VkShaderModule createShaderModule(Device* device, const char* filePath);

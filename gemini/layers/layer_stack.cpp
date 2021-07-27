@@ -9,7 +9,10 @@ namespace gm
 
     LayerStack::~LayerStack()
     {
-
+        for (auto it = m_layers.begin(); it != m_layers.end(); it++)
+        {
+            delete *it;
+        }
     }
 
     void LayerStack::pushLayer(Layer* layer)

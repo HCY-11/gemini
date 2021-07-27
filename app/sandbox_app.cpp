@@ -1,37 +1,17 @@
 #include <gemini/gemini.h>
 
-class ExampleLayer : public gm::Layer
+namespace gm
 {
-public:
-    ExampleLayer() : gm::Layer("Example")
-    {}
-
-    ~ExampleLayer()
-    {}
-
-    void onUpdate() override
+    class SandBoxApp : public Application
     {
-        //GM_INFO("ExampleLayer::onUpdate()");
-    }
+    public:
+        SandBoxApp() {
+            pushLayer(new GraphicsLayer(m_window.get()));
+        }
+    };
 
-    void onEvent(gm::Event& e) override
+    Application* createApplication()
     {
-        GM_TRACE("Example Layer: {0}", e);
+        return new SandBoxApp();
     }
-};
-
-class SandBoxApp : public gm::Application
-{
-public:
-    SandBoxApp() {
-        pushLayer(new ExampleLayer());
-        pushLayer(new gm::GraphicsLayer(m_window.get()));
-    }
-
-    ~SandBoxApp() {}
-};
-
-gm::Application* gm::createApplication()
-{
-    return new SandBoxApp();
 }

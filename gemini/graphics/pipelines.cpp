@@ -114,7 +114,7 @@ namespace gm
         populateDepthStencilStateInfo(info);
     }
 
-    void PipelineBuilder::build(Device* device, RenderPass* renderPass, Pipeline* dst)
+    void PipelineBuilder::buildPipeline(Device* device, RenderPass* renderPass, Pipeline* dst)
     {
         for (uint32_t i = 0; i < dst->info.shaderFilePaths.size(); i++)
         {
@@ -155,6 +155,12 @@ namespace gm
         {
             vkDestroyShaderModule(device->get(), stageInfo.module, nullptr);
         }
+    }
+
+    void PipelineBuilder::destroyPipeline(Device* device, Pipeline* pipeline)
+    {
+        vkDestroyPipelineLayout(device->get(), pipeline->layout, nullptr);
+        vkDestroyPipeline(device->get(), pipeline->value, nullptr);
     }
 
     VkShaderModule PipelineBuilder::createShaderModule(Device* device, const char* filePath)

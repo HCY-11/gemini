@@ -9,7 +9,7 @@ namespace gm
     {
     public:
         RenderPass(Device* device, Swapchain* swapchain);
-        ~RenderPass();
+        virtual ~RenderPass();
 
         VkRenderPass get() const { return m_renderPass; }
 

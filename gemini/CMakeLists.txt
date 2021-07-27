@@ -13,7 +13,6 @@ set(HEADER_FILES
     ./layers/graphics_layer.h
     ./layers/layer_stack.h
     ./graphics/device.h
-    ./graphics/deletion_queue.h
     ./graphics/gpu.h
     ./graphics/instance.h
     ./graphics/pipelines.h
@@ -21,7 +20,6 @@ set(HEADER_FILES
     ./graphics/surface.h
     ./graphics/swapchain.h
     ./graphics/callbacks.h
-    ./graphics/deletion_queue.h
 )
 
 set(SOURCE_FILES 
@@ -34,7 +32,6 @@ set(SOURCE_FILES
     ./graphics/gpu.cpp
     ./graphics/instance.cpp
     ./graphics/pipelines.cpp
-    ./graphics/renderer.cpp
     ./graphics/render_pass.cpp
     ./graphics/surface.cpp
     ./graphics/swapchain.cpp

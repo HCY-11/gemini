@@ -4,7 +4,6 @@
 #include "core/window.h"
 #include "graphics/device.h"
 #include "graphics/gpu.h"
-#include "graphics/deletion_queue.h"
 
 namespace gm
 {
