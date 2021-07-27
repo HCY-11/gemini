@@ -42,7 +42,7 @@ namespace gm
             }
         }
 
-        bool isPopulated()
+        inline bool isPopulated()
         {
             return graphics.has_value() && present.has_value();
         }

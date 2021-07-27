@@ -9,9 +9,9 @@ namespace gm
     {
     public:
         RenderPass(Device* device, Swapchain* swapchain);
-        virtual ~RenderPass();
+        ~RenderPass();
 
-        VkRenderPass get() const { return m_renderPass; }
+        inline VkRenderPass get() const { return m_renderPass; }
 
     private:
         Device*             m_device            = nullptr;

@@ -2,6 +2,8 @@
 
 #include "layers/layer.h"
 #include "graphics/pipelines.h"
+#include "graphics/buffers/framebuffers.h"
+#include "graphics/pools/command_pool.h"
 
 namespace gm
 {
@@ -15,10 +17,6 @@ namespace gm
 
     private:
         void createFramebuffers();
-
-        void createCommandPool();
-
-        void allocateCommandBuffers();
 
         void createSyncObjects();
 
@@ -34,12 +32,11 @@ namespace gm
         Scope<Swapchain> m_swapchain                                            = nullptr;
         Scope<RenderPass> m_renderPass                                          = nullptr;
         Scope<Pipeline> m_rasterizerPipeline                                    = nullptr;
+        Scope<Framebuffers> m_framebuffers                                      = nullptr;
+        Scope<CommandPool> m_commandPool                                        = nullptr;
 
         // TODO: Refactor and separate out pool objects and buffer objects
-        std::vector<VkFramebuffer>          m_framebuffers                      = {};
         std::vector<VkCommandBuffer>        m_commandBuffers                    = {};
-
-        VkCommandPool                       m_commandPool                       = VK_NULL_HANDLE;
 
         std::vector<VkSemaphore>            m_imageAvailableSemaphores          = {};
         std::vector<VkSemaphore>            m_renderFinishedSemaphores          = {};

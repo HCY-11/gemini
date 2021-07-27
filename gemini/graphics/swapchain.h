@@ -13,24 +13,27 @@ namespace gm
         Swapchain(Window* window, Surface* surface, GPU* gpu, Device* device);
         ~Swapchain();
 
-        const VkSwapchainKHR& get() const { return m_swapchain; }
+        inline const VkSwapchainKHR& get() const { return m_swapchain; }
 
-        VkExtent2D getExtent() const { return m_extent; }
+        inline VkExtent2D getExtent() const { return m_extent; }
 
-        VkSurfaceFormatKHR getSurfaceFormat() const { return m_surfaceFormat; }
+        inline VkSurfaceFormatKHR getSurfaceFormat() const { return m_surfaceFormat; }
 
-        const std::vector<VkImageView>& getImageViews() { return m_imageViews; }
+        inline const std::vector<VkImageView>& getImageViews() const { return m_imageViews; }
 
     private:
-        void createImageViews(Device* device);
+        void createImageViews();
 
-        VkExtent2D chooseExtent(Window* window);
+        void createFramebuffers();
+
+        VkExtent2D chooseExtent();
 
         VkPresentModeKHR choosePresentMode();
 
         VkSurfaceFormatKHR chooseSurfaceFormat();
 
     private:
+        Window*                         m_window            = nullptr;
         Device*                         m_device            = nullptr;
 
         VkExtent2D                      m_extent            = {};
@@ -42,5 +45,6 @@ namespace gm
         SwapchainSupportInfo            m_info              = {};
 
         std::vector<VkImageView>        m_imageViews        = {};
+        std::vector<VkFramebuffer>      m_framebuffers      = {};
     };
 }

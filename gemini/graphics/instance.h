@@ -4,15 +4,33 @@
 
 namespace gm
 {
+    extern VKAPI_ATTR VkBool32 VKAPI_CALL debugCallback(
+        VkDebugUtilsMessageSeverityFlagBitsEXT           messageSeverity,
+        VkDebugUtilsMessageTypeFlagsEXT                  messageTypes,
+        const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
+        void*                                            pUserData);
+
+    extern VkResult createDebugUtilsMessengerEXT(
+        VkInstance                                      instance,
+        const VkDebugUtilsMessengerCreateInfoEXT*       pCreateInfo,
+        const VkAllocationCallbacks*                    pAllocator,
+        VkDebugUtilsMessengerEXT*                       pMessenger);
+
+    extern void destroyDebugUtilsMessengerEXT(
+        VkInstance                                      instance,
+        VkDebugUtilsMessengerEXT                        messenger,
+        const VkAllocationCallbacks*                    pAllocator
+    );
+
     class Instance
     {
     public:
         Instance();
         ~Instance();
 
-        VkInstance get() const { return m_instance; }
+        inline VkInstance get() const { return m_instance; }
 
-        const std::vector<const char*>& getValidationLayers() const { return m_validationLayers; }
+        inline const std::vector<const char*>& getValidationLayers() const { return m_validationLayers; }
 
     private:
         void checkValidationLayerSupport();

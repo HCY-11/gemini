@@ -3,11 +3,11 @@
 
 namespace gm
 {
-    Swapchain::Swapchain(Window* window, Surface* surface, GPU* gpu, Device* device) : m_device(device)
+    Swapchain::Swapchain(Window* window, Surface* surface, GPU* gpu, Device* device) : m_window(window), m_device(device)
     {
         m_info.querySwapchainSupport(gpu->get(), surface->get());
 
-        m_extent = chooseExtent(window);
+        m_extent = chooseExtent();
         m_presentMode = choosePresentMode();
         m_surfaceFormat = chooseSurfaceFormat();
 
@@ -49,9 +49,9 @@ namespace gm
             swapchainInfo.queueFamilyIndexCount     = 0;
         }
 
-        GM_CORE_ASSERT(vkCreateSwapchainKHR(device->get(), &swapchainInfo, nullptr, &m_swapchain) == VK_SUCCESS, "Failed to create swapchain!");
+        GM_CORE_ASSERT(vkCreateSwapchainKHR(m_device->get(), &swapchainInfo, nullptr, &m_swapchain) == VK_SUCCESS, "Failed to create swapchain!");
 
-        createImageViews(device);
+        createImageViews();
     }
 
     Swapchain::~Swapchain()
@@ -64,7 +64,7 @@ namespace gm
         vkDestroySwapchainKHR(m_device->get(), m_swapchain, nullptr);
     }
 
-    VkExtent2D Swapchain::chooseExtent(Window* window)
+    VkExtent2D Swapchain::chooseExtent()
     {
         if (m_info.capabilities.currentExtent.width != UINT32_MAX)
         {
@@ -73,7 +73,7 @@ namespace gm
         else
         {
             int width, height;
-            glfwGetFramebufferSize(window->get(), &width, &height);
+            glfwGetFramebufferSize(m_window->get(), &width, &height);
 
             VkExtent2D extent
             {
@@ -88,14 +88,14 @@ namespace gm
         }
     }
 
-    void Swapchain::createImageViews(Device* device)
+    void Swapchain::createImageViews()
     {
         uint32_t count = 0;
 
         std::vector<VkImage> images;
-        vkGetSwapchainImagesKHR(device->get(), m_swapchain, &count, nullptr);
+        vkGetSwapchainImagesKHR(m_device->get(), m_swapchain, &count, nullptr);
         images.resize(count);
-        vkGetSwapchainImagesKHR(device->get(), m_swapchain, &count, images.data());
+        vkGetSwapchainImagesKHR(m_device->get(), m_swapchain, &count, images.data());
 
         m_imageViews.resize(count);
 
@@ -118,7 +118,7 @@ namespace gm
             viewInfo.subresourceRange.levelCount            = 1;
             viewInfo.subresourceRange.baseMipLevel          = 0;
 
-            GM_CORE_ASSERT(vkCreateImageView(device->get(), &viewInfo, nullptr, &m_imageViews[i]) == VK_SUCCESS,
+            GM_CORE_ASSERT(vkCreateImageView(m_device->get(), &viewInfo, nullptr, &m_imageViews[i]) == VK_SUCCESS,
                             "Failed to create image view!");
         }
     }

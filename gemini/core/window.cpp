@@ -7,7 +7,7 @@ namespace gm
         glfwInit();
 
         glfwWindowHint(GLFW_CLIENT_API, GLFW_NO_API);
-        glfwWindowHint(GLFW_RESIZABLE, GLFW_FALSE);
+        glfwWindowHint(GLFW_RESIZABLE, GLFW_TRUE);
 
         m_window = glfwCreateWindow(width, height, title, nullptr, nullptr);
 
@@ -19,12 +19,13 @@ namespace gm
 
         glfwSetWindowUserPointer(m_window, &m_data);
 
-        glfwSetWindowSizeCallback(m_window, [] (GLFWwindow* win, int w, int h) 
+        glfwSetFramebufferSizeCallback(m_window, [] (GLFWwindow* win, int w, int h) 
         {
             WindowData* data = reinterpret_cast<WindowData*>(glfwGetWindowUserPointer(win));
 
             data->width = w;
             data->height = h;
+            data->isResized = true;
 
             WindowResizeEvent e(w, h);
 

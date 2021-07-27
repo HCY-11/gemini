@@ -17,8 +17,8 @@ namespace gm
         void popLayer(Layer* layer);
         void popOverlay(Layer* overlay);
 
-        std::vector<Layer*>::iterator begin() { return m_layers.begin(); }
-        std::vector<Layer*>::iterator end() { return m_layers.end(); }
+        inline std::vector<Layer*>::iterator begin() { return m_layers.begin(); }
+        inline std::vector<Layer*>::iterator end() { return m_layers.end(); }
 
     private:
         std::vector<Layer*>                 m_layers;

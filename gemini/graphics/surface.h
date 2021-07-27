@@ -11,7 +11,7 @@ namespace gm
         Surface(Window* window, Instance* instance);
         ~Surface();
 
-        VkSurfaceKHR get() const { return m_surface; }
+        inline VkSurfaceKHR get() const { return m_surface; }
 
     private:
         Instance*           m_instance          = nullptr;

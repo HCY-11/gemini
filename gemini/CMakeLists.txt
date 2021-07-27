@@ -19,7 +19,8 @@ set(HEADER_FILES
     ./graphics/render_pass.h
     ./graphics/surface.h
     ./graphics/swapchain.h
-    ./graphics/callbacks.h
+    ./graphics/buffers/framebuffers.h
+    ./graphics/pools/command_pool.h
 )
 
 set(SOURCE_FILES 
@@ -35,7 +36,8 @@ set(SOURCE_FILES
     ./graphics/render_pass.cpp
     ./graphics/surface.cpp
     ./graphics/swapchain.cpp
-    ./graphics/callbacks.cpp
+    ./graphics/buffers/framebuffers.cpp
+    ./graphics/pools/command_pool.cpp
 )
 
 add_library(gemini SHARED 

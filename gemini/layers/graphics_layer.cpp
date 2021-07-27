@@ -11,7 +11,9 @@ namespace gm
         m_device(new Device(m_instance.get(), m_gpu.get())),
         m_swapchain(new Swapchain(m_window, m_surface.get(), m_gpu.get(), m_device.get())),
         m_renderPass(new RenderPass(m_device.get(), m_swapchain.get())),
+        m_framebuffers(new Framebuffers(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_swapchain->getImageViews().size())),
         m_rasterizerPipeline(new Pipeline()),
+        m_commandPool(new CommandPool(m_gpu.get(), m_device.get())),
         m_framesInFlight(framesInFlight)
     {
         PipelineBuilder::addShaderStage(&m_rasterizerPipeline->info, VK_SHADER_STAGE_VERTEX_BIT, "/home/henry/workspace/gemini/gemini/graphics/shaders/vert.spv");
@@ -21,9 +23,9 @@ namespace gm
 
         PipelineBuilder::buildPipeline(m_device.get(), m_renderPass.get(), m_rasterizerPipeline.get());
 
-        createFramebuffers();
-        createCommandPool();
-        allocateCommandBuffers();
+        m_commandBuffers.resize(m_swapchain->getImageViews().size());
+        m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers);
+
         createSyncObjects();
     }
 
@@ -31,14 +33,9 @@ namespace gm
     {
         vkDeviceWaitIdle(m_device->get());
 
-        vkDestroyCommandPool(m_device->get(), m_commandPool, nullptr);
+        m_commandPool->freeCommandBuffers(m_commandBuffers);
 
         PipelineBuilder::destroyPipeline(m_device.get(), m_rasterizerPipeline.get());
-
-        for (const auto& buf : m_framebuffers)
-        {
-            vkDestroyFramebuffer(m_device->get(), buf, nullptr);
-        }
 
         for (uint32_t i = 0; i < m_framesInFlight; i++)
         {
@@ -85,7 +82,7 @@ namespace gm
         passBeginInfo.renderPass                    = m_renderPass->get();
         passBeginInfo.clearValueCount               = 1;
         passBeginInfo.pClearValues                  = &clearColor;
-        passBeginInfo.framebuffer                   = m_framebuffers[imageIndex];
+        passBeginInfo.framebuffer                   = m_framebuffers->get()[imageIndex];
         passBeginInfo.renderArea.offset             = { 0, 0 };
         passBeginInfo.renderArea.extent             = m_swapchain->getExtent();
 
@@ -144,26 +141,6 @@ namespace gm
         m_currentFrame = (m_currentFrame + 1) % m_framesInFlight;
     }
 
-    void GraphicsLayer::createFramebuffers()
-    {
-        m_framebuffers.resize(m_swapchain->getImageViews().size());
-
-        for (uint32_t i = 0; i < m_framebuffers.size(); i++)
-        {
-            VkFramebufferCreateInfo bufferInfo      = {};
-            bufferInfo.sType                        = VK_STRUCTURE_TYPE_FRAMEBUFFER_CREATE_INFO;
-            bufferInfo.renderPass                   = m_renderPass->get();
-            bufferInfo.attachmentCount              = 1;
-            bufferInfo.pAttachments                 = &m_swapchain->getImageViews().data()[i];
-            bufferInfo.width                        = m_swapchain->getExtent().width;
-            bufferInfo.height                       = m_swapchain->getExtent().height;
-            bufferInfo.layers                       = 1;
-
-            GM_CORE_ASSERT(vkCreateFramebuffer(m_device->get(), &bufferInfo, nullptr, &m_framebuffers[i]) == VK_SUCCESS,
-                            "Failed to create framebuffer!");
-        }
-    }
-
     void GraphicsLayer::createSyncObjects()
     {
         VkSemaphoreCreateInfo semaphoreInfo         = {};
@@ -191,34 +168,33 @@ namespace gm
         }
     }
 
-    void GraphicsLayer::createCommandPool()
-    {
-        VkCommandPoolCreateInfo poolInfo        = {};
-        poolInfo.sType                          = VK_STRUCTURE_TYPE_COMMAND_POOL_CREATE_INFO;
-        poolInfo.queueFamilyIndex               = m_gpu->getQueueFamilyIndices().graphics.value();
-        poolInfo.flags                          = VK_COMMAND_POOL_CREATE_RESET_COMMAND_BUFFER_BIT |
-                                                  VK_COMMAND_POOL_CREATE_TRANSIENT_BIT;
-
-        GM_CORE_ASSERT(vkCreateCommandPool(m_device->get(), &poolInfo, nullptr, &m_commandPool) == VK_SUCCESS,
-                        "Failed to create command pool!");
-    }
-
-    void GraphicsLayer::allocateCommandBuffers()
-    {
-        m_commandBuffers.resize(m_framebuffers.size());
-
-        VkCommandBufferAllocateInfo allocInfo           = {};
-        allocInfo.sType                                 = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
-        allocInfo.commandPool                           = m_commandPool;
-        allocInfo.commandBufferCount                    = m_commandBuffers.size();
-        allocInfo.level                                 = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
-
-        GM_CORE_ASSERT(vkAllocateCommandBuffers(m_device->get(), &allocInfo, m_commandBuffers.data()) == VK_SUCCESS,
-                        "Failed to allocate command buffers!");
-    }
-
     void GraphicsLayer::recreateSwapchain()
     {
-        // TODO: implement this method
+        vkDeviceWaitIdle(m_device->get());
+
+        m_framebuffers.reset();
+
+        m_commandPool->freeCommandBuffers(m_commandBuffers);
+
+        PipelineBuilder::destroyPipeline(m_device.get(), m_rasterizerPipeline.get());
+
+        m_renderPass.reset();
+
+        m_swapchain.reset();
+
+
+        m_swapchain = makeScope<Swapchain>(m_window, m_surface.get(), m_gpu.get(), m_device.get());
+
+        m_renderPass = makeScope<RenderPass>(m_device.get(), m_swapchain.get());
+
+        PipelineBuilder::populateViewportStateInfo(&m_rasterizerPipeline->info, m_swapchain.get());
+
+        PipelineBuilder::buildPipeline(m_device.get(), m_renderPass.get(), m_rasterizerPipeline.get());
+
+        m_framebuffers = makeScope<Framebuffers>(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_swapchain->getImageViews().size());
+
+        m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers);
+
+        m_imagesInFlightFences.resize(m_swapchain->getImageViews().size(), VK_NULL_HANDLE);
     }
 }

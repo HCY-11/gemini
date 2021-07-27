@@ -45,7 +45,7 @@ namespace gm
 
         inline bool isResized() const { return m_data.isResized; }
 
-        inline void setIsResized(bool isResized) { m_data.isResized = isResized;  }
+        inline void setIsResized(bool isResized) { m_data.isResized = isResized; }
 
         inline GLFWwindow* get() const { return m_window; }
 
