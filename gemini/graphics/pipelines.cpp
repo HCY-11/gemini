@@ -17,10 +17,12 @@ namespace gm
     void PipelineBuilder::populateVertexInputStateInfo(PipelineInfo* info)
     {
         info->vertexInputInfo.sType                                = VK_STRUCTURE_TYPE_PIPELINE_VERTEX_INPUT_STATE_CREATE_INFO;
-        info->vertexInputInfo.vertexAttributeDescriptionCount      = 0;
-        info->vertexInputInfo.pVertexAttributeDescriptions         = nullptr;
-        info->vertexInputInfo.vertexBindingDescriptionCount        = 0;
-        info->vertexInputInfo.pVertexBindingDescriptions           = nullptr;
+
+        info->vertexInputInfo.vertexAttributeDescriptionCount      = info->attributeDescriptions.size();
+        info->vertexInputInfo.pVertexAttributeDescriptions         = info->attributeDescriptions.data();
+
+        info->vertexInputInfo.vertexBindingDescriptionCount        = 1;
+        info->vertexInputInfo.pVertexBindingDescriptions           = &info->bindingDescription;
     }
 
     void PipelineBuilder::populateInputAssemblyStateInfo(PipelineInfo* info, VkPrimitiveTopology topology, VkBool32 primitiveRestartEnable)
@@ -114,11 +116,11 @@ namespace gm
         populateDepthStencilStateInfo(info);
     }
 
-    void PipelineBuilder::buildPipeline(Device* device, RenderPass* renderPass, Pipeline* dst)
+    void PipelineBuilder::buildPipeline(PipelineInfo* info, Device* device, RenderPass* renderPass, Pipeline* dst)
     {
-        for (uint32_t i = 0; i < dst->info.shaderFilePaths.size(); i++)
+        for (uint32_t i = 0; i < info->shaderFilePaths.size(); i++)
         {
-            dst->info.shaderStageInfos[i].module = createShaderModule(device, dst->info.shaderFilePaths[i]);
+            info->shaderStageInfos[i].module = createShaderModule(device, info->shaderFilePaths[i]);
         }
 
         VkPipelineLayoutCreateInfo layoutInfo       = {};
@@ -137,21 +139,21 @@ namespace gm
         pipelineInfo.basePipelineIndex              = -1;
         pipelineInfo.renderPass                     = renderPass->get();
         pipelineInfo.subpass                        = 0;
-        pipelineInfo.stageCount                     = dst->info.shaderStageInfos.size();
-        pipelineInfo.pStages                        = dst->info.shaderStageInfos.data();
-        pipelineInfo.pVertexInputState              = &dst->info.vertexInputInfo;
-        pipelineInfo.pInputAssemblyState            = &dst->info.inputAssemblyInfo;
-        pipelineInfo.pViewportState                 = &dst->info.viewportInfo;
-        pipelineInfo.pRasterizationState            = &dst->info.rasterizationInfo;
-        pipelineInfo.pMultisampleState              = &dst->info.multiSampleInfo;
+        pipelineInfo.stageCount                     = info->shaderStageInfos.size();
+        pipelineInfo.pStages                        = info->shaderStageInfos.data();
+        pipelineInfo.pVertexInputState              = &info->vertexInputInfo;
+        pipelineInfo.pInputAssemblyState            = &info->inputAssemblyInfo;
+        pipelineInfo.pViewportState                 = &info->viewportInfo;
+        pipelineInfo.pRasterizationState            = &info->rasterizationInfo;
+        pipelineInfo.pMultisampleState              = &info->multiSampleInfo;
         pipelineInfo.pDepthStencilState             = nullptr;
-        pipelineInfo.pColorBlendState               = &dst->info.colorBlendInfo;
+        pipelineInfo.pColorBlendState               = &info->colorBlendInfo;
         pipelineInfo.pDynamicState                  = nullptr;
 
         GM_CORE_ASSERT(vkCreateGraphicsPipelines(device->get(), VK_NULL_HANDLE, 1, &pipelineInfo, nullptr, &dst->value) == VK_SUCCESS,
                         "Failed to create graphics pipeline!");
 
-        for (const auto& stageInfo : dst->info.shaderStageInfos)
+        for (const auto& stageInfo : info->shaderStageInfos)
         {
             vkDestroyShaderModule(device->get(), stageInfo.module, nullptr);
         }

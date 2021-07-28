@@ -2,6 +2,7 @@
 /home/henry/.conan/data/glfw/3.3.4/_/_/package/3e7c626a326fdadc4c93f195efa1603f300bf722/include
 /home/henry/.conan/data/spdlog/1.8.5/_/_/package/9451767843c5bfb2f2cab883e38fce1040a9cf5a/include
 /home/henry/.conan/data/imgui/1.83/_/_/package/6557f18ca99c0b6a233f43db00e30efaa525e27e/include
+/home/henry/.conan/data/glm/0.9.9.8/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include
 /home/henry/.conan/data/vulkan-memory-allocator/2.3.0/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include
 /usr/include/freetype2
 /usr/include/libpng16
@@ -48,6 +49,7 @@
 /home/henry/.conan/data/glfw/3.3.4/_/_/package/3e7c626a326fdadc4c93f195efa1603f300bf722/lib/cmake
 /home/henry/.conan/data/spdlog/1.8.5/_/_/package/9451767843c5bfb2f2cab883e38fce1040a9cf5a/
 /home/henry/.conan/data/imgui/1.83/_/_/package/6557f18ca99c0b6a233f43db00e30efaa525e27e/
+/home/henry/.conan/data/glm/0.9.9.8/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/
 /home/henry/.conan/data/vulkan-memory-allocator/2.3.0/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/
 /home/henry/.conan/data/vulkan-loader/1.2.172/_/_/package/4e7002e5f4df25945a2013e2f82418a3ba8ba05c/
 /home/henry/.conan/data/opengl/system/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/
@@ -363,6 +365,70 @@ imgui
 
 
 [generatorfilenames_imgui]
+
+
+
+[includedirs_glm]
+/home/henry/.conan/data/glm/0.9.9.8/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include
+
+[libdirs_glm]
+
+
+[bindirs_glm]
+
+
+[resdirs_glm]
+
+
+[builddirs_glm]
+/home/henry/.conan/data/glm/0.9.9.8/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/
+
+[libs_glm]
+
+
+[system_libs_glm]
+
+
+[defines_glm]
+
+
+[cppflags_glm]
+
+
+[cxxflags_glm]
+
+
+[cflags_glm]
+
+
+[sharedlinkflags_glm]
+
+
+[exelinkflags_glm]
+
+
+[sysroot_glm]
+
+
+[frameworks_glm]
+
+
+[frameworkdirs_glm]
+
+
+[rootpath_glm]
+/home/henry/.conan/data/glm/0.9.9.8/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9
+
+[name_glm]
+glm
+
+[version_glm]
+0.9.9.8
+
+[generatornames_glm]
+
+
+[generatorfilenames_glm]
 
 
 
@@ -1209,6 +1275,7 @@ cmake_find_package_multi=Iconv
 [USER_expat]
 [USER_fmt]
 [USER_glfw]
+[USER_glm]
 [USER_imgui]
 [USER_libffi]
 [USER_libiconv]
@@ -1225,6 +1292,7 @@ cmake_find_package_multi=Iconv
 [ENV_spdlog]
 [ENV_imgui]
 PATH=["/home/henry/.conan/data/imgui/1.83/_/_/package/6557f18ca99c0b6a233f43db00e30efaa525e27e/bin"]
+[ENV_glm]
 [ENV_vulkan-memory-allocator]
 [ENV_vulkan-loader]
 VULKAN_SDK=/home/henry/.conan/data/vulkan-loader/1.2.172/_/_/package/4e7002e5f4df25945a2013e2f82418a3ba8ba05c

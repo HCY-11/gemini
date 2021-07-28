@@ -8,6 +8,7 @@ namespace gm
     {
         kNone = 0,
         kWindowResize, kWindowClose, kWindowFocus, kWindowLoseFocus, kWindowMove,
+        kAddMesh,
         kAppTick, kAppUpdate, kAppRender,
         kKeyPress, kKeyRelease,
         kMouseButtonPress, kMouseButtonRelease, kMouseMove, kMouseScroll
@@ -57,15 +58,12 @@ namespace gm
         {}
 
         template<typename T, typename F>
-        bool dispatch(const F& func)
+        void dispatch(const F& func)
         {
             if (m_event.getType() == T::getTypeStatic())
             {
                 m_event.isHandled |= func(static_cast<T&>(m_event));
-                return true;
             }
-
-            return false;
         }
 
     private:

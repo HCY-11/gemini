@@ -15,33 +15,40 @@ namespace gm
 
         void onUpdate() override;
 
+        void onEvent(Event& e) override;
+
     private:
-        void createFramebuffers();
+        void createAllocator();
 
         void createSyncObjects();
 
         void recreateSwapchain();
 
     private:
-        Window* m_window                                                        = nullptr;
+        Window*                             m_window                            = nullptr;
 
-        Scope<Instance> m_instance                                              = nullptr;
-        Scope<Surface> m_surface                                                = nullptr;
-        Scope<GPU> m_gpu                                                        = nullptr;
-        Scope<Device> m_device                                                  = nullptr;
-        Scope<Swapchain> m_swapchain                                            = nullptr;
-        Scope<RenderPass> m_renderPass                                          = nullptr;
-        Scope<Pipeline> m_rasterizerPipeline                                    = nullptr;
-        Scope<Framebuffers> m_framebuffers                                      = nullptr;
-        Scope<CommandPool> m_commandPool                                        = nullptr;
+        Scope<Instance>                     m_instance                          = nullptr;
+        Scope<Surface>                      m_surface                           = nullptr;
+        Scope<GPU>                          m_gpu                               = nullptr;
+        Scope<Device>                       m_device                            = nullptr;
+        Scope<Swapchain>                    m_swapchain                         = nullptr;
+        Scope<RenderPass>                   m_renderPass                        = nullptr;
+        Scope<Framebuffers>                 m_framebuffers                      = nullptr;
+        Scope<CommandPool>                  m_commandPool                       = nullptr;
 
-        // TODO: Refactor and separate out pool objects and buffer objects
+        Pipeline                            m_rasterizerPipeline                = {};
+        PipelineInfo                        m_pipelineInfo                      = {};
+
+        VmaAllocator                        m_allocator                         = VK_NULL_HANDLE;
+
         std::vector<VkCommandBuffer>        m_commandBuffers                    = {};
 
         std::vector<VkSemaphore>            m_imageAvailableSemaphores          = {};
         std::vector<VkSemaphore>            m_renderFinishedSemaphores          = {};
         std::vector<VkFence>                m_inFlightFences                    = {};
         std::vector<VkFence>                m_imagesInFlightFences              = {};
+
+        std::vector<Mesh*>                  m_meshes                            = {};
 
         uint32_t                            m_framesInFlight                    = 0;
         uint32_t                            m_currentFrame                      = 0;

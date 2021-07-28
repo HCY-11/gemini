@@ -10,7 +10,7 @@ namespace gm
         Device(Instance* instance, GPU* gpu);
         ~Device();
 
-        inline VkDevice get() const { return m_device; }
+        inline const VkDevice& get() const { return m_device; }
 
         inline VkQueue getGraphicsQueue() const { return m_graphicsQueue; }
 

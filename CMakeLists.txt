@@ -4,7 +4,7 @@ project(gemini VERSION 1.0.0 DESCRIPTION "Gemini Game Engine")
 include(GNUInstallDirs)
 include(./conan/conanbuildinfo.cmake)
 
-add_definitions("-std=c++20")
+add_definitions("-std=c++17")
 add_definitions("-g")
 add_definitions(-DGM_ENABLE_ASSERT)
 

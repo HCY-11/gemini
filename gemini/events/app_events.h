@@ -2,6 +2,8 @@
 
 #include "events/event.h"
 
+#include "graphics/meshes/mesh.h"
+
 namespace gm
 {
     class GM_API WindowResizeEvent : public Event
@@ -68,6 +70,22 @@ namespace gm
     
     private:
         uint32_t m_x, m_y;
+    };
+
+
+    class GM_API MeshAddEvent : public Event
+    {
+    public:
+        MeshAddEvent(Mesh* newMesh) : m_newMesh(newMesh)
+        {}
+
+        inline Mesh* getNewMesh() const { return m_newMesh; }
+
+        EVENT_CLASS_CATEGORY(kEventCategoryApp)
+        EVENT_CLASS_TYPE(kAddMesh)
+    
+    private:
+        Mesh* m_newMesh = nullptr;
     };
 
     // Optional App Events

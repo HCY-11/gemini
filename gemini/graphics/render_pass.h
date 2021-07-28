@@ -11,7 +11,7 @@ namespace gm
         RenderPass(Device* device, Swapchain* swapchain);
         ~RenderPass();
 
-        inline VkRenderPass get() const { return m_renderPass; }
+        inline const VkRenderPass& get() const { return m_renderPass; }
 
     private:
         Device*             m_device            = nullptr;

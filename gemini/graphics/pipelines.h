@@ -3,13 +3,17 @@
 #include "graphics/device.h"
 #include "graphics/swapchain.h"
 #include "graphics/render_pass.h"
+#include "graphics/meshes/vertex.h"
 
 namespace gm
 {
     struct PipelineInfo
     {
-        std::vector<VkPipelineShaderStageCreateInfo>        shaderStageInfos = {};
-        std::vector<const char*>                            shaderFilePaths = {};
+        std::vector<VkPipelineShaderStageCreateInfo>        shaderStageInfos            = {};
+        std::vector<const char*>                            shaderFilePaths             = {};
+
+        std::array<VkVertexInputAttributeDescription, 3>    attributeDescriptions       = Vertex::getAttributeDescriptions();
+        VkVertexInputBindingDescription                     bindingDescription          = Vertex::getBindingDescription();
 
         VkPipelineVertexInputStateCreateInfo                vertexInputInfo;
         VkPipelineInputAssemblyStateCreateInfo              inputAssemblyInfo;
@@ -27,13 +31,11 @@ namespace gm
 
     struct Pipeline
     {
-        PipelineInfo info;
         VkPipeline value;
         VkPipelineLayout layout;
 
         Pipeline()
         {
-            info            = {};
             value           = VK_NULL_HANDLE;
             layout          = VK_NULL_HANDLE;
         }
@@ -75,7 +77,7 @@ namespace gm
         static void populateStateInfosDefault(PipelineInfo* info, Swapchain* swapchain);
 
         // Can only be called once all other create* functions are called.
-        static void buildPipeline(Device* device, RenderPass* renderPass, Pipeline* dst);
+        static void buildPipeline(PipelineInfo* info, Device* device, RenderPass* renderPass, Pipeline* dst);
 
         static void destroyPipeline(Device* device, Pipeline* pipeline);
 

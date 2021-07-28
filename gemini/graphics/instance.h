@@ -19,8 +19,7 @@ namespace gm
     extern void destroyDebugUtilsMessengerEXT(
         VkInstance                                      instance,
         VkDebugUtilsMessengerEXT                        messenger,
-        const VkAllocationCallbacks*                    pAllocator
-    );
+        const VkAllocationCallbacks*                    pAllocator);
 
     class Instance
     {
@@ -28,7 +27,7 @@ namespace gm
         Instance();
         ~Instance();
 
-        inline VkInstance get() const { return m_instance; }
+        inline const VkInstance& get() const { return m_instance; }
 
         inline const std::vector<const char*>& getValidationLayers() const { return m_validationLayers; }
 

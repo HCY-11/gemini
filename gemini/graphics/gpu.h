@@ -90,7 +90,7 @@ namespace gm
 
         void find(Instance* instance, Surface* surface);
 
-        inline VkPhysicalDevice get() const { return m_gpu; }
+        inline const VkPhysicalDevice& get() const { return m_gpu; }
 
         inline QueueFamilyIndices getQueueFamilyIndices() const { return m_indices; }
 

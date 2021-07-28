@@ -63,6 +63,13 @@ namespace gm
         m_layerStack.pushOverlay(overlay);
     }
 
+    void Application::addMesh(Mesh* mesh)
+    {
+        MeshAddEvent e(mesh);
+
+        onEvent(e);
+    }
+
     void Application::updateLayers()
     {
         for (Layer* layer : m_layerStack)

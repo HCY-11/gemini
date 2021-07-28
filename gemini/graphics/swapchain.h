@@ -1,7 +1,7 @@
 #pragma once
 
-#include "graphics/instance.h"
 #include "core/window.h"
+#include "graphics/instance.h"
 #include "graphics/device.h"
 #include "graphics/gpu.h"
 

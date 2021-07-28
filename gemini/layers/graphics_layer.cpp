@@ -12,19 +12,20 @@ namespace gm
         m_swapchain(new Swapchain(m_window, m_surface.get(), m_gpu.get(), m_device.get())),
         m_renderPass(new RenderPass(m_device.get(), m_swapchain.get())),
         m_framebuffers(new Framebuffers(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_swapchain->getImageViews().size())),
-        m_rasterizerPipeline(new Pipeline()),
         m_commandPool(new CommandPool(m_gpu.get(), m_device.get())),
         m_framesInFlight(framesInFlight)
     {
-        PipelineBuilder::addShaderStage(&m_rasterizerPipeline->info, VK_SHADER_STAGE_VERTEX_BIT, "/home/henry/workspace/gemini/gemini/graphics/shaders/vert.spv");
-        PipelineBuilder::addShaderStage(&m_rasterizerPipeline->info, VK_SHADER_STAGE_FRAGMENT_BIT, "/home/henry/workspace/gemini/gemini/graphics/shaders/frag.spv");
+        PipelineBuilder::addShaderStage(&m_pipelineInfo, VK_SHADER_STAGE_VERTEX_BIT, "/home/henry/workspace/gemini/gemini/graphics/shaders/vert.spv");
+        PipelineBuilder::addShaderStage(&m_pipelineInfo, VK_SHADER_STAGE_FRAGMENT_BIT, "/home/henry/workspace/gemini/gemini/graphics/shaders/frag.spv");
 
-        PipelineBuilder::populateStateInfosDefault(&m_rasterizerPipeline->info, m_swapchain.get());
+        PipelineBuilder::populateStateInfosDefault(&m_pipelineInfo, m_swapchain.get());
 
-        PipelineBuilder::buildPipeline(m_device.get(), m_renderPass.get(), m_rasterizerPipeline.get());
+        PipelineBuilder::buildPipeline(&m_pipelineInfo, m_device.get(), m_renderPass.get(), &m_rasterizerPipeline);
 
         m_commandBuffers.resize(m_swapchain->getImageViews().size());
         m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers);
+
+        createAllocator();
 
         createSyncObjects();
     }
@@ -33,9 +34,16 @@ namespace gm
     {
         vkDeviceWaitIdle(m_device->get());
 
+        for (const auto& mesh : m_meshes)
+        {
+            delete mesh;
+        }
+
+        vmaDestroyAllocator(m_allocator);
+
         m_commandPool->freeCommandBuffers(m_commandBuffers);
 
-        PipelineBuilder::destroyPipeline(m_device.get(), m_rasterizerPipeline.get());
+        PipelineBuilder::destroyPipeline(m_device.get(), &m_rasterizerPipeline);
 
         for (uint32_t i = 0; i < m_framesInFlight; i++)
         {
@@ -89,9 +97,15 @@ namespace gm
 
         vkCmdBeginRenderPass(m_commandBuffers[imageIndex], &passBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdBindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, m_rasterizerPipeline->value);
+        vkCmdBindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, m_rasterizerPipeline.value);
 
-        vkCmdDraw(m_commandBuffers[imageIndex], 3, 1, 0, 0);
+        for (const auto& mesh : m_meshes)
+        {
+            VkDeviceSize offset = 0;
+            vkCmdBindVertexBuffers(m_commandBuffers[imageIndex], 0, 1, &mesh->vbo->get(), &offset);
+
+            vkCmdDraw(m_commandBuffers[imageIndex], mesh->vertices.size(), 1, 0, 0);
+        }
 
         vkCmdEndRenderPass(m_commandBuffers[imageIndex]);
 
@@ -141,6 +155,27 @@ namespace gm
         m_currentFrame = (m_currentFrame + 1) % m_framesInFlight;
     }
 
+    void GraphicsLayer::onEvent(Event& e)
+    {
+        if (e.getType() == EventType::kAddMesh)
+        {
+            Mesh* newMesh = static_cast<MeshAddEvent&>(e).getNewMesh();
+            newMesh->initVBO(m_allocator);
+            m_meshes.push_back(newMesh);
+        }
+    }
+
+    void GraphicsLayer::createAllocator()
+    {
+        VmaAllocatorCreateInfo createInfo       = {};
+        createInfo.instance                     = m_instance->get();
+        createInfo.device                       = m_device->get();
+        createInfo.physicalDevice               = m_gpu->get();
+
+        GM_CORE_ASSERT(vmaCreateAllocator(&createInfo, &m_allocator) == VK_SUCCESS, 
+                       "Failed to create allocator!");
+    }
+
     void GraphicsLayer::createSyncObjects()
     {
         VkSemaphoreCreateInfo semaphoreInfo         = {};
@@ -172,24 +207,26 @@ namespace gm
     {
         vkDeviceWaitIdle(m_device->get());
 
+        // Destroy
         m_framebuffers.reset();
 
         m_commandPool->freeCommandBuffers(m_commandBuffers);
 
-        PipelineBuilder::destroyPipeline(m_device.get(), m_rasterizerPipeline.get());
+        PipelineBuilder::destroyPipeline(m_device.get(), &m_rasterizerPipeline);
 
         m_renderPass.reset();
 
         m_swapchain.reset();
 
 
+        // Recreate
         m_swapchain = makeScope<Swapchain>(m_window, m_surface.get(), m_gpu.get(), m_device.get());
 
         m_renderPass = makeScope<RenderPass>(m_device.get(), m_swapchain.get());
 
-        PipelineBuilder::populateViewportStateInfo(&m_rasterizerPipeline->info, m_swapchain.get());
+        PipelineBuilder::populateViewportStateInfo(&m_pipelineInfo, m_swapchain.get());
 
-        PipelineBuilder::buildPipeline(m_device.get(), m_renderPass.get(), m_rasterizerPipeline.get());
+        PipelineBuilder::buildPipeline(&m_pipelineInfo, m_device.get(), m_renderPass.get(), &m_rasterizerPipeline);
 
         m_framebuffers = makeScope<Framebuffers>(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_swapchain->getImageViews().size());
 

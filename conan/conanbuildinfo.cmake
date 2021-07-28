@@ -153,6 +153,44 @@ set(CONAN_LIBS_IMGUI ${CONAN_PKG_LIBS_IMGUI} ${CONAN_SYSTEM_LIBS_IMGUI} ${CONAN_
 
 
 #################
+###  GLM
+#################
+set(CONAN_GLM_ROOT "/home/henry/.conan/data/glm/0.9.9.8/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9")
+set(CONAN_INCLUDE_DIRS_GLM "/home/henry/.conan/data/glm/0.9.9.8/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include")
+set(CONAN_LIB_DIRS_GLM )
+set(CONAN_BIN_DIRS_GLM )
+set(CONAN_RES_DIRS_GLM )
+set(CONAN_SRC_DIRS_GLM )
+set(CONAN_BUILD_DIRS_GLM "/home/henry/.conan/data/glm/0.9.9.8/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/")
+set(CONAN_FRAMEWORK_DIRS_GLM )
+set(CONAN_LIBS_GLM )
+set(CONAN_PKG_LIBS_GLM )
+set(CONAN_SYSTEM_LIBS_GLM )
+set(CONAN_FRAMEWORKS_GLM )
+set(CONAN_FRAMEWORKS_FOUND_GLM "")  # Will be filled later
+set(CONAN_DEFINES_GLM )
+set(CONAN_BUILD_MODULES_PATHS_GLM )
+# COMPILE_DEFINITIONS are equal to CONAN_DEFINES without -D, for targets
+set(CONAN_COMPILE_DEFINITIONS_GLM )
+
+set(CONAN_C_FLAGS_GLM "")
+set(CONAN_CXX_FLAGS_GLM "")
+set(CONAN_SHARED_LINKER_FLAGS_GLM "")
+set(CONAN_EXE_LINKER_FLAGS_GLM "")
+
+# For modern cmake targets we use the list variables (separated with ;)
+set(CONAN_C_FLAGS_GLM_LIST "")
+set(CONAN_CXX_FLAGS_GLM_LIST "")
+set(CONAN_SHARED_LINKER_FLAGS_GLM_LIST "")
+set(CONAN_EXE_LINKER_FLAGS_GLM_LIST "")
+
+# Apple Frameworks
+conan_find_apple_frameworks(CONAN_FRAMEWORKS_FOUND_GLM "${CONAN_FRAMEWORKS_GLM}" "_GLM" "")
+# Append to aggregated values variable
+set(CONAN_LIBS_GLM ${CONAN_PKG_LIBS_GLM} ${CONAN_SYSTEM_LIBS_GLM} ${CONAN_FRAMEWORKS_FOUND_GLM})
+
+
+#################
 ###  VULKAN-MEMORY-ALLOCATOR
 #################
 set(CONAN_VULKAN-MEMORY-ALLOCATOR_ROOT "/home/henry/.conan/data/vulkan-memory-allocator/2.3.0/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9")
@@ -636,7 +674,7 @@ set(CONAN_SETTINGS_COMPILER_VERSION "11")
 set(CONAN_SETTINGS_OS "Linux")
 set(CONAN_SETTINGS_OS_BUILD "Linux")
 
-set(CONAN_DEPENDENCIES glfw spdlog imgui vulkan-memory-allocator vulkan-loader opengl xorg fmt vulkan-headers wayland libffi libxml2 expat zlib libiconv)
+set(CONAN_DEPENDENCIES glfw spdlog imgui glm vulkan-memory-allocator vulkan-loader opengl xorg fmt vulkan-headers wayland libffi libxml2 expat zlib libiconv)
 # Storing original command line args (CMake helper) flags
 set(CONAN_CMD_CXX_FLAGS ${CONAN_CXX_FLAGS})
 
@@ -647,6 +685,7 @@ set(CONAN_CMD_C_FLAGS ${CONAN_C_FLAGS})
 set(CONAN_INCLUDE_DIRS "/home/henry/.conan/data/glfw/3.3.4/_/_/package/3e7c626a326fdadc4c93f195efa1603f300bf722/include"
 			"/home/henry/.conan/data/spdlog/1.8.5/_/_/package/9451767843c5bfb2f2cab883e38fce1040a9cf5a/include"
 			"/home/henry/.conan/data/imgui/1.83/_/_/package/6557f18ca99c0b6a233f43db00e30efaa525e27e/include"
+			"/home/henry/.conan/data/glm/0.9.9.8/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include"
 			"/home/henry/.conan/data/vulkan-memory-allocator/2.3.0/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/include"
 			"/usr/include/freetype2"
 			"/usr/include/libpng16"
@@ -702,6 +741,7 @@ set(CONAN_CMAKE_MODULE_PATH "/home/henry/.conan/data/glfw/3.3.4/_/_/package/3e7c
 			"/home/henry/.conan/data/glfw/3.3.4/_/_/package/3e7c626a326fdadc4c93f195efa1603f300bf722/lib/cmake"
 			"/home/henry/.conan/data/spdlog/1.8.5/_/_/package/9451767843c5bfb2f2cab883e38fce1040a9cf5a/"
 			"/home/henry/.conan/data/imgui/1.83/_/_/package/6557f18ca99c0b6a233f43db00e30efaa525e27e/"
+			"/home/henry/.conan/data/glm/0.9.9.8/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/"
 			"/home/henry/.conan/data/vulkan-memory-allocator/2.3.0/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/"
 			"/home/henry/.conan/data/vulkan-loader/1.2.172/_/_/package/4e7002e5f4df25945a2013e2f82418a3ba8ba05c/"
 			"/home/henry/.conan/data/opengl/system/_/_/package/5ab84d6acfe1f23c4fae0ab88f26e3a396351ac9/"
@@ -946,6 +986,76 @@ macro(conan_define_targets)
                                                                   $<$<CONFIG:RelWithDebInfo>:${CONAN_C_FLAGS_IMGUI_RELWITHDEBINFO_LIST} ${CONAN_CXX_FLAGS_IMGUI_RELWITHDEBINFO_LIST}>
                                                                   $<$<CONFIG:MinSizeRel>:${CONAN_C_FLAGS_IMGUI_MINSIZEREL_LIST} ${CONAN_CXX_FLAGS_IMGUI_MINSIZEREL_LIST}>
                                                                   $<$<CONFIG:Debug>:${CONAN_C_FLAGS_IMGUI_DEBUG_LIST}  ${CONAN_CXX_FLAGS_IMGUI_DEBUG_LIST}>)
+
+
+    set(_CONAN_PKG_LIBS_GLM_DEPENDENCIES "${CONAN_SYSTEM_LIBS_GLM} ${CONAN_FRAMEWORKS_FOUND_GLM} ")
+    string(REPLACE " " ";" _CONAN_PKG_LIBS_GLM_DEPENDENCIES "${_CONAN_PKG_LIBS_GLM_DEPENDENCIES}")
+    conan_package_library_targets("${CONAN_PKG_LIBS_GLM}" "${CONAN_LIB_DIRS_GLM}"
+                                  CONAN_PACKAGE_TARGETS_GLM "${_CONAN_PKG_LIBS_GLM_DEPENDENCIES}"
+                                  "" glm)
+    set(_CONAN_PKG_LIBS_GLM_DEPENDENCIES_DEBUG "${CONAN_SYSTEM_LIBS_GLM_DEBUG} ${CONAN_FRAMEWORKS_FOUND_GLM_DEBUG} ")
+    string(REPLACE " " ";" _CONAN_PKG_LIBS_GLM_DEPENDENCIES_DEBUG "${_CONAN_PKG_LIBS_GLM_DEPENDENCIES_DEBUG}")
+    conan_package_library_targets("${CONAN_PKG_LIBS_GLM_DEBUG}" "${CONAN_LIB_DIRS_GLM_DEBUG}"
+                                  CONAN_PACKAGE_TARGETS_GLM_DEBUG "${_CONAN_PKG_LIBS_GLM_DEPENDENCIES_DEBUG}"
+                                  "debug" glm)
+    set(_CONAN_PKG_LIBS_GLM_DEPENDENCIES_RELEASE "${CONAN_SYSTEM_LIBS_GLM_RELEASE} ${CONAN_FRAMEWORKS_FOUND_GLM_RELEASE} ")
+    string(REPLACE " " ";" _CONAN_PKG_LIBS_GLM_DEPENDENCIES_RELEASE "${_CONAN_PKG_LIBS_GLM_DEPENDENCIES_RELEASE}")
+    conan_package_library_targets("${CONAN_PKG_LIBS_GLM_RELEASE}" "${CONAN_LIB_DIRS_GLM_RELEASE}"
+                                  CONAN_PACKAGE_TARGETS_GLM_RELEASE "${_CONAN_PKG_LIBS_GLM_DEPENDENCIES_RELEASE}"
+                                  "release" glm)
+    set(_CONAN_PKG_LIBS_GLM_DEPENDENCIES_RELWITHDEBINFO "${CONAN_SYSTEM_LIBS_GLM_RELWITHDEBINFO} ${CONAN_FRAMEWORKS_FOUND_GLM_RELWITHDEBINFO} ")
+    string(REPLACE " " ";" _CONAN_PKG_LIBS_GLM_DEPENDENCIES_RELWITHDEBINFO "${_CONAN_PKG_LIBS_GLM_DEPENDENCIES_RELWITHDEBINFO}")
+    conan_package_library_targets("${CONAN_PKG_LIBS_GLM_RELWITHDEBINFO}" "${CONAN_LIB_DIRS_GLM_RELWITHDEBINFO}"
+                                  CONAN_PACKAGE_TARGETS_GLM_RELWITHDEBINFO "${_CONAN_PKG_LIBS_GLM_DEPENDENCIES_RELWITHDEBINFO}"
+                                  "relwithdebinfo" glm)
+    set(_CONAN_PKG_LIBS_GLM_DEPENDENCIES_MINSIZEREL "${CONAN_SYSTEM_LIBS_GLM_MINSIZEREL} ${CONAN_FRAMEWORKS_FOUND_GLM_MINSIZEREL} ")
+    string(REPLACE " " ";" _CONAN_PKG_LIBS_GLM_DEPENDENCIES_MINSIZEREL "${_CONAN_PKG_LIBS_GLM_DEPENDENCIES_MINSIZEREL}")
+    conan_package_library_targets("${CONAN_PKG_LIBS_GLM_MINSIZEREL}" "${CONAN_LIB_DIRS_GLM_MINSIZEREL}"
+                                  CONAN_PACKAGE_TARGETS_GLM_MINSIZEREL "${_CONAN_PKG_LIBS_GLM_DEPENDENCIES_MINSIZEREL}"
+                                  "minsizerel" glm)
+
+    add_library(CONAN_PKG::glm INTERFACE IMPORTED)
+
+    # Property INTERFACE_LINK_FLAGS do not work, necessary to add to INTERFACE_LINK_LIBRARIES
+    set_property(TARGET CONAN_PKG::glm PROPERTY INTERFACE_LINK_LIBRARIES ${CONAN_PACKAGE_TARGETS_GLM} ${_CONAN_PKG_LIBS_GLM_DEPENDENCIES}
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,SHARED_LIBRARY>:${CONAN_SHARED_LINKER_FLAGS_GLM_LIST}>
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,MODULE_LIBRARY>:${CONAN_SHARED_LINKER_FLAGS_GLM_LIST}>
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>:${CONAN_EXE_LINKER_FLAGS_GLM_LIST}>
+
+                                                                 $<$<CONFIG:Release>:${CONAN_PACKAGE_TARGETS_GLM_RELEASE} ${_CONAN_PKG_LIBS_GLM_DEPENDENCIES_RELEASE}
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,SHARED_LIBRARY>:${CONAN_SHARED_LINKER_FLAGS_GLM_RELEASE_LIST}>
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,MODULE_LIBRARY>:${CONAN_SHARED_LINKER_FLAGS_GLM_RELEASE_LIST}>
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>:${CONAN_EXE_LINKER_FLAGS_GLM_RELEASE_LIST}>>
+
+                                                                 $<$<CONFIG:RelWithDebInfo>:${CONAN_PACKAGE_TARGETS_GLM_RELWITHDEBINFO} ${_CONAN_PKG_LIBS_GLM_DEPENDENCIES_RELWITHDEBINFO}
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,SHARED_LIBRARY>:${CONAN_SHARED_LINKER_FLAGS_GLM_RELWITHDEBINFO_LIST}>
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,MODULE_LIBRARY>:${CONAN_SHARED_LINKER_FLAGS_GLM_RELWITHDEBINFO_LIST}>
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>:${CONAN_EXE_LINKER_FLAGS_GLM_RELWITHDEBINFO_LIST}>>
+
+                                                                 $<$<CONFIG:MinSizeRel>:${CONAN_PACKAGE_TARGETS_GLM_MINSIZEREL} ${_CONAN_PKG_LIBS_GLM_DEPENDENCIES_MINSIZEREL}
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,SHARED_LIBRARY>:${CONAN_SHARED_LINKER_FLAGS_GLM_MINSIZEREL_LIST}>
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,MODULE_LIBRARY>:${CONAN_SHARED_LINKER_FLAGS_GLM_MINSIZEREL_LIST}>
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>:${CONAN_EXE_LINKER_FLAGS_GLM_MINSIZEREL_LIST}>>
+
+                                                                 $<$<CONFIG:Debug>:${CONAN_PACKAGE_TARGETS_GLM_DEBUG} ${_CONAN_PKG_LIBS_GLM_DEPENDENCIES_DEBUG}
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,SHARED_LIBRARY>:${CONAN_SHARED_LINKER_FLAGS_GLM_DEBUG_LIST}>
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,MODULE_LIBRARY>:${CONAN_SHARED_LINKER_FLAGS_GLM_DEBUG_LIST}>
+                                                                 $<$<STREQUAL:$<TARGET_PROPERTY:TYPE>,EXECUTABLE>:${CONAN_EXE_LINKER_FLAGS_GLM_DEBUG_LIST}>>)
+    set_property(TARGET CONAN_PKG::glm PROPERTY INTERFACE_INCLUDE_DIRECTORIES ${CONAN_INCLUDE_DIRS_GLM}
+                                                                      $<$<CONFIG:Release>:${CONAN_INCLUDE_DIRS_GLM_RELEASE}>
+                                                                      $<$<CONFIG:RelWithDebInfo>:${CONAN_INCLUDE_DIRS_GLM_RELWITHDEBINFO}>
+                                                                      $<$<CONFIG:MinSizeRel>:${CONAN_INCLUDE_DIRS_GLM_MINSIZEREL}>
+                                                                      $<$<CONFIG:Debug>:${CONAN_INCLUDE_DIRS_GLM_DEBUG}>)
+    set_property(TARGET CONAN_PKG::glm PROPERTY INTERFACE_COMPILE_DEFINITIONS ${CONAN_COMPILE_DEFINITIONS_GLM}
+                                                                      $<$<CONFIG:Release>:${CONAN_COMPILE_DEFINITIONS_GLM_RELEASE}>
+                                                                      $<$<CONFIG:RelWithDebInfo>:${CONAN_COMPILE_DEFINITIONS_GLM_RELWITHDEBINFO}>
+                                                                      $<$<CONFIG:MinSizeRel>:${CONAN_COMPILE_DEFINITIONS_GLM_MINSIZEREL}>
+                                                                      $<$<CONFIG:Debug>:${CONAN_COMPILE_DEFINITIONS_GLM_DEBUG}>)
+    set_property(TARGET CONAN_PKG::glm PROPERTY INTERFACE_COMPILE_OPTIONS ${CONAN_C_FLAGS_GLM_LIST} ${CONAN_CXX_FLAGS_GLM_LIST}
+                                                                  $<$<CONFIG:Release>:${CONAN_C_FLAGS_GLM_RELEASE_LIST} ${CONAN_CXX_FLAGS_GLM_RELEASE_LIST}>
+                                                                  $<$<CONFIG:RelWithDebInfo>:${CONAN_C_FLAGS_GLM_RELWITHDEBINFO_LIST} ${CONAN_CXX_FLAGS_GLM_RELWITHDEBINFO_LIST}>
+                                                                  $<$<CONFIG:MinSizeRel>:${CONAN_C_FLAGS_GLM_MINSIZEREL_LIST} ${CONAN_CXX_FLAGS_GLM_MINSIZEREL_LIST}>
+                                                                  $<$<CONFIG:Debug>:${CONAN_C_FLAGS_GLM_DEBUG_LIST}  ${CONAN_CXX_FLAGS_GLM_DEBUG_LIST}>)
 
 
     set(_CONAN_PKG_LIBS_VULKAN-MEMORY-ALLOCATOR_DEPENDENCIES "${CONAN_SYSTEM_LIBS_VULKAN-MEMORY-ALLOCATOR} ${CONAN_FRAMEWORKS_FOUND_VULKAN-MEMORY-ALLOCATOR} CONAN_PKG::vulkan-headers")
@@ -1787,7 +1897,7 @@ macro(conan_define_targets)
                                                                   $<$<CONFIG:MinSizeRel>:${CONAN_C_FLAGS_LIBICONV_MINSIZEREL_LIST} ${CONAN_CXX_FLAGS_LIBICONV_MINSIZEREL_LIST}>
                                                                   $<$<CONFIG:Debug>:${CONAN_C_FLAGS_LIBICONV_DEBUG_LIST}  ${CONAN_CXX_FLAGS_LIBICONV_DEBUG_LIST}>)
 
-    set(CONAN_TARGETS CONAN_PKG::glfw CONAN_PKG::spdlog CONAN_PKG::imgui CONAN_PKG::vulkan-memory-allocator CONAN_PKG::vulkan-loader CONAN_PKG::opengl CONAN_PKG::xorg CONAN_PKG::fmt CONAN_PKG::vulkan-headers CONAN_PKG::wayland CONAN_PKG::libffi CONAN_PKG::libxml2 CONAN_PKG::expat CONAN_PKG::zlib CONAN_PKG::libiconv)
+    set(CONAN_TARGETS CONAN_PKG::glfw CONAN_PKG::spdlog CONAN_PKG::imgui CONAN_PKG::glm CONAN_PKG::vulkan-memory-allocator CONAN_PKG::vulkan-loader CONAN_PKG::opengl CONAN_PKG::xorg CONAN_PKG::fmt CONAN_PKG::vulkan-headers CONAN_PKG::wayland CONAN_PKG::libffi CONAN_PKG::libxml2 CONAN_PKG::expat CONAN_PKG::zlib CONAN_PKG::libiconv)
 
 endmacro()
 

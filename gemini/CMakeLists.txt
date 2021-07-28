@@ -19,13 +19,18 @@ set(HEADER_FILES
     ./graphics/render_pass.h
     ./graphics/surface.h
     ./graphics/swapchain.h
+    ./graphics/meshes/vertex.h
+    ./graphics/meshes/mesh.h
     ./graphics/buffers/framebuffers.h
+    ./graphics/buffers/buffer.h
+    ./graphics/buffers/vertex_buffer.h
     ./graphics/pools/command_pool.h
 )
 
 set(SOURCE_FILES 
     ./core/window.cpp
     ./core/application.cpp
+    ./core/vma.cpp
     ./layers/layer.cpp
     ./layers/graphics_layer.cpp
     ./layers/layer_stack.cpp
@@ -36,7 +41,10 @@ set(SOURCE_FILES
     ./graphics/render_pass.cpp
     ./graphics/surface.cpp
     ./graphics/swapchain.cpp
+    ./graphics/meshes/vertex.h
     ./graphics/buffers/framebuffers.cpp
+    ./graphics/buffers/buffer.cpp
+    ./graphics/buffers/vertex_buffer.cpp
     ./graphics/pools/command_pool.cpp
 )
 

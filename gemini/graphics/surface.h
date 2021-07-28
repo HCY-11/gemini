@@ -1,7 +1,7 @@
 #pragma once
 
-#include "instance.h"
 #include "core/window.h"
+#include "graphics/instance.h"
 
 namespace gm
 {
@@ -11,7 +11,7 @@ namespace gm
         Surface(Window* window, Instance* instance);
         ~Surface();
 
-        inline VkSurfaceKHR get() const { return m_surface; }
+        inline const VkSurfaceKHR& get() const { return m_surface; }
 
     private:
         Instance*           m_instance          = nullptr;

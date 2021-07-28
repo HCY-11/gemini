@@ -24,6 +24,8 @@ namespace gm
         void pushLayer(Layer* layer);
 
         void pushOverlay(Layer* overlay);
+
+        void addMesh(Mesh* mesh);
     
     private:
         void updateLayers();

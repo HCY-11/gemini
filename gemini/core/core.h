@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <vk_mem_alloc.h>
 #include <imgui.h>
+#include <glm/glm.hpp>
 #include <spdlog/spdlog.h>
 #include <spdlog/sinks/stdout_color_sinks.h>
 #include <spdlog/fmt/ostr.h>
