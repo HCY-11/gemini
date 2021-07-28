@@ -2,6 +2,8 @@
 
 #include "core/core.h"
 
+#include "graphics/pools/command_pool.h"
+
 namespace gm
 {
     class Buffer
@@ -13,6 +15,8 @@ namespace gm
         virtual ~Buffer();
 
         virtual void loadData(const void* srcData);
+
+        void copyToBuffer(Device* device, CommandPool* cmdPool, VkBuffer src, VkBuffer dst, VkDeviceSize size);
 
         const VkBuffer& get() const { return m_data; }
 

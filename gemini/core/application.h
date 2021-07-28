@@ -7,6 +7,8 @@
 
 #include "layers/layer_stack.h"
 
+#include "graphics/meshes/mesh.h"
+
 namespace gm
 {
     class GM_API Application

@@ -19,20 +19,20 @@ namespace gm
         vkDestroyCommandPool(m_device->get(), m_pool, nullptr);
     }
 
-    void CommandPool::allocateCommandBuffers(VkCommandBufferLevel level, std::vector<VkCommandBuffer>& dst)
+    void CommandPool::allocateCommandBuffers(VkCommandBufferLevel level, uint32_t count, VkCommandBuffer* dst)
     {
         VkCommandBufferAllocateInfo allocInfo           = {};
         allocInfo.sType                                 = VK_STRUCTURE_TYPE_COMMAND_BUFFER_ALLOCATE_INFO;
         allocInfo.commandPool                           = m_pool;
-        allocInfo.commandBufferCount                    = dst.size();
+        allocInfo.commandBufferCount                    = count;
         allocInfo.level                                 = VK_COMMAND_BUFFER_LEVEL_PRIMARY;
 
-        GM_CORE_ASSERT(vkAllocateCommandBuffers(m_device->get(), &allocInfo, dst.data()) == VK_SUCCESS,
+        GM_CORE_ASSERT(vkAllocateCommandBuffers(m_device->get(), &allocInfo, dst) == VK_SUCCESS,
                         "Failed to allocate command buffers!");
     }
 
-    void CommandPool::freeCommandBuffers(const std::vector<VkCommandBuffer>& buffers)
+    void CommandPool::freeCommandBuffers(uint32_t count, const VkCommandBuffer* buffers)
     {
-        vkFreeCommandBuffers(m_device->get(), m_pool, buffers.size(), buffers.data());
+        vkFreeCommandBuffers(m_device->get(), m_pool, count, buffers);
     }
 }

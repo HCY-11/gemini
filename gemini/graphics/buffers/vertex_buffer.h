@@ -9,7 +9,7 @@ namespace gm
     {
     public:
         VertexBuffer() = default;
-        VertexBuffer(VmaAllocator allocator, const std::vector<Vertex>& vertices);
+        VertexBuffer(Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::vector<Vertex>& vertices);
 
         inline uint32_t getNumVertices() const { return m_numVertices; }
 

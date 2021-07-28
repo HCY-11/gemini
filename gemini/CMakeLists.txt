@@ -24,6 +24,7 @@ set(HEADER_FILES
     ./graphics/buffers/framebuffers.h
     ./graphics/buffers/buffer.h
     ./graphics/buffers/vertex_buffer.h
+    ./graphics/buffers/index_buffer.h
     ./graphics/pools/command_pool.h
 )
 
@@ -45,6 +46,7 @@ set(SOURCE_FILES
     ./graphics/buffers/framebuffers.cpp
     ./graphics/buffers/buffer.cpp
     ./graphics/buffers/vertex_buffer.cpp
+    ./graphics/buffers/index_buffer.cpp
     ./graphics/pools/command_pool.cpp
 )
 

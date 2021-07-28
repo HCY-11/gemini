@@ -1,5 +1,9 @@
 #include "window.h"
 
+#include "events/app_events.h"
+#include "events/keyboard_events.h"
+#include "events/mouse_events.h"
+
 namespace gm
 {
     Window::Window(const char* title, uint32_t width, uint32_t height)

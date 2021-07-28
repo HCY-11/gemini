@@ -23,7 +23,7 @@ namespace gm
         PipelineBuilder::buildPipeline(&m_pipelineInfo, m_device.get(), m_renderPass.get(), &m_rasterizerPipeline);
 
         m_commandBuffers.resize(m_swapchain->getImageViews().size());
-        m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers);
+        m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers.size(), m_commandBuffers.data());
 
         createAllocator();
 
@@ -41,7 +41,7 @@ namespace gm
 
         vmaDestroyAllocator(m_allocator);
 
-        m_commandPool->freeCommandBuffers(m_commandBuffers);
+        m_commandPool->freeCommandBuffers(m_commandBuffers.size(), m_commandBuffers.data());
 
         PipelineBuilder::destroyPipeline(m_device.get(), &m_rasterizerPipeline);
 
@@ -104,7 +104,9 @@ namespace gm
             VkDeviceSize offset = 0;
             vkCmdBindVertexBuffers(m_commandBuffers[imageIndex], 0, 1, &mesh->vbo.get(), &offset);
 
-            vkCmdDraw(m_commandBuffers[imageIndex], mesh->vbo.getNumVertices(), 1, 0, 0);
+            vkCmdBindIndexBuffer(m_commandBuffers[imageIndex], mesh->ibo.get(), 0, VK_INDEX_TYPE_UINT16);
+
+            vkCmdDrawIndexed(m_commandBuffers[imageIndex], mesh->ibo.getNumIndices(), 1, mesh->ibo.getFirstIndex(), 0, 0);
         }
 
         vkCmdEndRenderPass(m_commandBuffers[imageIndex]);
@@ -159,7 +161,7 @@ namespace gm
     {
         if (e.getType() == EventType::kAddMesh)
         {
-            m_meshes.push_back(new Mesh(m_allocator, static_cast<MeshAddEvent&>(e).getMeshData()));
+            m_meshes.push_back(new Mesh(m_device.get(), m_commandPool.get(), m_allocator, static_cast<MeshAddEvent&>(e).getMeshData()));
         }
     }
 
@@ -208,7 +210,7 @@ namespace gm
         // Destroy
         m_framebuffers.reset();
 
-        m_commandPool->freeCommandBuffers(m_commandBuffers);
+        m_commandPool->freeCommandBuffers(m_commandBuffers.size(), m_commandBuffers.data());
 
         PipelineBuilder::destroyPipeline(m_device.get(), &m_rasterizerPipeline);
 
@@ -228,7 +230,7 @@ namespace gm
 
         m_framebuffers = makeScope<Framebuffers>(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_swapchain->getImageViews().size());
 
-        m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers);
+        m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers.size(), m_commandBuffers.data());
 
         m_imagesInFlightFences.resize(m_swapchain->getImageViews().size(), VK_NULL_HANDLE);
     }
