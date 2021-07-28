@@ -76,16 +76,16 @@ namespace gm
     class GM_API MeshAddEvent : public Event
     {
     public:
-        MeshAddEvent(Mesh* newMesh) : m_newMesh(newMesh)
+        MeshAddEvent(const RawMeshData& rawData) : m_meshData(rawData)
         {}
 
-        inline Mesh* getNewMesh() const { return m_newMesh; }
+        inline RawMeshData getMeshData() const { return m_meshData; }
 
         EVENT_CLASS_CATEGORY(kEventCategoryApp)
         EVENT_CLASS_TYPE(kAddMesh)
     
     private:
-        Mesh* m_newMesh = nullptr;
+        RawMeshData m_meshData = {};
     };
 
     // Optional App Events

@@ -6,24 +6,20 @@
 
 namespace gm
 {
-    struct Mesh
+    struct RawMeshData
     {
         std::vector<Vertex> vertices;
+    };
 
-        Scope<VertexBuffer> vbo;
+    struct Mesh
+    {
+        VertexBuffer vbo;
 
         Mesh() = default;
 
-        Mesh(const std::vector<Vertex>& inVertices)
-        {
-            vertices = inVertices;
-        }
+        Mesh(VmaAllocator allocator, const RawMeshData& rawData) : vbo(allocator, rawData.vertices)
+        {}
 
         ~Mesh() = default;
-
-        void initVBO(VmaAllocator allocator)
-        {
-            vbo = makeScope<VertexBuffer>(allocator, vertices);
-        }
     };
 }

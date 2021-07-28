@@ -10,5 +10,10 @@ namespace gm
     public:
         VertexBuffer() = default;
         VertexBuffer(VmaAllocator allocator, const std::vector<Vertex>& vertices);
+
+        inline uint32_t getNumVertices() const { return m_numVertices; }
+
+    private:
+        uint32_t m_numVertices = 0;
     };
 }

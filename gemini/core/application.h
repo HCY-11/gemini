@@ -25,7 +25,7 @@ namespace gm
 
         void pushOverlay(Layer* overlay);
 
-        void addMesh(Mesh* mesh);
+        void addMesh(const RawMeshData& rawData);
     
     private:
         void updateLayers();

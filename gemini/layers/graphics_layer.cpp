@@ -102,9 +102,9 @@ namespace gm
         for (const auto& mesh : m_meshes)
         {
             VkDeviceSize offset = 0;
-            vkCmdBindVertexBuffers(m_commandBuffers[imageIndex], 0, 1, &mesh->vbo->get(), &offset);
+            vkCmdBindVertexBuffers(m_commandBuffers[imageIndex], 0, 1, &mesh->vbo.get(), &offset);
 
-            vkCmdDraw(m_commandBuffers[imageIndex], mesh->vertices.size(), 1, 0, 0);
+            vkCmdDraw(m_commandBuffers[imageIndex], mesh->vbo.getNumVertices(), 1, 0, 0);
         }
 
         vkCmdEndRenderPass(m_commandBuffers[imageIndex]);
@@ -159,9 +159,7 @@ namespace gm
     {
         if (e.getType() == EventType::kAddMesh)
         {
-            Mesh* newMesh = static_cast<MeshAddEvent&>(e).getNewMesh();
-            newMesh->initVBO(m_allocator);
-            m_meshes.push_back(newMesh);
+            m_meshes.push_back(new Mesh(m_allocator, static_cast<MeshAddEvent&>(e).getMeshData()));
         }
     }
 

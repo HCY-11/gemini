@@ -63,9 +63,9 @@ namespace gm
         m_layerStack.pushOverlay(overlay);
     }
 
-    void Application::addMesh(Mesh* mesh)
+    void Application::addMesh(const RawMeshData& rawData)
     {
-        MeshAddEvent e(mesh);
+        MeshAddEvent e(rawData);
 
         onEvent(e);
     }
