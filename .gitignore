@@ -1,5 +1,16 @@
-.vscode
-.cache/
-.vimspector.json
+# Ignore everything
+*
+
+# Whitelist
+!*/
+
+!*.h
+!*.cpp
+
+!*.gitignore
+!README.md
+!conanfile.txt
+!CMakeLists.txt
+
+# Blacklist
 build/
-compile_commands.json
