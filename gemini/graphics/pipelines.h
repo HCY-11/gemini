@@ -3,7 +3,7 @@
 #include "graphics/device.h"
 #include "graphics/swapchain.h"
 #include "graphics/render_pass.h"
-#include "graphics/meshes/vertex.h"
+#include "graphics/entities/vertex.h"
 
 namespace gm
 {

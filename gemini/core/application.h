@@ -7,7 +7,7 @@
 
 #include "layers/layer_stack.h"
 
-#include "graphics/meshes/mesh.h"
+#include "graphics/entities/mesh.h"
 
 namespace gm
 {
@@ -27,7 +27,7 @@ namespace gm
 
         void pushOverlay(Layer* overlay);
 
-        void addMesh(const RawMeshData& rawData);
+        void addMesh(const Mesh& mesh);
     
     private:
         void updateLayers();

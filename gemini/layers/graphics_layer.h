@@ -1,9 +1,11 @@
 #pragma once
 
 #include "layers/layer.h"
+
 #include "graphics/pipelines.h"
 #include "graphics/buffers/framebuffers.h"
 #include "graphics/pools/command_pool.h"
+#include "graphics/entities/entity.h"
 
 namespace gm
 {
@@ -48,7 +50,7 @@ namespace gm
         std::vector<VkFence>                m_inFlightFences                    = {};
         std::vector<VkFence>                m_imagesInFlightFences              = {};
 
-        std::vector<Mesh*>                  m_meshes                            = {};
+        std::vector<Entity*>                m_entities                          = {};
 
         uint32_t                            m_framesInFlight                    = 0;
         uint32_t                            m_currentFrame                      = 0;

@@ -1,7 +1,7 @@
 #pragma once
 
 #include "graphics/buffers/buffer.h"
-#include "graphics/meshes/vertex.h"
+#include "graphics/entities/vertex.h"
 
 namespace gm
 {

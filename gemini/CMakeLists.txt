@@ -19,8 +19,9 @@ set(HEADER_FILES
     ./graphics/render_pass.h
     ./graphics/surface.h
     ./graphics/swapchain.h
-    ./graphics/meshes/vertex.h
-    ./graphics/meshes/mesh.h
+    ./graphics/entities/vertex.h
+    ./graphics/entities/mesh.h
+    ./graphics/entities/entity.h
     ./graphics/buffers/framebuffers.h
     ./graphics/buffers/buffer.h
     ./graphics/buffers/vertex_buffer.h
@@ -42,7 +43,6 @@ set(SOURCE_FILES
     ./graphics/render_pass.cpp
     ./graphics/surface.cpp
     ./graphics/swapchain.cpp
-    ./graphics/meshes/vertex.h
     ./graphics/buffers/framebuffers.cpp
     ./graphics/buffers/buffer.cpp
     ./graphics/buffers/vertex_buffer.cpp

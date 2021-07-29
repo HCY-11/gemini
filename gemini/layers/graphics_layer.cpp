@@ -34,9 +34,9 @@ namespace gm
     {
         vkDeviceWaitIdle(m_device->get());
 
-        for (const auto& mesh : m_meshes)
+        for (const auto& entity : m_entities)
         {
-            delete mesh;
+            delete entity;
         }
 
         vmaDestroyAllocator(m_allocator);
@@ -99,14 +99,14 @@ namespace gm
 
         vkCmdBindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, m_rasterizerPipeline.value);
 
-        for (const auto& mesh : m_meshes)
+        for (const auto& entity : m_entities)
         {
             VkDeviceSize offset = 0;
-            vkCmdBindVertexBuffers(m_commandBuffers[imageIndex], 0, 1, &mesh->vbo.get(), &offset);
+            vkCmdBindVertexBuffers(m_commandBuffers[imageIndex], 0, 1, &entity->vbo.get(), &offset);
 
-            vkCmdBindIndexBuffer(m_commandBuffers[imageIndex], mesh->ibo.get(), 0, VK_INDEX_TYPE_UINT16);
+            vkCmdBindIndexBuffer(m_commandBuffers[imageIndex], entity->ibo.get(), 0, VK_INDEX_TYPE_UINT16);
 
-            vkCmdDrawIndexed(m_commandBuffers[imageIndex], mesh->ibo.getNumIndices(), 1, mesh->ibo.getFirstIndex(), 0, 0);
+            vkCmdDrawIndexed(m_commandBuffers[imageIndex], entity->ibo.getNumIndices(), 1, entity->ibo.getFirstIndex(), 0, 0);
         }
 
         vkCmdEndRenderPass(m_commandBuffers[imageIndex]);
@@ -161,7 +161,7 @@ namespace gm
     {
         if (e.getType() == EventType::kAddMesh)
         {
-            m_meshes.push_back(new Mesh(m_device.get(), m_commandPool.get(), m_allocator, static_cast<MeshAddEvent&>(e).getMeshData()));
+            m_entities.push_back(new Entity(m_device.get(), m_commandPool.get(), m_allocator, static_cast<MeshAddEvent&>(e).getMesh()));
         }
     }
 
