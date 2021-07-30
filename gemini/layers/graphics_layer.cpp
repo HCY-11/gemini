@@ -20,6 +20,8 @@ namespace gm
 
         PipelineBuilder::populateStateInfosDefault(&m_pipelineInfo, m_swapchain.get());
 
+        PipelineBuilder::addPushConstant(&m_pipelineInfo, sizeof(glm::mat4), VK_SHADER_STAGE_VERTEX_BIT);
+
         PipelineBuilder::buildPipeline(&m_pipelineInfo, m_device.get(), m_renderPass.get(), &m_rasterizerPipeline);
 
         m_commandBuffers.resize(m_swapchain->getImageViews().size());
@@ -28,6 +30,8 @@ namespace gm
         createAllocator();
 
         createSyncObjects();
+
+        createProjectionViewMatrix();
     }
 
     GraphicsLayer::~GraphicsLayer()
@@ -102,11 +106,14 @@ namespace gm
         for (const auto& entity : m_entities)
         {
             VkDeviceSize offset = 0;
-            vkCmdBindVertexBuffers(m_commandBuffers[imageIndex], 0, 1, &entity->vbo.get(), &offset);
+            vkCmdBindVertexBuffers(m_commandBuffers[imageIndex], 0, 1, &entity->getVBO().get(), &offset);
 
-            vkCmdBindIndexBuffer(m_commandBuffers[imageIndex], entity->ibo.get(), 0, VK_INDEX_TYPE_UINT16);
+            vkCmdBindIndexBuffer(m_commandBuffers[imageIndex], entity->getIBO().get(), 0, VK_INDEX_TYPE_UINT16);
 
-            vkCmdDrawIndexed(m_commandBuffers[imageIndex], entity->ibo.getNumIndices(), 1, entity->ibo.getFirstIndex(), 0, 0);
+            glm::mat4 mvp = m_projectionViewMatrix * entity->getModelMatrix();
+            vkCmdPushConstants(m_commandBuffers[imageIndex], m_rasterizerPipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &mvp);
+
+            vkCmdDrawIndexed(m_commandBuffers[imageIndex], entity->getIBO().getNumIndices(), 1, entity->getIBO().getFirstIndex(), 0, 0);
         }
 
         vkCmdEndRenderPass(m_commandBuffers[imageIndex]);
@@ -159,9 +166,11 @@ namespace gm
 
     void GraphicsLayer::onEvent(Event& e)
     {
-        if (e.getType() == EventType::kAddMesh)
+        if (e.getType() == EventType::kEntityAdd)
         {
-            m_entities.push_back(new Entity(m_device.get(), m_commandPool.get(), m_allocator, static_cast<MeshAddEvent&>(e).getMesh()));
+            Entity* newEntity = static_cast<EntityAddEvent&>(e).getData();
+            newEntity->loadMesh(m_device.get(), m_commandPool.get(), m_allocator);
+            m_entities.push_back(newEntity);
         }
     }
 
@@ -233,5 +242,25 @@ namespace gm
         m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers.size(), m_commandBuffers.data());
 
         m_imagesInFlightFences.resize(m_swapchain->getImageViews().size(), VK_NULL_HANDLE);
+
+        createProjectionViewMatrix();
+    }
+
+    void GraphicsLayer::createProjectionViewMatrix()
+    {
+        int width, height;
+        glfwGetWindowSize(m_window->get(), &width, &height);
+
+        m_projectionViewMatrix = glm::perspective(m_camera.fovAngle, 
+                                                  static_cast<float>(width) / static_cast<float>(height),
+                                                  0.1f, // Near plane
+                                                  100.0f // Far Plane
+                                                );
+        
+        m_projectionViewMatrix = glm::translate(m_projectionViewMatrix, -m_camera.position);
+
+        m_projectionViewMatrix = glm::rotate(m_projectionViewMatrix, -m_camera.rotation.x, glm::vec3(1, 0, 0));
+        m_projectionViewMatrix = glm::rotate(m_projectionViewMatrix, -m_camera.rotation.y, glm::vec3(0, 1, 0));
+        m_projectionViewMatrix = glm::rotate(m_projectionViewMatrix, -m_camera.rotation.z, glm::vec3(0, 0, 1));
     }
 }

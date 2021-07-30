@@ -25,6 +25,9 @@ namespace gm
         VkPipelineColorBlendStateCreateInfo                 colorBlendInfo;
         VkPipelineDynamicStateCreateInfo                    dynamicStateInfo;
 
+        std::vector<VkPushConstantRange>                    pushConstants;
+        uint32_t                                            pushConstantOffset          = 0;
+
         VkViewport                                          viewport;
         VkRect2D                                            scissor;
     };
@@ -75,6 +78,8 @@ namespace gm
 
         // Acts as replacement for populate* functions with the exception of shader stages; uses default parameters
         static void populateStateInfosDefault(PipelineInfo* info, Swapchain* swapchain);
+
+        static void addPushConstant(PipelineInfo* info, uint32_t size, VkShaderStageFlags shaderStage);
 
         // Can only be called once all other create* functions are called.
         static void buildPipeline(PipelineInfo* info, Device* device, RenderPass* renderPass, Pipeline* dst);

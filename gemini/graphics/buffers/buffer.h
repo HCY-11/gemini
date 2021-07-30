@@ -19,6 +19,9 @@ namespace gm
         void copyToBuffer(Device* device, CommandPool* cmdPool, VkBuffer src, VkBuffer dst, VkDeviceSize size);
 
         const VkBuffer& get() const { return m_data; }
+    
+    protected:
+        void init(VmaAllocator allocator, VkDeviceSize size, VkBufferUsageFlags usage, VmaMemoryUsage memUsage);
 
     protected:
         VmaAllocator    m_allocator     = VK_NULL_HANDLE;

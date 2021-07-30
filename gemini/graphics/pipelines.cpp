@@ -116,6 +116,18 @@ namespace gm
         populateDepthStencilStateInfo(info);
     }
 
+    void PipelineBuilder::addPushConstant(PipelineInfo* info, uint32_t size, VkShaderStageFlags shaderStage)
+    {
+        VkPushConstantRange pushConstant            = {};
+        pushConstant.offset                         = info->pushConstantOffset;
+        pushConstant.size                           = size;
+        pushConstant.stageFlags                     = shaderStage;
+
+        info->pushConstants.push_back(pushConstant);
+
+        info->pushConstantOffset += size;
+    }
+
     void PipelineBuilder::buildPipeline(PipelineInfo* info, Device* device, RenderPass* renderPass, Pipeline* dst)
     {
         for (uint32_t i = 0; i < info->shaderFilePaths.size(); i++)
@@ -125,8 +137,8 @@ namespace gm
 
         VkPipelineLayoutCreateInfo layoutInfo       = {};
         layoutInfo.sType                            = VK_STRUCTURE_TYPE_PIPELINE_LAYOUT_CREATE_INFO;
-        layoutInfo.pushConstantRangeCount           = 0;
-        layoutInfo.pPushConstantRanges              = nullptr;
+        layoutInfo.pushConstantRangeCount           = info->pushConstants.size();
+        layoutInfo.pPushConstantRanges              = info->pushConstants.data();
         layoutInfo.setLayoutCount                   = 0;
         layoutInfo.pSetLayouts                      = nullptr;
 

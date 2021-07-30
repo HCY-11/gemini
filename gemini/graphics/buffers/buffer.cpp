@@ -2,19 +2,9 @@
 
 namespace gm
 {
-    Buffer::Buffer(VmaAllocator allocator, VkDeviceSize size, VkBufferUsageFlags usage, VmaMemoryUsage memUsage) : 
-        m_allocator(allocator), m_size(size)
+    Buffer::Buffer(VmaAllocator allocator, VkDeviceSize size, VkBufferUsageFlags usage, VmaMemoryUsage memUsage)
     {
-        VkBufferCreateInfo createInfo               = {};
-        createInfo.sType                            = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-        createInfo.size                             = m_size;
-        createInfo.usage                            = usage;
-
-        VmaAllocationCreateInfo allocInfo           = {};
-        allocInfo.usage                             = memUsage;
-
-        GM_CORE_ASSERT(vmaCreateBuffer(m_allocator, &createInfo, &allocInfo, &m_data, &m_allocation, nullptr) == VK_SUCCESS,
-                       "Failed to create buffer!");
+        init(allocator, size, usage, memUsage);
     }
 
     Buffer::Buffer(VmaAllocator allocator, VkDeviceSize size, VkBufferUsageFlags usage, VmaMemoryUsage memUsage, const void* srcData) : 
@@ -69,5 +59,22 @@ namespace gm
         vkQueueWaitIdle(device->getGraphicsQueue());
 
         cmdPool->freeCommandBuffers(1, &cmdBuf);
+    }
+
+    void Buffer::init(VmaAllocator allocator, VkDeviceSize size, VkBufferUsageFlags usage, VmaMemoryUsage memUsage)
+    {
+        m_allocator = allocator;
+        m_size = size;
+
+        VkBufferCreateInfo createInfo               = {};
+        createInfo.sType                            = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        createInfo.size                             = m_size;
+        createInfo.usage                            = usage;
+
+        VmaAllocationCreateInfo allocInfo           = {};
+        allocInfo.usage                             = memUsage;
+
+        GM_CORE_ASSERT(vmaCreateBuffer(m_allocator, &createInfo, &allocInfo, &m_data, &m_allocation, nullptr) == VK_SUCCESS,
+                       "Failed to create buffer!");
     }
 }

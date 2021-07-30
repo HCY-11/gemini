@@ -22,6 +22,8 @@ set(HEADER_FILES
     ./graphics/entities/vertex.h
     ./graphics/entities/mesh.h
     ./graphics/entities/entity.h
+    ./graphics/entities/transform.h
+    ./graphics/entities/camera.h
     ./graphics/buffers/framebuffers.h
     ./graphics/buffers/buffer.h
     ./graphics/buffers/vertex_buffer.h
@@ -48,6 +50,7 @@ set(SOURCE_FILES
     ./graphics/buffers/vertex_buffer.cpp
     ./graphics/buffers/index_buffer.cpp
     ./graphics/pools/command_pool.cpp
+    ./graphics/entities/entity.cpp
 )
 
 add_library(gemini SHARED 

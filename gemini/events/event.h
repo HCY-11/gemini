@@ -8,7 +8,7 @@ namespace gm
     {
         kNone = 0,
         kWindowResize, kWindowClose, kWindowFocus, kWindowLoseFocus, kWindowMove,
-        kAddMesh,
+        kEntityAdd,
         kAppTick, kAppUpdate, kAppRender,
         kKeyPress, kKeyRelease,
         kMouseButtonPress, kMouseButtonRelease, kMouseMove, kMouseScroll

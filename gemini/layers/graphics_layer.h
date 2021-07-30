@@ -26,6 +26,8 @@ namespace gm
 
         void recreateSwapchain();
 
+        void createProjectionViewMatrix();
+
     private:
         Window*                             m_window                            = nullptr;
 
@@ -54,5 +56,9 @@ namespace gm
 
         uint32_t                            m_framesInFlight                    = 0;
         uint32_t                            m_currentFrame                      = 0;
+
+        Camera                              m_camera                            = {};
+
+        glm::mat4                           m_projectionViewMatrix              = glm::mat4(1.0f);
     };
 }

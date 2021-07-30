@@ -24,7 +24,7 @@ namespace gm
 
             triangleMesh.indices = { 0, 1, 2, 2, 3, 0 };
 
-            addMesh(triangleMesh);
+            addEntity(new Entity(triangleMesh));
         }
     };
 

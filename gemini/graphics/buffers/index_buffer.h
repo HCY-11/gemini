@@ -10,6 +10,9 @@ namespace gm
         IndexBuffer() = default;
         IndexBuffer(Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::vector<uint16_t>& indices);
 
+        // Should only be called once
+        void loadData(Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::vector<uint16_t>& indices);
+
         inline uint32_t getNumIndices() const { return m_numIndices; }
 
         inline uint32_t getFirstIndex() const { return m_firstIndex; }
