@@ -60,10 +60,15 @@ namespace gm
         
         static void populateViewportStateInfo(PipelineInfo* info, Swapchain* swapchain);
 
+        // TODO: Eventually, this macro may be removed
         static void populateRasterizationStateInfo(
                                         PipelineInfo* info,
                                         VkPolygonMode polygonMode = VK_POLYGON_MODE_FILL, 
-                                        VkCullModeFlagBits cullMode = VK_CULL_MODE_BACK_BIT, 
+#ifdef NDEBUG
+                                        VkCullModeFlagBits cullMode = VK_CULL_MODE_BACK_BIT,
+#else
+                                        VkCullModeFlagBits cullMode = VK_CULL_MODE_NONE,
+#endif
                                         float lineWidth = 1.0f);
                                         
         static void populateMultiSampleStateInfo(PipelineInfo* info);

@@ -29,6 +29,7 @@ set(HEADER_FILES
     ./graphics/buffers/vertex_buffer.h
     ./graphics/buffers/index_buffer.h
     ./graphics/pools/command_pool.h
+    ./graphics/math/math.h
 )
 
 set(SOURCE_FILES 
@@ -51,6 +52,7 @@ set(SOURCE_FILES
     ./graphics/buffers/index_buffer.cpp
     ./graphics/pools/command_pool.cpp
     ./graphics/entities/entity.cpp
+    ./graphics/math/math.cpp
 )
 
 add_library(gemini SHARED 

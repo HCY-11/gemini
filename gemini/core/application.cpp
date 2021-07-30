@@ -24,9 +24,17 @@ namespace gm
     {
         while (m_isRunning)
         {
+            double start = glfwGetTime();
+
             m_window->pollEvents();
+            
+            onUpdate();
 
             updateLayers();
+
+            double stop = glfwGetTime();
+
+            m_deltaTime = static_cast<float>(stop - start);
         }
     }
 

@@ -1,5 +1,7 @@
 #include "graphics_layer.h"
 
+#include "graphics/math/math.h"
+
 namespace gm
 {
     GraphicsLayer::GraphicsLayer(Window* window, uint32_t framesInFlight, const std::string& name) :
@@ -15,23 +17,16 @@ namespace gm
         m_commandPool(new CommandPool(m_gpu.get(), m_device.get())),
         m_framesInFlight(framesInFlight)
     {
-        PipelineBuilder::addShaderStage(&m_pipelineInfo, VK_SHADER_STAGE_VERTEX_BIT, "/home/henry/workspace/gemini/gemini/graphics/shaders/vert.spv");
-        PipelineBuilder::addShaderStage(&m_pipelineInfo, VK_SHADER_STAGE_FRAGMENT_BIT, "/home/henry/workspace/gemini/gemini/graphics/shaders/frag.spv");
-
-        PipelineBuilder::populateStateInfosDefault(&m_pipelineInfo, m_swapchain.get());
-
-        PipelineBuilder::addPushConstant(&m_pipelineInfo, sizeof(glm::mat4), VK_SHADER_STAGE_VERTEX_BIT);
-
-        PipelineBuilder::buildPipeline(&m_pipelineInfo, m_device.get(), m_renderPass.get(), &m_rasterizerPipeline);
-
         m_commandBuffers.resize(m_swapchain->getImageViews().size());
         m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers.size(), m_commandBuffers.data());
+
+        buildPipelines();
 
         createAllocator();
 
         createSyncObjects();
 
-        createProjectionViewMatrix();
+        m_projectionViewMatrix = Math::createProjectionViewMatrix(m_window, m_camera);
     }
 
     GraphicsLayer::~GraphicsLayer()
@@ -110,8 +105,8 @@ namespace gm
 
             vkCmdBindIndexBuffer(m_commandBuffers[imageIndex], entity->getIBO().get(), 0, VK_INDEX_TYPE_UINT16);
 
-            glm::mat4 mvp = m_projectionViewMatrix * entity->getModelMatrix();
-            vkCmdPushConstants(m_commandBuffers[imageIndex], m_rasterizerPipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(glm::mat4), &mvp);
+            EntityPushConstant pushConstant = { m_projectionViewMatrix * Math::createModelMatrix(entity) };
+            vkCmdPushConstants(m_commandBuffers[imageIndex], m_rasterizerPipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(EntityPushConstant), &pushConstant);
 
             vkCmdDrawIndexed(m_commandBuffers[imageIndex], entity->getIBO().getNumIndices(), 1, entity->getIBO().getFirstIndex(), 0, 0);
         }
@@ -172,6 +167,18 @@ namespace gm
             newEntity->loadMesh(m_device.get(), m_commandPool.get(), m_allocator);
             m_entities.push_back(newEntity);
         }
+    }
+
+    void GraphicsLayer::buildPipelines()
+    {
+        PipelineBuilder::addShaderStage(&m_pipelineInfo, VK_SHADER_STAGE_VERTEX_BIT, "/home/henry/workspace/gemini/gemini/graphics/shaders/vert.spv");
+        PipelineBuilder::addShaderStage(&m_pipelineInfo, VK_SHADER_STAGE_FRAGMENT_BIT, "/home/henry/workspace/gemini/gemini/graphics/shaders/frag.spv");
+
+        PipelineBuilder::populateStateInfosDefault(&m_pipelineInfo, m_swapchain.get());
+
+        PipelineBuilder::addPushConstant(&m_pipelineInfo, sizeof(EntityPushConstant), VK_SHADER_STAGE_VERTEX_BIT);
+
+        PipelineBuilder::buildPipeline(&m_pipelineInfo, m_device.get(), m_renderPass.get(), &m_rasterizerPipeline);
     }
 
     void GraphicsLayer::createAllocator()
@@ -243,24 +250,6 @@ namespace gm
 
         m_imagesInFlightFences.resize(m_swapchain->getImageViews().size(), VK_NULL_HANDLE);
 
-        createProjectionViewMatrix();
-    }
-
-    void GraphicsLayer::createProjectionViewMatrix()
-    {
-        int width, height;
-        glfwGetWindowSize(m_window->get(), &width, &height);
-
-        m_projectionViewMatrix = glm::perspective(m_camera.fovAngle, 
-                                                  static_cast<float>(width) / static_cast<float>(height),
-                                                  0.1f, // Near plane
-                                                  100.0f // Far Plane
-                                                );
-        
-        m_projectionViewMatrix = glm::translate(m_projectionViewMatrix, -m_camera.position);
-
-        m_projectionViewMatrix = glm::rotate(m_projectionViewMatrix, -m_camera.rotation.x, glm::vec3(1, 0, 0));
-        m_projectionViewMatrix = glm::rotate(m_projectionViewMatrix, -m_camera.rotation.y, glm::vec3(0, 1, 0));
-        m_projectionViewMatrix = glm::rotate(m_projectionViewMatrix, -m_camera.rotation.z, glm::vec3(0, 0, 1));
+        m_projectionViewMatrix = Math::createProjectionViewMatrix(m_window, m_camera);
     }
 }

@@ -20,13 +20,13 @@ namespace gm
         void onEvent(Event& e) override;
 
     private:
+        void buildPipelines();
+
         void createAllocator();
 
         void createSyncObjects();
 
         void recreateSwapchain();
-
-        void createProjectionViewMatrix();
 
     private:
         Window*                             m_window                            = nullptr;

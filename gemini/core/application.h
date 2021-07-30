@@ -19,18 +19,21 @@ namespace gm
 
         void run();
 
-        void onEvent(Event& e);
-
         bool onWindowClose(Event& e);
 
+        virtual void onUpdate() = 0;
+    
+    private:
+        void onEvent(Event& e);
+
+        void updateLayers();
+
+    protected:
         void pushLayer(Layer* layer);
 
         void pushOverlay(Layer* overlay);
 
         void addEntity(Entity* entity);
-    
-    private:
-        void updateLayers();
 
     protected:
         Scope<Window>   m_window                    = nullptr;
@@ -38,6 +41,8 @@ namespace gm
         LayerStack      m_layerStack;
 
         bool            m_isRunning                 = true;
+
+        float           m_deltaTime;
     };
 
     Application* createApplication();
