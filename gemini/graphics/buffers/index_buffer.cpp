@@ -2,12 +2,12 @@
 
 namespace gm
 {
-    IndexBuffer::IndexBuffer(Device* device, CommandPool* cmdPool, Allocator* allocator, const std::vector<uint16_t>& indices)
+    IndexBuffer::IndexBuffer(Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::vector<uint16_t>& indices)
     {
         loadData(device, cmdPool, allocator, indices);
     }
 
-    void IndexBuffer::loadData(Device* device, CommandPool* cmdPool, Allocator* allocator, const std::vector<uint16_t>& indices)
+    void IndexBuffer::loadData(Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::vector<uint16_t>& indices)
     {
         init(allocator, 
              VMA_MEMORY_USAGE_GPU_ONLY,

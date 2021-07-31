@@ -12,37 +12,23 @@ namespace gm
         m_surface(new Surface(m_window, m_instance.get())), 
         m_gpu(new GPU(m_instance.get(), m_surface.get())),
         m_device(new Device(m_instance.get(), m_gpu.get())),
-
-        // TODO: Get rid of allocator class and just use previous createAllocator()
-        // Move allocator dependent/depth image dependant resources into constructor body
-        m_allocator(new Allocator(m_instance.get(), m_gpu.get(), m_device.get())),
-
-        // TODO: Make this its own class and add function to find supported formats
-        m_depthImage(new Image(
-            m_window,
-            m_device.get(),
-            m_allocator,
-            VMA_MEMORY_USAGE_GPU_ONLY,
-            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
-            VK_IMAGE_TYPE_2D,
-            VK_FORMAT_D32_SFLOAT,
-            VK_SAMPLE_COUNT_1_BIT,
-            VK_IMAGE_TILING_OPTIMAL,
-            VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
-            VK_IMAGE_ASPECT_DEPTH_BIT
-        )),
-        m_swapchain(new Swapchain(m_window, m_surface.get(), m_gpu.get(), m_device.get())),
-        m_renderPass(new RenderPass(m_device.get(), m_swapchain.get(), m_depthImage)),
-        m_framebuffers(new Framebuffers(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_depthImage, m_swapchain->getImageViews().size())),
-        m_commandPool(new CommandPool(m_gpu.get(), m_device.get())),
         m_framesInFlight(framesInFlight)
     {
+        createAllocator();
+
+        m_depthImage = new DepthImage(m_window, m_gpu.get(), m_device.get(), m_allocator);
+
+        m_swapchain = makeScope<Swapchain>(m_window, m_surface.get(), m_gpu.get(), m_device.get());
+        m_renderPass = makeScope<RenderPass>(m_device.get(), m_swapchain.get(), m_depthImage);
+        m_framebuffers = makeScope<Framebuffers>(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_depthImage, m_swapchain->getImageViews().size());
+        m_commandPool = makeScope<CommandPool>(m_gpu.get(), m_device.get());
+
         m_commandBuffers.resize(m_swapchain->getImageViews().size());
         m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers.size(), m_commandBuffers.data());
 
-        buildPipelines();
-
         createSyncObjects();
+
+        buildPipelines();
 
         m_projectionViewMatrix = Math::createProjectionViewMatrix(m_window, m_camera);
     }
@@ -58,7 +44,7 @@ namespace gm
 
         delete m_depthImage;
 
-        delete m_allocator;
+        vmaDestroyAllocator(m_allocator);
 
         m_commandPool->freeCommandBuffers(m_commandBuffers.size(), m_commandBuffers.data());
 
@@ -207,6 +193,17 @@ namespace gm
         PipelineBuilder::buildPipeline(&m_pipelineInfo, m_device.get(), m_renderPass.get(), &m_rasterizerPipeline);
     }
 
+    void GraphicsLayer::createAllocator()
+    {
+        VmaAllocatorCreateInfo createInfo       = {};
+        createInfo.instance                     = m_instance->get();
+        createInfo.device                       = m_device->get();
+        createInfo.physicalDevice               = m_gpu->get();
+
+        GM_CORE_ASSERT(vmaCreateAllocator(&createInfo, &m_allocator) == VK_SUCCESS, 
+                       "Failed to create allocator!");
+    }
+
     void GraphicsLayer::createSyncObjects()
     {
         VkSemaphoreCreateInfo semaphoreInfo         = {};
@@ -241,6 +238,8 @@ namespace gm
         // Destroy
         m_framebuffers.reset();
 
+        delete m_depthImage;
+
         m_commandPool->freeCommandBuffers(m_commandBuffers.size(), m_commandBuffers.data());
 
         PipelineBuilder::destroyPipeline(m_device.get(), &m_rasterizerPipeline);
@@ -252,6 +251,8 @@ namespace gm
 
         // Recreate
         m_swapchain = makeScope<Swapchain>(m_window, m_surface.get(), m_gpu.get(), m_device.get());
+
+        m_depthImage = new DepthImage(m_window, m_gpu.get(), m_device.get(), m_allocator);
 
         m_renderPass = makeScope<RenderPass>(m_device.get(), m_swapchain.get(), m_depthImage);
 

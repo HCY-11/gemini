@@ -2,12 +2,12 @@
 
 namespace gm
 {
-    Buffer::Buffer(Allocator* allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage)
+    Buffer::Buffer(VmaAllocator allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage)
     {
         init(allocator, memUsage, size, usage);
     }
 
-    Buffer::Buffer(Allocator* allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage, const void* srcData) : 
+    Buffer::Buffer(VmaAllocator allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage, const void* srcData) : 
         Buffer(allocator, memUsage, size, usage)
     {
         loadData(srcData);
@@ -15,17 +15,17 @@ namespace gm
 
     Buffer::~Buffer()
     {
-        vmaDestroyBuffer(m_allocator->get(), m_data, m_allocation);
+        vmaDestroyBuffer(m_allocator, m_data, m_allocation);
     }
 
     void Buffer::loadData(const void* srcData)
     {
         void* data;
-        vmaMapMemory(m_allocator->get(), m_allocation, &data);
+        vmaMapMemory(m_allocator, m_allocation, &data);
 
         std::memcpy(data, srcData, m_size);
 
-        vmaUnmapMemory(m_allocator->get(), m_allocation);
+        vmaUnmapMemory(m_allocator, m_allocation);
     }
 
     void Buffer::copyToBuffer(Device* device, CommandPool* cmdPool, VkBuffer src, VkBuffer dst, VkDeviceSize size)
@@ -61,7 +61,7 @@ namespace gm
         cmdPool->freeCommandBuffers(1, &cmdBuf);
     }
 
-    void Buffer::init(Allocator* allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage)
+    void Buffer::init(VmaAllocator allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage)
     {
         m_allocator = allocator;
         m_size = size;
@@ -74,7 +74,7 @@ namespace gm
         VmaAllocationCreateInfo allocInfo           = {};
         allocInfo.usage                             = memUsage;
 
-        GM_CORE_ASSERT(vmaCreateBuffer(m_allocator->get(), &createInfo, &allocInfo, &m_data, &m_allocation, nullptr) == VK_SUCCESS,
+        GM_CORE_ASSERT(vmaCreateBuffer(m_allocator, &createInfo, &allocInfo, &m_data, &m_allocation, nullptr) == VK_SUCCESS,
                        "Failed to create buffer!");
     }
 }

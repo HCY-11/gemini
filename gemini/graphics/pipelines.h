@@ -58,7 +58,6 @@ namespace gm
         
         static void populateViewportStateInfo(PipelineInfo* info, Swapchain* swapchain);
 
-        // TODO: Eventually, this macro may be removed
         static void populateRasterizationStateInfo(
                                         PipelineInfo* info,
                                         VkPolygonMode polygonMode = VK_POLYGON_MODE_FILL, 

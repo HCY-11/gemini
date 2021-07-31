@@ -25,6 +25,28 @@ namespace gm
         }
     }
 
+
+    VkFormat GPU::findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features)
+    {
+        for (VkFormat format : candidates)
+        {
+            VkFormatProperties properties;
+            vkGetPhysicalDeviceFormatProperties(m_gpu, format, &properties);
+
+            if (tiling == VK_IMAGE_TILING_LINEAR && (properties.linearTilingFeatures & features) == features)
+            {
+                return format;
+            }
+            else if (tiling == VK_IMAGE_TILING_OPTIMAL && (properties.optimalTilingFeatures & features) == features)
+            {
+                return format;
+            }
+        }
+
+        GM_CORE_ERROR("Failed to find supported image format in candidates!");
+        return VK_FORMAT_UNDEFINED;
+    }
+
     bool GPU::isDeviceSuitable(VkPhysicalDevice gpu, VkSurfaceKHR surface)
     {
         m_indices.find(gpu, surface);

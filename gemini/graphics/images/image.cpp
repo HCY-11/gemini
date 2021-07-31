@@ -4,18 +4,22 @@ namespace gm
 {
     Image::Image(
         Window* window,
+        GPU* gpu,
         Device* device,
-        Allocator* allocator, 
+        VmaAllocator allocator, 
         VmaMemoryUsage memUsage,
         VkMemoryPropertyFlags memFlags,
+        const std::vector<VkFormat>& formats, 
+        VkFormatFeatureFlags features,
         VkImageType type, 
-        VkFormat format, 
         VkSampleCountFlagBits samples, 
         VkImageTiling tiling, 
         VkImageUsageFlags usage,
-        VkImageAspectFlags aspectFlags) : m_device(device), m_allocator(allocator), m_format(format)
+        VkImageAspectFlags aspectFlags) : m_device(device), m_allocator(allocator)
     {
         m_allocator = allocator;
+
+        m_format = gpu->findSupportedFormat(formats, tiling, features);
 
         VkImageCreateInfo createInfo                    = {};
         createInfo.sType                                = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -41,7 +45,7 @@ namespace gm
         allocationInfo.usage                            = memUsage;
         allocationInfo.requiredFlags                    = memFlags;
 
-        GM_CORE_ASSERT(vmaCreateImage(m_allocator->get(), &createInfo, &allocationInfo, &m_data, &m_allocation, nullptr) == VK_SUCCESS,
+        GM_CORE_ASSERT(vmaCreateImage(m_allocator, &createInfo, &allocationInfo, &m_data, &m_allocation, nullptr) == VK_SUCCESS,
                        "Failed to create image!");
 
         VkImageViewCreateInfo viewInfo                  = {};
@@ -62,6 +66,6 @@ namespace gm
     Image::~Image()
     {
         vkDestroyImageView(m_device->get(), m_view, nullptr);
-        vmaDestroyImage(m_allocator->get(), m_data, m_allocation);
+        vmaDestroyImage(m_allocator, m_data, m_allocation);
     }
 }

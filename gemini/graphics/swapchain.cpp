@@ -92,10 +92,10 @@ namespace gm
     {
         uint32_t count = 0;
 
-        std::vector<VkImage> objects;
+        std::vector<VkImage> buffers;
         vkGetSwapchainImagesKHR(m_device->get(), m_swapchain, &count, nullptr);
-        objects.resize(count);
-        vkGetSwapchainImagesKHR(m_device->get(), m_swapchain, &count, objects.data());
+        buffers.resize(count);
+        vkGetSwapchainImagesKHR(m_device->get(), m_swapchain, &count, buffers.data());
 
         m_imageViews.resize(count);
 
@@ -103,7 +103,7 @@ namespace gm
         {
             VkImageViewCreateInfo viewInfo                  = {};
             viewInfo.sType                                  = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
-            viewInfo.image                                  = objects[i];
+            viewInfo.image                                  = buffers[i];
             viewInfo.format                                 = m_surfaceFormat.format;
             viewInfo.viewType                               = VK_IMAGE_VIEW_TYPE_2D;
 

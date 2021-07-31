@@ -2,14 +2,14 @@
 
 #include "graphics/swapchain.h"
 
-#include "graphics/objects/image.h"
+#include "graphics/images/depth_image.h"
 
 namespace gm
 {
     class RenderPass
     {
     public:
-        RenderPass(Device* device, Swapchain* swapchain, Image* depthImage);
+        RenderPass(Device* device, Swapchain* swapchain, DepthImage* depthImage);
         ~RenderPass();
 
         inline const VkRenderPass& get() const { return m_renderPass; }

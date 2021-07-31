@@ -12,8 +12,8 @@ namespace gm
     {
     public:
         Buffer() = default;
-        Buffer(Allocator* allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage);
-        Buffer(Allocator* allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage, const void* srcData);
+        Buffer(VmaAllocator allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage);
+        Buffer(VmaAllocator allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage, const void* srcData);
         virtual ~Buffer();
 
         virtual void loadData(const void* srcData);
@@ -23,10 +23,10 @@ namespace gm
         const VkBuffer& get() const { return m_data; }
     
     protected:
-        void init(Allocator* allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage);
+        void init(VmaAllocator allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage);
 
     protected:
-        Allocator*      m_allocator     = nullptr;
+        VmaAllocator    m_allocator     = nullptr;
         VkDeviceSize    m_size          = 0;
 
         VmaAllocation   m_allocation    = VK_NULL_HANDLE;

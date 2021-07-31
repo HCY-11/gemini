@@ -4,8 +4,8 @@
 #include "graphics/entities/transform.h"
 #include "graphics/entities/camera.h"
 
-#include "graphics/objects/vertex_buffer.h"
-#include "graphics/objects/index_buffer.h"
+#include "graphics/buffers/vertex_buffer.h"
+#include "graphics/buffers/index_buffer.h"
 
 namespace gm
 {
@@ -29,7 +29,7 @@ namespace gm
         inline void rotate(const glm::vec3& dRotation, float deltaTime = 1.0f) { m_transform.rotation += dRotation * deltaTime; }
 
         // Load internal mesh data into buffers. Not meant to be used at application level
-        void loadMesh(Device* device, CommandPool* cmdPool, Allocator* allocator);
+        void loadMesh(Device* device, CommandPool* cmdPool, VmaAllocator allocator);
 
         // Not meant to be used at application level
         const VertexBuffer& getVBO() const { return m_vbo; }

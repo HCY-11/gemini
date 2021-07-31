@@ -88,7 +88,7 @@ namespace gm
         GPU(Instance* instance, Surface* surface);
         ~GPU() = default;
 
-        void find(Instance* instance, Surface* surface);
+        VkFormat findSupportedFormat(const std::vector<VkFormat>& candidates, VkImageTiling tiling, VkFormatFeatureFlags features);
 
         inline const VkPhysicalDevice& get() const { return m_gpu; }
 

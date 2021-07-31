@@ -25,11 +25,12 @@ set(HEADER_FILES
     ./graphics/entities/entity.h
     ./graphics/entities/transform.h
     ./graphics/entities/camera.h
-    ./graphics/objects/framebuffers.h
-    ./graphics/objects/buffer.h
-    ./graphics/objects/vertex_buffer.h
-    ./graphics/objects/index_buffer.h
-    ./graphics/objects/image.h
+    ./graphics/buffers/framebuffers.h
+    ./graphics/buffers/buffer.h
+    ./graphics/buffers/vertex_buffer.h
+    ./graphics/buffers/index_buffer.h
+    ./graphics/images/image.h
+    ./graphics/images/depth_image.h
     ./graphics/pools/command_pool.h
     ./graphics/math/math.h
 )
@@ -49,11 +50,12 @@ set(SOURCE_FILES
     ./graphics/render_pass.cpp
     ./graphics/surface.cpp
     ./graphics/swapchain.cpp
-    ./graphics/objects/framebuffers.cpp
-    ./graphics/objects/buffer.cpp
-    ./graphics/objects/vertex_buffer.cpp
-    ./graphics/objects/index_buffer.cpp
-    ./graphics/objects/image.cpp
+    ./graphics/buffers/framebuffers.cpp
+    ./graphics/buffers/buffer.cpp
+    ./graphics/buffers/vertex_buffer.cpp
+    ./graphics/buffers/index_buffer.cpp
+    ./graphics/images/image.cpp
+    ./graphics/images/depth_image.cpp
     ./graphics/pools/command_pool.cpp
     ./graphics/entities/entity.cpp
     ./graphics/math/math.cpp

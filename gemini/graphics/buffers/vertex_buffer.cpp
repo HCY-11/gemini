@@ -2,12 +2,12 @@
 
 namespace gm
 {
-    VertexBuffer::VertexBuffer(Device* device, CommandPool* cmdPool, Allocator* allocator, const std::vector<Vertex>& vertices)
+    VertexBuffer::VertexBuffer(Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::vector<Vertex>& vertices)
     {
         loadData(device, cmdPool, allocator, vertices);
     }
 
-    void VertexBuffer::loadData(Device* device, CommandPool* cmdPool, Allocator* allocator, const std::vector<Vertex>& vertices)
+    void VertexBuffer::loadData(Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::vector<Vertex>& vertices)
     {
         init(allocator, 
              VMA_MEMORY_USAGE_CPU_ONLY,

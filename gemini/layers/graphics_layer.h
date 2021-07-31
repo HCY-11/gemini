@@ -3,8 +3,8 @@
 #include "layers/layer.h"
 
 #include "graphics/pipelines.h"
-#include "graphics/objects/image.h"
-#include "graphics/objects/framebuffers.h"
+#include "graphics/images/depth_image.h"
+#include "graphics/buffers/framebuffers.h"
 #include "graphics/pools/command_pool.h"
 #include "graphics/entities/entity.h"
 
@@ -23,6 +23,8 @@ namespace gm
     private:
         void buildPipelines();
 
+        void createAllocator();
+
         void createSyncObjects();
 
         void recreateSwapchain();
@@ -35,13 +37,14 @@ namespace gm
         Scope<GPU>                          m_gpu                               = nullptr;
         Scope<Device>                       m_device                            = nullptr;
 
-        Allocator*                          m_allocator                         = nullptr;
-        Image*                              m_depthImage                        = nullptr;
-
         Scope<Swapchain>                    m_swapchain                         = nullptr;
         Scope<RenderPass>                   m_renderPass                        = nullptr;
         Scope<Framebuffers>                 m_framebuffers                      = nullptr;
         Scope<CommandPool>                  m_commandPool                       = nullptr;
+
+        DepthImage*                         m_depthImage                        = nullptr;
+
+        VmaAllocator                        m_allocator                         = VK_NULL_HANDLE;
 
         Pipeline                            m_rasterizerPipeline                = {};
         PipelineInfo                        m_pipelineInfo                      = {};

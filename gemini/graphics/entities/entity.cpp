@@ -10,7 +10,7 @@ namespace gm
         loadFromFile(filePath);
     }
 
-    void Entity::loadMesh(Device* device, CommandPool* cmdPool, Allocator* allocator)
+    void Entity::loadMesh(Device* device, CommandPool* cmdPool, VmaAllocator allocator)
     {
         m_vbo.loadData(device, cmdPool, allocator, m_mesh.vertices);
         m_ibo.loadData(device, cmdPool, allocator, m_mesh.indices);

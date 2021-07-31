@@ -4,7 +4,7 @@
 
 namespace gm
 {
-    RenderPass::RenderPass(Device* device, Swapchain* swapchain, Image* depthImage) : m_device(device)
+    RenderPass::RenderPass(Device* device, Swapchain* swapchain, DepthImage* depthImage) : m_device(device)
     {
         VkAttachmentDescription colorAttachment     = {};
         colorAttachment.format                      = swapchain->getSurfaceFormat().format;

@@ -12,19 +12,21 @@ namespace gm
         Image() = default;
         Image(
             Window* window,
+            GPU* gpu,
             Device* device,
-            Allocator* allocator,
+            VmaAllocator allocator,
             VmaMemoryUsage memUsage,
             VkMemoryPropertyFlags memFlags,
+            const std::vector<VkFormat>& formats, 
+            VkFormatFeatureFlags features,
             VkImageType type, 
-            VkFormat format, 
             VkSampleCountFlagBits samples, 
             VkImageTiling tiling, 
             VkImageUsageFlags usage,
             VkImageAspectFlags aspectFlags
         );
 
-        ~Image();
+        virtual ~Image();
 
         inline const VkImageView& getView() const { return m_view; }
 
@@ -32,7 +34,7 @@ namespace gm
     
     private:
         Device*             m_device        = nullptr;
-        Allocator*          m_allocator     = nullptr;
+        VmaAllocator        m_allocator     = VK_NULL_HANDLE;
 
         VmaAllocation       m_allocation    = VK_NULL_HANDLE;
         VkImage             m_data          = VK_NULL_HANDLE;
