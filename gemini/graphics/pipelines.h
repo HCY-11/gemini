@@ -1,7 +1,5 @@
 #pragma once
 
-#include "graphics/device.h"
-#include "graphics/swapchain.h"
 #include "graphics/render_pass.h"
 #include "graphics/entities/vertex.h"
 
@@ -73,7 +71,10 @@ namespace gm
                                         
         static void populateMultiSampleStateInfo(PipelineInfo* info);
 
-        static void populateDepthStencilStateInfo(PipelineInfo* info);
+        static void populateDepthStencilStateInfo(
+                                        PipelineInfo* info, 
+                                        VkBool32 shouldDepthTest = VK_TRUE, 
+                                        VkBool32 shouldDepthWrite = VK_TRUE);
 
         static void populateColorBlendAttachmentStateInfo(PipelineInfo* info);
 

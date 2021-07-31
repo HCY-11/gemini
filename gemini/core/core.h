@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <vk_mem_alloc.h>
 #include <imgui.h>
+#include <tiny_obj_loader.h>
 #include <glm/glm.hpp>
 #include <glm/gtc/matrix_transform.hpp>
 #include <glm/gtx/transform.hpp>

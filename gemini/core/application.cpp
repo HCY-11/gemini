@@ -13,6 +13,8 @@ namespace gm
         m_window = makeScope<Window>();
 
         m_window->setEventCallback(BIND_EVENT_FUNC(onEvent));
+
+        pushLayer(new GraphicsLayer(m_window.get(), m_camera));
     }
 
     Application::~Application()

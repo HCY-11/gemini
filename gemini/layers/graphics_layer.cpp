@@ -4,16 +4,36 @@
 
 namespace gm
 {
-    GraphicsLayer::GraphicsLayer(Window* window, uint32_t framesInFlight, const std::string& name) :
+    GraphicsLayer::GraphicsLayer(Window* window, Camera& camera, uint32_t framesInFlight, const std::string& name) :
         Layer(name),
         m_window(window),
+        m_camera(camera),
         m_instance(new Instance()), 
         m_surface(new Surface(m_window, m_instance.get())), 
         m_gpu(new GPU(m_instance.get(), m_surface.get())),
         m_device(new Device(m_instance.get(), m_gpu.get())),
+
+        // TODO: Get rid of allocator class and just use previous createAllocator()
+        // Move allocator dependent/depth image dependant resources into constructor body
+        m_allocator(new Allocator(m_instance.get(), m_gpu.get(), m_device.get())),
+
+        // TODO: Make this its own class and add function to find supported formats
+        m_depthImage(new Image(
+            m_window,
+            m_device.get(),
+            m_allocator,
+            VMA_MEMORY_USAGE_GPU_ONLY,
+            VK_MEMORY_PROPERTY_DEVICE_LOCAL_BIT,
+            VK_IMAGE_TYPE_2D,
+            VK_FORMAT_D32_SFLOAT,
+            VK_SAMPLE_COUNT_1_BIT,
+            VK_IMAGE_TILING_OPTIMAL,
+            VK_IMAGE_USAGE_DEPTH_STENCIL_ATTACHMENT_BIT,
+            VK_IMAGE_ASPECT_DEPTH_BIT
+        )),
         m_swapchain(new Swapchain(m_window, m_surface.get(), m_gpu.get(), m_device.get())),
-        m_renderPass(new RenderPass(m_device.get(), m_swapchain.get())),
-        m_framebuffers(new Framebuffers(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_swapchain->getImageViews().size())),
+        m_renderPass(new RenderPass(m_device.get(), m_swapchain.get(), m_depthImage)),
+        m_framebuffers(new Framebuffers(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_depthImage, m_swapchain->getImageViews().size())),
         m_commandPool(new CommandPool(m_gpu.get(), m_device.get())),
         m_framesInFlight(framesInFlight)
     {
@@ -21,8 +41,6 @@ namespace gm
         m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers.size(), m_commandBuffers.data());
 
         buildPipelines();
-
-        createAllocator();
 
         createSyncObjects();
 
@@ -38,7 +56,9 @@ namespace gm
             delete entity;
         }
 
-        vmaDestroyAllocator(m_allocator);
+        delete m_depthImage;
+
+        delete m_allocator;
 
         m_commandPool->freeCommandBuffers(m_commandBuffers.size(), m_commandBuffers.data());
 
@@ -80,15 +100,21 @@ namespace gm
         cmdBeginInfo.sType                          = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
         cmdBeginInfo.flags                          = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
-        VkClearValue clearColor                     = { 1.0, 1.0, 1.0, 1.0 };
+        VkClearValue clearColor                     = {};
+        clearColor.color                            = { 1.0f, 1.0f, 1.0f, 1.0f };
+
+        VkClearValue clearDepth                     = {};
+        clearDepth.depthStencil.depth               = 1.0f;
+
+        VkClearValue clearValues[]                  = { clearColor, clearDepth };
 
         GM_CORE_ASSERT(vkBeginCommandBuffer(m_commandBuffers[imageIndex], &cmdBeginInfo) == VK_SUCCESS, "Failed to begin command buffer!");
 
         VkRenderPassBeginInfo passBeginInfo         = {};
         passBeginInfo.sType                         = VK_STRUCTURE_TYPE_RENDER_PASS_BEGIN_INFO;
         passBeginInfo.renderPass                    = m_renderPass->get();
-        passBeginInfo.clearValueCount               = 1;
-        passBeginInfo.pClearValues                  = &clearColor;
+        passBeginInfo.clearValueCount               = 2;
+        passBeginInfo.pClearValues                  = clearValues;
         passBeginInfo.framebuffer                   = m_framebuffers->get()[imageIndex];
         passBeginInfo.renderArea.offset             = { 0, 0 };
         passBeginInfo.renderArea.extent             = m_swapchain->getExtent();
@@ -171,25 +197,14 @@ namespace gm
 
     void GraphicsLayer::buildPipelines()
     {
-        PipelineBuilder::addShaderStage(&m_pipelineInfo, VK_SHADER_STAGE_VERTEX_BIT, "/home/henry/workspace/gemini/gemini/graphics/shaders/vert.spv");
-        PipelineBuilder::addShaderStage(&m_pipelineInfo, VK_SHADER_STAGE_FRAGMENT_BIT, "/home/henry/workspace/gemini/gemini/graphics/shaders/frag.spv");
+        PipelineBuilder::addShaderStage(&m_pipelineInfo, VK_SHADER_STAGE_VERTEX_BIT, "gemini/graphics/shaders/vert.spv");
+        PipelineBuilder::addShaderStage(&m_pipelineInfo, VK_SHADER_STAGE_FRAGMENT_BIT, "gemini/graphics/shaders/frag.spv");
 
         PipelineBuilder::populateStateInfosDefault(&m_pipelineInfo, m_swapchain.get());
 
         PipelineBuilder::addPushConstant(&m_pipelineInfo, sizeof(EntityPushConstant), VK_SHADER_STAGE_VERTEX_BIT);
 
         PipelineBuilder::buildPipeline(&m_pipelineInfo, m_device.get(), m_renderPass.get(), &m_rasterizerPipeline);
-    }
-
-    void GraphicsLayer::createAllocator()
-    {
-        VmaAllocatorCreateInfo createInfo       = {};
-        createInfo.instance                     = m_instance->get();
-        createInfo.device                       = m_device->get();
-        createInfo.physicalDevice               = m_gpu->get();
-
-        GM_CORE_ASSERT(vmaCreateAllocator(&createInfo, &m_allocator) == VK_SUCCESS, 
-                       "Failed to create allocator!");
     }
 
     void GraphicsLayer::createSyncObjects()
@@ -238,13 +253,13 @@ namespace gm
         // Recreate
         m_swapchain = makeScope<Swapchain>(m_window, m_surface.get(), m_gpu.get(), m_device.get());
 
-        m_renderPass = makeScope<RenderPass>(m_device.get(), m_swapchain.get());
+        m_renderPass = makeScope<RenderPass>(m_device.get(), m_swapchain.get(), m_depthImage);
 
         PipelineBuilder::populateViewportStateInfo(&m_pipelineInfo, m_swapchain.get());
 
         PipelineBuilder::buildPipeline(&m_pipelineInfo, m_device.get(), m_renderPass.get(), &m_rasterizerPipeline);
 
-        m_framebuffers = makeScope<Framebuffers>(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_swapchain->getImageViews().size());
+        m_framebuffers = makeScope<Framebuffers>(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_depthImage, m_swapchain->getImageViews().size());
 
         m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers.size(), m_commandBuffers.data());
 

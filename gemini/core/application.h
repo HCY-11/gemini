@@ -38,6 +38,8 @@ namespace gm
     protected:
         Scope<Window>   m_window                    = nullptr;
 
+        Camera          m_camera                    = {};
+
         LayerStack      m_layerStack;
 
         bool            m_isRunning                 = true;

@@ -3,6 +3,7 @@
 
 # Whitelist
 !*/
+!*.obj
 
 !*.h
 !*.cpp

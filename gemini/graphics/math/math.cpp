@@ -24,10 +24,10 @@ namespace gm
         glfwGetWindowSize(window->get(), &width, &height);
 
         matrix = glm::perspective(camera.fovAngle, 
-                                                  static_cast<float>(width) / static_cast<float>(height),
-                                                  0.1f, // Near plane
-                                                  100.0f // Far Plane
-                                                );
+                                  static_cast<float>(width) / static_cast<float>(height),
+                                  0.1f, // Near plane
+                                  100.0f // Far Plane
+                                );
         
         matrix = glm::translate(matrix, -camera.position);
 

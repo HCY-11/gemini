@@ -1,6 +1,6 @@
 #pragma once
 
-#include "graphics/buffers/buffer.h"
+#include "graphics/objects/buffer.h"
 
 namespace gm
 {
@@ -8,10 +8,10 @@ namespace gm
     {
     public:
         IndexBuffer() = default;
-        IndexBuffer(Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::vector<uint16_t>& indices);
+        IndexBuffer(Device* device, CommandPool* cmdPool, Allocator* allocator, const std::vector<uint16_t>& indices);
 
         // Should only be called once
-        void loadData(Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::vector<uint16_t>& indices);
+        void loadData(Device* device, CommandPool* cmdPool, Allocator* allocator, const std::vector<uint16_t>& indices);
 
         inline uint32_t getNumIndices() const { return m_numIndices; }
 

@@ -35,9 +35,9 @@ namespace gm
     void PipelineBuilder::populateViewportStateInfo(PipelineInfo* info, Swapchain* swapchain)
     {
         info->viewport.width                                       = static_cast<float>(swapchain->getExtent().width);
-        info->viewport.height                                      = static_cast<float>(swapchain->getExtent().height);
+        info->viewport.height                                      = -static_cast<float>(swapchain->getExtent().height); // Flip viewport
         info->viewport.x                                           = 0.0f;
-        info->viewport.y                                           = 0.0f;
+        info->viewport.y                                           = static_cast<float>(swapchain->getExtent().height);
         info->viewport.maxDepth                                    = 1.0f;
         info->viewport.minDepth                                    = 0.0f;
 
@@ -63,9 +63,14 @@ namespace gm
         info->rasterizationInfo.rasterizerDiscardEnable            = VK_FALSE;
     }
 
-    void PipelineBuilder::populateDepthStencilStateInfo(PipelineInfo* info)
+    void PipelineBuilder::populateDepthStencilStateInfo(PipelineInfo* info, VkBool32 shouldDepthTest, VkBool32 shouldDepthWrite)
     {
-        // Not using for now...
+        info->depthStencilInfo.sType                                = VK_STRUCTURE_TYPE_PIPELINE_DEPTH_STENCIL_STATE_CREATE_INFO;
+        info->depthStencilInfo.stencilTestEnable                    = VK_FALSE;
+        info->depthStencilInfo.depthTestEnable                      = shouldDepthTest;
+        info->depthStencilInfo.depthWriteEnable                     = shouldDepthWrite;
+        info->depthStencilInfo.depthCompareOp                       = VK_COMPARE_OP_LESS;
+        info->depthStencilInfo.depthBoundsTestEnable                = VK_FALSE;
     }
 
     void PipelineBuilder::populateColorBlendAttachmentStateInfo(PipelineInfo* info)
@@ -109,11 +114,11 @@ namespace gm
         populateInputAssemblyStateInfo(info);
         populateViewportStateInfo(info, swapchain);
         populateRasterizationStateInfo(info);
+        populateDepthStencilStateInfo(info);
         populateMultiSampleStateInfo(info);
         populateColorBlendAttachmentStateInfo(info);
         populateColorBlendStateInfo(info);
         populateDynamicStateInfo(info);
-        populateDepthStencilStateInfo(info);
     }
 
     void PipelineBuilder::addPushConstant(PipelineInfo* info, uint32_t size, VkShaderStageFlags shaderStage)
@@ -158,7 +163,7 @@ namespace gm
         pipelineInfo.pViewportState                 = &info->viewportInfo;
         pipelineInfo.pRasterizationState            = &info->rasterizationInfo;
         pipelineInfo.pMultisampleState              = &info->multiSampleInfo;
-        pipelineInfo.pDepthStencilState             = nullptr;
+        pipelineInfo.pDepthStencilState             = &info->depthStencilInfo;
         pipelineInfo.pColorBlendState               = &info->colorBlendInfo;
         pipelineInfo.pDynamicState                  = nullptr;
 
@@ -179,11 +184,12 @@ namespace gm
 
     VkShaderModule PipelineBuilder::createShaderModule(Device* device, const char* filePath)
     {
-        std::ifstream file(filePath, std::ios::ate | std::ios::binary);
+        std::string fullPath = static_cast<std::string>(GM_ROOTDIR) + static_cast<std::string>(filePath);
+        std::ifstream file(fullPath, std::ios::ate | std::ios::binary);
 
         if (!file.is_open())
         {
-            GM_CORE_ERROR("Failed to find shader file " + std::string(filePath));
+            GM_CORE_ERROR("Failed to find shader file {0}", fullPath);
         }
 
         size_t fileSize = static_cast<size_t>(file.tellg());
