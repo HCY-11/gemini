@@ -7,7 +7,7 @@
 
 #include "layers/layer_stack.h"
 
-#include "graphics/entities/mesh.h"
+#include "graphics/entities/entity.h"
 
 namespace gm
 {
@@ -19,25 +19,32 @@ namespace gm
 
         void run();
 
-        void onEvent(Event& e);
-
         bool onWindowClose(Event& e);
 
+        virtual void onUpdate() = 0;
+    
+    private:
+        void onEvent(Event& e);
+
+        void updateLayers();
+
+    protected:
         void pushLayer(Layer* layer);
 
         void pushOverlay(Layer* overlay);
 
-        void addMesh(const Mesh& mesh);
-    
-    private:
-        void updateLayers();
+        void addEntity(Entity* entity);
 
     protected:
         Scope<Window>   m_window                    = nullptr;
 
+        Camera          m_camera                    = {};
+
         LayerStack      m_layerStack;
 
         bool            m_isRunning                 = true;
+
+        float           m_deltaTime;
     };
 
     Application* createApplication();

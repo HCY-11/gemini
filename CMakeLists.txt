@@ -6,7 +6,9 @@ include(./conan/conanbuildinfo.cmake)
 
 add_definitions("-std=c++17")
 add_definitions("-g")
+
 add_definitions(-DGM_ENABLE_ASSERT)
+add_definitions(-DGM_ROOTDIR="/home/henry/workspace/gemini/")
 
 conan_basic_setup()
 

@@ -2,7 +2,7 @@
 
 #include "events/event.h"
 
-#include "graphics/entities/mesh.h"
+#include "graphics/entities/entity.h"
 
 namespace gm
 {
@@ -73,19 +73,19 @@ namespace gm
     };
 
 
-    class GM_API MeshAddEvent : public Event
+    class GM_API EntityAddEvent : public Event
     {
     public:
-        MeshAddEvent(const Mesh& mesh) : m_mesh(mesh)
+        EntityAddEvent(Entity* entity) : m_entity(entity)
         {}
 
-        inline const Mesh& getMesh() const { return m_mesh; }
+        inline Entity* getData() const { return m_entity; }
 
         EVENT_CLASS_CATEGORY(kEventCategoryApp)
-        EVENT_CLASS_TYPE(kAddMesh)
+        EVENT_CLASS_TYPE(kEntityAdd)
     
     private:
-        Mesh m_mesh = {};
+        Entity* m_entity = nullptr;
     };
 
     // Optional App Events

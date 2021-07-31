@@ -13,6 +13,8 @@ namespace gm
         m_window = makeScope<Window>();
 
         m_window->setEventCallback(BIND_EVENT_FUNC(onEvent));
+
+        pushLayer(new GraphicsLayer(m_window.get(), m_camera));
     }
 
     Application::~Application()
@@ -24,9 +26,17 @@ namespace gm
     {
         while (m_isRunning)
         {
+            double start = glfwGetTime();
+
             m_window->pollEvents();
+            
+            onUpdate();
 
             updateLayers();
+
+            double stop = glfwGetTime();
+
+            m_deltaTime = static_cast<float>(stop - start);
         }
     }
 
@@ -63,9 +73,9 @@ namespace gm
         m_layerStack.pushOverlay(overlay);
     }
 
-    void Application::addMesh(const Mesh& mesh)
+    void Application::addEntity(Entity* entity)
     {
-        MeshAddEvent e(mesh);
+        EntityAddEvent e(entity);
 
         onEvent(e);
     }

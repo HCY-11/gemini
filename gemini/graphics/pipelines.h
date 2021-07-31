@@ -1,7 +1,5 @@
 #pragma once
 
-#include "graphics/device.h"
-#include "graphics/swapchain.h"
 #include "graphics/render_pass.h"
 #include "graphics/entities/vertex.h"
 
@@ -24,6 +22,9 @@ namespace gm
         VkPipelineColorBlendAttachmentState                 colorAttachment;
         VkPipelineColorBlendStateCreateInfo                 colorBlendInfo;
         VkPipelineDynamicStateCreateInfo                    dynamicStateInfo;
+
+        std::vector<VkPushConstantRange>                    pushConstants;
+        uint32_t                                            pushConstantOffset          = 0;
 
         VkViewport                                          viewport;
         VkRect2D                                            scissor;
@@ -57,15 +58,23 @@ namespace gm
         
         static void populateViewportStateInfo(PipelineInfo* info, Swapchain* swapchain);
 
+        // TODO: Eventually, this macro may be removed
         static void populateRasterizationStateInfo(
                                         PipelineInfo* info,
                                         VkPolygonMode polygonMode = VK_POLYGON_MODE_FILL, 
-                                        VkCullModeFlagBits cullMode = VK_CULL_MODE_BACK_BIT, 
+#ifdef NDEBUG
+                                        VkCullModeFlagBits cullMode = VK_CULL_MODE_BACK_BIT,
+#else
+                                        VkCullModeFlagBits cullMode = VK_CULL_MODE_NONE,
+#endif
                                         float lineWidth = 1.0f);
                                         
         static void populateMultiSampleStateInfo(PipelineInfo* info);
 
-        static void populateDepthStencilStateInfo(PipelineInfo* info);
+        static void populateDepthStencilStateInfo(
+                                        PipelineInfo* info, 
+                                        VkBool32 shouldDepthTest = VK_TRUE, 
+                                        VkBool32 shouldDepthWrite = VK_TRUE);
 
         static void populateColorBlendAttachmentStateInfo(PipelineInfo* info);
 
@@ -75,6 +84,8 @@ namespace gm
 
         // Acts as replacement for populate* functions with the exception of shader stages; uses default parameters
         static void populateStateInfosDefault(PipelineInfo* info, Swapchain* swapchain);
+
+        static void addPushConstant(PipelineInfo* info, uint32_t size, VkShaderStageFlags shaderStage);
 
         // Can only be called once all other create* functions are called.
         static void buildPipeline(PipelineInfo* info, Device* device, RenderPass* renderPass, Pipeline* dst);

@@ -12,6 +12,7 @@ set(HEADER_FILES
     ./layers/layer.h
     ./layers/graphics_layer.h
     ./layers/layer_stack.h
+    ./graphics/allocator.h
     ./graphics/device.h
     ./graphics/gpu.h
     ./graphics/instance.h
@@ -22,11 +23,15 @@ set(HEADER_FILES
     ./graphics/entities/vertex.h
     ./graphics/entities/mesh.h
     ./graphics/entities/entity.h
-    ./graphics/buffers/framebuffers.h
-    ./graphics/buffers/buffer.h
-    ./graphics/buffers/vertex_buffer.h
-    ./graphics/buffers/index_buffer.h
+    ./graphics/entities/transform.h
+    ./graphics/entities/camera.h
+    ./graphics/objects/framebuffers.h
+    ./graphics/objects/buffer.h
+    ./graphics/objects/vertex_buffer.h
+    ./graphics/objects/index_buffer.h
+    ./graphics/objects/image.h
     ./graphics/pools/command_pool.h
+    ./graphics/math/math.h
 )
 
 set(SOURCE_FILES 
@@ -36,6 +41,7 @@ set(SOURCE_FILES
     ./layers/layer.cpp
     ./layers/graphics_layer.cpp
     ./layers/layer_stack.cpp
+    ./graphics/allocator.cpp
     ./graphics/device.cpp
     ./graphics/gpu.cpp
     ./graphics/instance.cpp
@@ -43,11 +49,14 @@ set(SOURCE_FILES
     ./graphics/render_pass.cpp
     ./graphics/surface.cpp
     ./graphics/swapchain.cpp
-    ./graphics/buffers/framebuffers.cpp
-    ./graphics/buffers/buffer.cpp
-    ./graphics/buffers/vertex_buffer.cpp
-    ./graphics/buffers/index_buffer.cpp
+    ./graphics/objects/framebuffers.cpp
+    ./graphics/objects/buffer.cpp
+    ./graphics/objects/vertex_buffer.cpp
+    ./graphics/objects/index_buffer.cpp
+    ./graphics/objects/image.cpp
     ./graphics/pools/command_pool.cpp
+    ./graphics/entities/entity.cpp
+    ./graphics/math/math.cpp
 )
 
 add_library(gemini SHARED 

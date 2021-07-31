@@ -4,6 +4,7 @@
 #include "core/core.h"
 
 #include "events/event.h"
+#include "graphics/entities/camera.h"
 
 namespace gm
 {
@@ -47,8 +48,8 @@ namespace gm
         inline GLFWwindow* get() const { return m_window; }
 
     private:
-        GLFWwindow*         m_window    = nullptr;
+        GLFWwindow*     m_window                = nullptr;
 
-        WindowData          m_data      = {};
+        WindowData      m_data                  = {};
     };
 }

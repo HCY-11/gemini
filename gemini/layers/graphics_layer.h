@@ -3,7 +3,8 @@
 #include "layers/layer.h"
 
 #include "graphics/pipelines.h"
-#include "graphics/buffers/framebuffers.h"
+#include "graphics/objects/image.h"
+#include "graphics/objects/framebuffers.h"
 #include "graphics/pools/command_pool.h"
 #include "graphics/entities/entity.h"
 
@@ -12,7 +13,7 @@ namespace gm
     class GraphicsLayer : public Layer
     {
     public:
-        GraphicsLayer(Window* window, uint32_t framesInFlight = 3, const std::string& name = "Graphics Layer");
+        GraphicsLayer(Window* window, Camera& camera, uint32_t framesInFlight = 3, const std::string& name = "Graphics Layer");
         ~GraphicsLayer();
 
         void onUpdate() override;
@@ -20,7 +21,7 @@ namespace gm
         void onEvent(Event& e) override;
 
     private:
-        void createAllocator();
+        void buildPipelines();
 
         void createSyncObjects();
 
@@ -33,6 +34,10 @@ namespace gm
         Scope<Surface>                      m_surface                           = nullptr;
         Scope<GPU>                          m_gpu                               = nullptr;
         Scope<Device>                       m_device                            = nullptr;
+
+        Allocator*                          m_allocator                         = nullptr;
+        Image*                              m_depthImage                        = nullptr;
+
         Scope<Swapchain>                    m_swapchain                         = nullptr;
         Scope<RenderPass>                   m_renderPass                        = nullptr;
         Scope<Framebuffers>                 m_framebuffers                      = nullptr;
@@ -40,8 +45,6 @@ namespace gm
 
         Pipeline                            m_rasterizerPipeline                = {};
         PipelineInfo                        m_pipelineInfo                      = {};
-
-        VmaAllocator                        m_allocator                         = VK_NULL_HANDLE;
 
         std::vector<VkCommandBuffer>        m_commandBuffers                    = {};
 
@@ -54,5 +57,9 @@ namespace gm
 
         uint32_t                            m_framesInFlight                    = 0;
         uint32_t                            m_currentFrame                      = 0;
+
+        Camera&                             m_camera;
+
+        glm::mat4                           m_projectionViewMatrix              = glm::mat4(1.0f);
     };
 }

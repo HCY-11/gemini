@@ -2,40 +2,30 @@
 
 namespace gm
 {
-    Buffer::Buffer(VmaAllocator allocator, VkDeviceSize size, VkBufferUsageFlags usage, VmaMemoryUsage memUsage) : 
-        m_allocator(allocator), m_size(size)
+    Buffer::Buffer(Allocator* allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage)
     {
-        VkBufferCreateInfo createInfo               = {};
-        createInfo.sType                            = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
-        createInfo.size                             = m_size;
-        createInfo.usage                            = usage;
-
-        VmaAllocationCreateInfo allocInfo           = {};
-        allocInfo.usage                             = memUsage;
-
-        GM_CORE_ASSERT(vmaCreateBuffer(m_allocator, &createInfo, &allocInfo, &m_data, &m_allocation, nullptr) == VK_SUCCESS,
-                       "Failed to create buffer!");
+        init(allocator, memUsage, size, usage);
     }
 
-    Buffer::Buffer(VmaAllocator allocator, VkDeviceSize size, VkBufferUsageFlags usage, VmaMemoryUsage memUsage, const void* srcData) : 
-        Buffer(allocator, size, usage, memUsage)
+    Buffer::Buffer(Allocator* allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage, const void* srcData) : 
+        Buffer(allocator, memUsage, size, usage)
     {
         loadData(srcData);
     }
 
     Buffer::~Buffer()
     {
-        vmaDestroyBuffer(m_allocator, m_data, m_allocation);
+        vmaDestroyBuffer(m_allocator->get(), m_data, m_allocation);
     }
 
     void Buffer::loadData(const void* srcData)
     {
         void* data;
-        vmaMapMemory(m_allocator, m_allocation, &data);
+        vmaMapMemory(m_allocator->get(), m_allocation, &data);
 
         std::memcpy(data, srcData, m_size);
 
-        vmaUnmapMemory(m_allocator, m_allocation);
+        vmaUnmapMemory(m_allocator->get(), m_allocation);
     }
 
     void Buffer::copyToBuffer(Device* device, CommandPool* cmdPool, VkBuffer src, VkBuffer dst, VkDeviceSize size)
@@ -69,5 +59,22 @@ namespace gm
         vkQueueWaitIdle(device->getGraphicsQueue());
 
         cmdPool->freeCommandBuffers(1, &cmdBuf);
+    }
+
+    void Buffer::init(Allocator* allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage)
+    {
+        m_allocator = allocator;
+        m_size = size;
+
+        VkBufferCreateInfo createInfo               = {};
+        createInfo.sType                            = VK_STRUCTURE_TYPE_BUFFER_CREATE_INFO;
+        createInfo.size                             = m_size;
+        createInfo.usage                            = usage;
+
+        VmaAllocationCreateInfo allocInfo           = {};
+        allocInfo.usage                             = memUsage;
+
+        GM_CORE_ASSERT(vmaCreateBuffer(m_allocator->get(), &createInfo, &allocInfo, &m_data, &m_allocation, nullptr) == VK_SUCCESS,
+                       "Failed to create buffer!");
     }
 }
