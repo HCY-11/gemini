@@ -12,7 +12,6 @@ set(HEADER_FILES
     ./layers/layer.h
     ./layers/graphics_layer.h
     ./layers/layer_stack.h
-    ./graphics/allocator.h
     ./graphics/device.h
     ./graphics/gpu.h
     ./graphics/instance.h
@@ -31,6 +30,7 @@ set(HEADER_FILES
     ./graphics/buffers/index_buffer.h
     ./graphics/images/image.h
     ./graphics/images/depth_image.h
+    ./graphics/images/textured_image.h
     ./graphics/pools/command_pool.h
     ./graphics/math/math.h
 )
@@ -39,10 +39,10 @@ set(SOURCE_FILES
     ./core/window.cpp
     ./core/application.cpp
     ./core/vma.cpp
+    ./core/stb.cpp
     ./layers/layer.cpp
     ./layers/graphics_layer.cpp
     ./layers/layer_stack.cpp
-    ./graphics/allocator.cpp
     ./graphics/device.cpp
     ./graphics/gpu.cpp
     ./graphics/instance.cpp
@@ -56,6 +56,7 @@ set(SOURCE_FILES
     ./graphics/buffers/index_buffer.cpp
     ./graphics/images/image.cpp
     ./graphics/images/depth_image.cpp
+    ./graphics/images/textured_image.cpp
     ./graphics/pools/command_pool.cpp
     ./graphics/entities/entity.cpp
     ./graphics/math/math.cpp

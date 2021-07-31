@@ -14,6 +14,10 @@ namespace gm
 
         void freeCommandBuffers(uint32_t count, const VkCommandBuffer* buffers);
 
+        VkCommandBuffer beginImmediateSubmit();
+
+        void endImmediateSubmit(VkCommandBuffer cmdBuf);
+
     private:
         Device*         m_device        = nullptr;
 

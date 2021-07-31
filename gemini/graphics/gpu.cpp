@@ -59,7 +59,10 @@ namespace gm
             swapchainSupported = !m_swapchainInfo.presentModes.empty() && !m_swapchainInfo.surfaceFormats.empty();
         }
 
-        return m_indices.isPopulated() && swapchainSupported;
+        VkPhysicalDeviceFeatures supportedFeatures = {};
+        vkGetPhysicalDeviceFeatures(gpu, &supportedFeatures);
+
+        return m_indices.isPopulated() && swapchainSupported && supportedFeatures.samplerAnisotropy;
     }
 
     bool GPU::areExtensionsSupported(VkPhysicalDevice gpu)

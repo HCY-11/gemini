@@ -4,7 +4,7 @@
 
 #include "graphics/pools/command_pool.h"
 
-#include "graphics/allocator.h"
+#include "graphics/images/image.h"
 
 namespace gm
 {
@@ -18,7 +18,9 @@ namespace gm
 
         virtual void loadData(const void* srcData);
 
-        void copyToBuffer(Device* device, CommandPool* cmdPool, VkBuffer src, VkBuffer dst, VkDeviceSize size);
+        void copyToBuffer(CommandPool* cmdPool, VkBuffer src, VkBuffer dst, VkDeviceSize size);
+
+        void copyToImage(CommandPool* cmdPool, VkBuffer src, VkImage dst, VkImageLayout dstLayout, const VkExtent3D& extent);
 
         const VkBuffer& get() const { return m_data; }
     

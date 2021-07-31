@@ -28,37 +28,38 @@ namespace gm
         vmaUnmapMemory(m_allocator, m_allocation);
     }
 
-    void Buffer::copyToBuffer(Device* device, CommandPool* cmdPool, VkBuffer src, VkBuffer dst, VkDeviceSize size)
+    void Buffer::copyToBuffer(CommandPool* cmdPool, VkBuffer src, VkBuffer dst, VkDeviceSize size)
     {
-        VkCommandBuffer cmdBuf;
-        cmdPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, 1, &cmdBuf);
-
-        VkCommandBufferBeginInfo beginInfo  = {};
-        beginInfo.sType                     = VK_STRUCTURE_TYPE_COMMAND_BUFFER_BEGIN_INFO;
-        beginInfo.flags                     = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
-
-        GM_CORE_ASSERT(vkBeginCommandBuffer(cmdBuf, &beginInfo) == VK_SUCCESS, "Failed to begin command buffer!");
+        VkCommandBuffer cmdBuf              = cmdPool->beginImmediateSubmit();
 
         VkBufferCopy region                 = {};
         region.size                         = size;
 
         vkCmdCopyBuffer(cmdBuf, src, dst, 1, &region);
 
-        GM_CORE_ASSERT(vkEndCommandBuffer(cmdBuf) == VK_SUCCESS, "Failed to end command buffer!");
+        cmdPool->endImmediateSubmit(cmdBuf);
+    }
 
-        VkSubmitInfo submitInfo             = {};
-        submitInfo.sType                    = VK_STRUCTURE_TYPE_SUBMIT_INFO;
-        submitInfo.commandBufferCount       = 1;
-        submitInfo.pCommandBuffers          = &cmdBuf;
 
-        GM_CORE_ASSERT(vkQueueSubmit(device->getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE) == VK_SUCCESS,
-                       "Failed to submit queue!");
+    void Buffer::copyToImage(CommandPool* cmdPool, VkBuffer src, VkImage dst, VkImageLayout dstLayout, const VkExtent3D& extent)
+    { 
+        VkCommandBuffer cmdBuf                          = cmdPool->beginImmediateSubmit();
 
-        // TODO: For the future, maybe use fences instead of waiting for queue idle
-        // This would allow for several transfer operations to happen at once
-        vkQueueWaitIdle(device->getGraphicsQueue());
+        VkBufferImageCopy region                        = {};
+        region.bufferImageHeight                        = 0;
+        region.bufferOffset                             = 0;
+        region.bufferRowLength                          = 0;
 
-        cmdPool->freeCommandBuffers(1, &cmdBuf);
+        region.imageExtent                              = extent;
+        region.imageOffset                              = { 0, 0, 0 };
+        region.imageSubresource.aspectMask              = VK_IMAGE_ASPECT_COLOR_BIT;
+        region.imageSubresource.layerCount              = 1;
+        region.imageSubresource.baseArrayLayer          = 0;
+        region.imageSubresource.mipLevel                = 0;
+
+        vkCmdCopyBufferToImage(cmdBuf, src, dst, dstLayout, 1, &region);
+
+        cmdPool->endImmediateSubmit(cmdBuf);
     }
 
     void Buffer::init(VmaAllocator allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage)
