@@ -41,7 +41,7 @@ namespace gm
 
         stagingBuffer.copyToImage(cmdPool, 
                                   stagingBuffer.get(), 
-                                  m_data, 
+                                  m_image, 
                                   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 
                                   { 
                                       static_cast<uint32_t>(width), 

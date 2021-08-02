@@ -76,13 +76,13 @@ namespace gm
         allocationInfo.usage                            = memUsage;
         allocationInfo.requiredFlags                    = memFlags;
 
-        GM_CORE_ASSERT(vmaCreateImage(m_allocator, &createInfo, &allocationInfo, &m_data, &m_allocation, nullptr) == VK_SUCCESS,
+        GM_CORE_ASSERT(vmaCreateImage(m_allocator, &createInfo, &allocationInfo, &m_image, &m_allocation, nullptr) == VK_SUCCESS,
                        "Failed to create image!");
 
         VkImageViewCreateInfo viewInfo                  = {};
         viewInfo.sType                                  = VK_STRUCTURE_TYPE_IMAGE_VIEW_CREATE_INFO;
         viewInfo.format                                 = m_format;
-        viewInfo.image                                  = m_data;
+        viewInfo.image                                  = m_image;
         viewInfo.viewType                               = VK_IMAGE_VIEW_TYPE_2D;
         viewInfo.subresourceRange.aspectMask            = aspectFlags;
         viewInfo.subresourceRange.layerCount            = 1;
@@ -101,7 +101,7 @@ namespace gm
 
         VkImageMemoryBarrier memoryBarrier  = {};
         memoryBarrier.sType                 = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        memoryBarrier.image                 = m_data;
+        memoryBarrier.image                 = m_image;
         memoryBarrier.newLayout             = newLayout;
         memoryBarrier.oldLayout             = oldLayout;
         memoryBarrier.srcQueueFamilyIndex   = VK_QUEUE_FAMILY_IGNORED;
@@ -138,6 +138,6 @@ namespace gm
     Image::~Image()
     {
         vkDestroyImageView(m_device->get(), m_view, nullptr);
-        vmaDestroyImage(m_allocator, m_data, m_allocation);
+        vmaDestroyImage(m_allocator, m_image, m_allocation);
     }
 }

@@ -10,11 +10,11 @@ namespace gm
         Framebuffers(Device* device, RenderPass* renderPass, Swapchain* swapchain, Image* depthImage, size_t size);
         ~Framebuffers();
 
-        inline const std::vector<VkFramebuffer>& get() const { return m_data; }
+        inline const std::vector<VkFramebuffer>& get() const { return m_buffers; }
 
     private:
         Device*                         m_device        = nullptr;
 
-        std::vector<VkFramebuffer>      m_data          = {};
+        std::vector<VkFramebuffer>      m_buffers       = {};
     };
 }

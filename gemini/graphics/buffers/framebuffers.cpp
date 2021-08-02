@@ -4,9 +4,9 @@ namespace gm
 {
     Framebuffers::Framebuffers(Device* device, RenderPass* renderPass, Swapchain* swapchain, Image* depthImage, size_t size) : m_device(device)
     {
-        m_data.resize(swapchain->getImageViews().size());
+        m_buffers.resize(swapchain->getImageViews().size());
 
-        for (uint32_t i = 0; i < m_data.size(); i++)
+        for (uint32_t i = 0; i < m_buffers.size(); i++)
         {
             VkImageView attachments[]               = { swapchain->getImageViews().data()[i], depthImage->getView() };
 
@@ -19,14 +19,14 @@ namespace gm
             bufferInfo.height                       = swapchain->getExtent().height;
             bufferInfo.layers                       = 1;
 
-            GM_CORE_ASSERT(vkCreateFramebuffer(m_device->get(), &bufferInfo, nullptr, &m_data[i]) == VK_SUCCESS,
+            GM_CORE_ASSERT(vkCreateFramebuffer(m_device->get(), &bufferInfo, nullptr, &m_buffers[i]) == VK_SUCCESS,
                             "Failed to create framebuffer!");
         }
     }
 
     Framebuffers::~Framebuffers()
     {
-        for (const auto& buf : m_data)
+        for (const auto& buf : m_buffers)
         {
             vkDestroyFramebuffer(m_device->get(), buf, nullptr);
         }

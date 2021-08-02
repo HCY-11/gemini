@@ -51,7 +51,7 @@ namespace gm
         VmaAllocator        m_allocator     = VK_NULL_HANDLE;
 
         VmaAllocation       m_allocation    = VK_NULL_HANDLE;
-        VkImage             m_data          = VK_NULL_HANDLE;
+        VkImage             m_image         = VK_NULL_HANDLE;
         VkImageView         m_view          = VK_NULL_HANDLE;
         VkFormat            m_format;
     };

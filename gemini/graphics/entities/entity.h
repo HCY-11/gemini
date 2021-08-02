@@ -28,6 +28,14 @@ namespace gm
 
         inline void rotate(const glm::vec3& dRotation, float deltaTime = 1.0f) { m_transform.rotation += dRotation * deltaTime; }
 
+        void loadFromFile(const char* fileName);
+
+        inline void setMesh(const Mesh& mesh) { m_mesh = mesh; }
+
+        inline const Transform& getTransform() const { return m_transform; }
+
+        inline void setTransform(const Transform& transform) { m_transform = transform; }
+
         // Load internal mesh data into buffers. Not meant to be used at application level
         void loadMesh(Device* device, CommandPool* cmdPool, VmaAllocator allocator);
 
@@ -36,14 +44,6 @@ namespace gm
 
         // Not meant to be used at application level
         const IndexBuffer& getIBO() const { return m_ibo; }
-
-        void loadFromFile(const char* fileName);
-
-        inline void setMesh(const Mesh& mesh) { m_mesh = mesh; }
-
-        inline const Transform& getTransform() const { return m_transform; }
-
-        inline void setTransform(const Transform& transform) { m_transform = transform; }
 
     private:
         // TODO:: Make component based entity system
