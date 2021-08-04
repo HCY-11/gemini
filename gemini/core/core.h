@@ -4,6 +4,7 @@
 #include <GLFW/glfw3.h>
 #include <vk_mem_alloc.h>
 #include <imgui.h>
+#include <spirv_cross.hpp>
 #include <tiny_obj_loader.h>
 #include <stb_image.h>
 #include <glm/glm.hpp>
@@ -54,6 +55,8 @@
 #endif
 
 #define BIT(n) (1 << n)
+
+#define JOIN_WITH_ROOTDIR(filePath) (static_cast<std::string>(GM_ROOTDIR) + static_cast<std::string>(filePath))
 
 namespace gm
 {

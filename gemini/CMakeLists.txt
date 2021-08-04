@@ -15,11 +15,13 @@ set(HEADER_FILES
     ./graphics/device.h
     ./graphics/gpu.h
     ./graphics/instance.h
-    ./graphics/pipelines.h
+    ./graphics/pipeline.h
+    ./graphics/shader.h
     ./graphics/render_pass.h
     ./graphics/surface.h
     ./graphics/swapchain.h
     ./graphics/entities/vertex.h
+    ./graphics/entities/render_object.h
     ./graphics/entities/mesh.h
     ./graphics/entities/entity.h
     ./graphics/entities/transform.h
@@ -32,6 +34,7 @@ set(HEADER_FILES
     ./graphics/images/depth_image.h
     ./graphics/images/textured_image.h
     ./graphics/pools/command_pool.h
+    ./graphics/descriptors/descriptor_set.h
     ./graphics/math/math.h
 )
 
@@ -46,7 +49,8 @@ set(SOURCE_FILES
     ./graphics/device.cpp
     ./graphics/gpu.cpp
     ./graphics/instance.cpp
-    ./graphics/pipelines.cpp
+    ./graphics/pipeline.cpp
+    ./graphics/shader.cpp
     ./graphics/render_pass.cpp
     ./graphics/surface.cpp
     ./graphics/swapchain.cpp
@@ -58,7 +62,7 @@ set(SOURCE_FILES
     ./graphics/images/depth_image.cpp
     ./graphics/images/textured_image.cpp
     ./graphics/pools/command_pool.cpp
-    ./graphics/entities/entity.cpp
+    ./graphics/descriptors/descriptor_set.cpp
     ./graphics/math/math.cpp
 )
 

@@ -11,15 +11,23 @@ namespace gm
 {
     struct EntityPushConstant
     {
-        glm::mat4 mvp;
+        glm::mat4 model;
+        glm::mat4 projectionView;
     };
 
     class Entity
     {
     public:
         Entity() = default;
-        Entity(const Mesh& mesh);
-        Entity(const char* filePath);
+        Entity(const Mesh& mesh) : m_mesh(mesh)
+        {}
+
+        Entity(const char* filePath, const char* texturePath)
+        {
+            m_mesh.loadFromFile(filePath);
+
+            m_mesh.textureFile = texturePath;
+        }
 
         ~Entity() = default;
 
@@ -36,20 +44,10 @@ namespace gm
 
         inline void setTransform(const Transform& transform) { m_transform = transform; }
 
-        // Load internal mesh data into buffers. Not meant to be used at application level
-        void loadMesh(Device* device, CommandPool* cmdPool, VmaAllocator allocator);
-
-        // Not meant to be used at application level
-        const VertexBuffer& getVBO() const { return m_vbo; }
-
-        // Not meant to be used at application level
-        const IndexBuffer& getIBO() const { return m_ibo; }
+        inline const Mesh& getMesh() const { return m_mesh; }
 
     private:
         // TODO:: Make component based entity system
-        VertexBuffer m_vbo;
-        IndexBuffer m_ibo;
-
         Transform m_transform;
         Mesh m_mesh;
     };

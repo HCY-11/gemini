@@ -2,13 +2,15 @@
 
 #include "graphics/render_pass.h"
 #include "graphics/entities/vertex.h"
+#include "graphics/shader.h"
 
 namespace gm
 {
     struct PipelineInfo
     {
         std::vector<VkPipelineShaderStageCreateInfo>        shaderStageInfos            = {};
-        std::vector<const char*>                            shaderFilePaths             = {};
+        std::vector<VkDescriptorSetLayoutBinding>           layoutBindings              = {};
+        std::vector<VkDescriptorPoolSize>                   poolSizes                   = {};
 
         std::array<VkVertexInputAttributeDescription, 3>    attributeDescriptions       = Vertex::getAttributeDescriptions();
         VkVertexInputBindingDescription                     bindingDescription          = Vertex::getBindingDescription();
@@ -30,36 +32,24 @@ namespace gm
         VkRect2D                                            scissor;
     };
 
-    struct Pipeline
-    {
-        VkPipeline value;
-        VkPipelineLayout layout;
-
-        Pipeline()
-        {
-            value           = VK_NULL_HANDLE;
-            layout          = VK_NULL_HANDLE;
-        }
-
-        ~Pipeline() = default;
-    };
-
-    class PipelineBuilder
+    class Pipeline
     {
     public:
-        static void addShaderStage(PipelineInfo* info, VkShaderStageFlagBits stage, const char* filePath);
+        Pipeline(GPU* gpu, Device* device, Swapchain* swapchain, RenderPass* renderPass);
 
-        static void populateVertexInputStateInfo(PipelineInfo* info);
+        ~Pipeline();
 
-        static void populateInputAssemblyStateInfo(
-                                        PipelineInfo* info, 
+        void addShader(Shader* shader);
+
+        void populateVertexInputStateInfo();
+
+        void populateInputAssemblyStateInfo(
                                         VkPrimitiveTopology topology = VK_PRIMITIVE_TOPOLOGY_TRIANGLE_LIST, 
                                         VkBool32 primitiveRestartEnable = VK_FALSE);
         
-        static void populateViewportStateInfo(PipelineInfo* info, Swapchain* swapchain);
+        void populateViewportStateInfo();
 
-        static void populateRasterizationStateInfo(
-                                        PipelineInfo* info,
+        void populateRasterizationStateInfo(
                                         VkPolygonMode polygonMode = VK_POLYGON_MODE_FILL, 
 #ifdef NDEBUG
                                         VkCullModeFlagBits cullMode = VK_CULL_MODE_BACK_BIT,
@@ -68,30 +58,47 @@ namespace gm
 #endif
                                         float lineWidth = 1.0f);
                                         
-        static void populateMultiSampleStateInfo(PipelineInfo* info);
+        void populateMultiSampleStateInfo();
 
-        static void populateDepthStencilStateInfo(
-                                        PipelineInfo* info, 
+        void populateDepthStencilStateInfo(
                                         VkBool32 shouldDepthTest = VK_TRUE, 
                                         VkBool32 shouldDepthWrite = VK_TRUE);
 
-        static void populateColorBlendAttachmentStateInfo(PipelineInfo* info);
+        void populateColorBlendAttachmentStateInfo();
 
-        static void populateColorBlendStateInfo(PipelineInfo* info);
+        void populateColorBlendStateInfo();
 
-        static void populateDynamicStateInfo(PipelineInfo* info);
+        void populateDynamicStateInfo();
 
         // Acts as replacement for populate* functions with the exception of shader stages; uses default parameters
-        static void populateStateInfosDefault(PipelineInfo* info, Swapchain* swapchain);
-
-        static void addPushConstant(PipelineInfo* info, uint32_t size, VkShaderStageFlags shaderStage);
+        void populateStateInfosDefault();
 
         // Can only be called once all other create* functions are called.
-        static void buildPipeline(PipelineInfo* info, Device* device, RenderPass* renderPass, Pipeline* dst);
+        void build();
 
-        static void destroyPipeline(Device* device, Pipeline* pipeline);
+        inline const VkPipeline& get() const { return m_pipeline; }
+
+        inline const VkPipelineLayout& getLayout() const { return m_layout; }
+
+        inline const VkDescriptorPool& getDescriptorPool() const { return m_descriptorPool; }
+
+        inline const VkDescriptorSetLayout& getDescriptorSetLayout() const { return m_setLayout; }
 
     private:
-        static VkShaderModule createShaderModule(Device* device, const char* filePath);
+        void createDescriptorSetObjects();
+
+    private:
+        GPU*                        m_gpu               = nullptr;
+        Device*                     m_device            = nullptr;
+        Swapchain*                  m_swapchain         = nullptr;
+        RenderPass*                 m_renderPass        = nullptr;
+
+        VkPipeline                  m_pipeline          = VK_NULL_HANDLE;
+        VkPipelineLayout            m_layout            = VK_NULL_HANDLE;
+
+        VkDescriptorPool            m_descriptorPool    = VK_NULL_HANDLE;
+        VkDescriptorSetLayout       m_setLayout         = VK_NULL_HANDLE;
+
+        PipelineInfo                m_info              = {};
     };
 }

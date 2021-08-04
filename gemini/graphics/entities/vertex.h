@@ -8,7 +8,7 @@ namespace gm
     {
         glm::vec3 position;
         glm::vec3 normal;
-        glm::vec3 color;
+        glm::vec2 texCoord;
 
         static std::array<VkVertexInputAttributeDescription, 3> getAttributeDescriptions()
         {
@@ -25,11 +25,11 @@ namespace gm
             descriptions[1].location                                        = 1;
             descriptions[1].offset                                          = offsetof(Vertex, normal);
 
-            // Color
+            // UV
             descriptions[2].binding                                         = 0;
-            descriptions[2].format                                          = VK_FORMAT_R32G32B32_SFLOAT;
+            descriptions[2].format                                          = VK_FORMAT_R32G32_SFLOAT;
             descriptions[2].location                                        = 2;
-            descriptions[2].offset                                          = offsetof(Vertex, color);
+            descriptions[2].offset                                          = offsetof(Vertex, texCoord);
 
             return descriptions;
         }

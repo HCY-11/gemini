@@ -7,16 +7,19 @@ namespace gm
     class TexturedImage : public Image
     {
     public:
+        TexturedImage() = default;
         TexturedImage(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const char* fileName);
+
+        ~TexturedImage();
+
+        void loadData(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const char* fileName);
 
         const VkSampler& getSampler() const { return m_sampler; }
     
     private:
-        void createSampler();
+        void createSampler(GPU* gpu);
 
     private:
-        GPU*        m_gpu               = nullptr;
-
-        VkSampler   m_sampler;
+        VkSampler   m_sampler       = VK_NULL_HANDLE;
     };
 }

@@ -53,12 +53,13 @@ namespace gm
         VkSampleCountFlagBits samples, 
         VkImageTiling tiling, 
         VkImageUsageFlags usage,
-        VkImageAspectFlags aspectFlags
+        VkImageAspectFlags aspectMask
     ) 
     {
         m_device = device;
         m_allocator = allocator;
         m_format = format;
+        m_aspectMask = aspectMask;
 
         VkImageCreateInfo createInfo                    = {};
         createInfo.sType                                = VK_STRUCTURE_TYPE_IMAGE_CREATE_INFO;
@@ -84,7 +85,7 @@ namespace gm
         viewInfo.format                                 = m_format;
         viewInfo.image                                  = m_image;
         viewInfo.viewType                               = VK_IMAGE_VIEW_TYPE_2D;
-        viewInfo.subresourceRange.aspectMask            = aspectFlags;
+        viewInfo.subresourceRange.aspectMask            = m_aspectMask;
         viewInfo.subresourceRange.layerCount            = 1;
         viewInfo.subresourceRange.baseArrayLayer        = 0;
         viewInfo.subresourceRange.levelCount            = 1;
@@ -95,21 +96,26 @@ namespace gm
     }
 
 
-    void Image::transitionLayout(CommandPool* cmdPool, VkImageLayout oldLayout, VkImageLayout newLayout)
+    void Image::transitionLayout(CommandPool* cmdPool, VkImageLayout newLayout)
     {
-        VkCommandBuffer cmdBuf              = cmdPool->beginImmediateSubmit();
+        VkCommandBuffer cmdBuf                          = cmdPool->beginImmediateSubmit();
 
-        VkImageMemoryBarrier memoryBarrier  = {};
-        memoryBarrier.sType                 = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
-        memoryBarrier.image                 = m_image;
-        memoryBarrier.newLayout             = newLayout;
-        memoryBarrier.oldLayout             = oldLayout;
-        memoryBarrier.srcQueueFamilyIndex   = VK_QUEUE_FAMILY_IGNORED;
-        memoryBarrier.dstQueueFamilyIndex   = VK_QUEUE_FAMILY_IGNORED;
+        VkImageMemoryBarrier memoryBarrier              = {};
+        memoryBarrier.sType                             = VK_STRUCTURE_TYPE_IMAGE_MEMORY_BARRIER;
+        memoryBarrier.image                             = m_image;
+        memoryBarrier.newLayout                         = newLayout;
+        memoryBarrier.oldLayout                         = m_layout;
+        memoryBarrier.srcQueueFamilyIndex               = VK_QUEUE_FAMILY_IGNORED;
+        memoryBarrier.dstQueueFamilyIndex               = VK_QUEUE_FAMILY_IGNORED;
+        memoryBarrier.subresourceRange.aspectMask       = m_aspectMask;
+        memoryBarrier.subresourceRange.layerCount       = 1;
+        memoryBarrier.subresourceRange.baseArrayLayer   = 0;
+        memoryBarrier.subresourceRange.levelCount       = 1;
+        memoryBarrier.subresourceRange.baseMipLevel     = 0;
 
         VkPipelineStageFlags srcStage;
         VkPipelineStageFlags dstStage;
-        if (oldLayout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
+        if (m_layout == VK_IMAGE_LAYOUT_UNDEFINED && newLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL)
         {
             memoryBarrier.srcAccessMask             = 0;
             memoryBarrier.dstAccessMask             = VK_ACCESS_TRANSFER_WRITE_BIT;
@@ -117,7 +123,7 @@ namespace gm
             srcStage                                = VK_PIPELINE_STAGE_TOP_OF_PIPE_BIT;
             dstStage                                = VK_PIPELINE_STAGE_TRANSFER_BIT;
         } 
-        else if (oldLayout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
+        else if (m_layout == VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL && newLayout == VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL)
         {
             memoryBarrier.srcAccessMask             = VK_ACCESS_TRANSFER_WRITE_BIT;
             memoryBarrier.dstAccessMask             = VK_ACCESS_SHADER_READ_BIT;
@@ -131,6 +137,8 @@ namespace gm
         }
 
         vkCmdPipelineBarrier(cmdBuf, srcStage, dstStage, 0, 0, nullptr, 0, nullptr, 1, &memoryBarrier);
+
+        m_layout = newLayout;
 
         cmdPool->endImmediateSubmit(cmdBuf);
     }

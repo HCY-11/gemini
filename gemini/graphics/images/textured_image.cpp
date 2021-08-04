@@ -4,11 +4,27 @@
 
 namespace gm
 {
-    TexturedImage::TexturedImage(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const char* fileName) : m_gpu(gpu)
+    TexturedImage::TexturedImage(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const char* filePath)
+    {
+        loadData(gpu, device, cmdPool, allocator, filePath);
+    }
+
+    TexturedImage::~TexturedImage()
+    {
+        vkDestroySampler(m_device->get(), m_sampler, nullptr);
+    }
+
+    void TexturedImage::loadData(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const char* filePath)
     {
         int width, height;
         int channels;
-        stbi_uc* data = stbi_load(fileName, &width, &height, &channels, STBI_rgb_alpha);
+
+        stbi_uc* data = stbi_load(JOIN_WITH_ROOTDIR(filePath).c_str(), &width, &height, &channels, STBI_rgb_alpha);
+
+        if (data == nullptr)
+        {
+            GM_CORE_ASSERT("Failed to open texture file {0}", filePath);
+        }
 
         VkDeviceSize size = 4 * width * height;
 
@@ -37,7 +53,7 @@ namespace gm
 
         stagingBuffer.loadData(data);
 
-        transitionLayout(cmdPool, VK_IMAGE_LAYOUT_UNDEFINED, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
+        transitionLayout(cmdPool, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
         stagingBuffer.copyToImage(cmdPool, 
                                   stagingBuffer.get(), 
@@ -48,11 +64,12 @@ namespace gm
                                       static_cast<uint32_t>(height), 
                                       1 
                                   });
-        transitionLayout(cmdPool, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+        transitionLayout(cmdPool, VK_IMAGE_LAYOUT_SHADER_READ_ONLY_OPTIMAL);
+
+        createSampler(gpu);
     }
 
-
-    void TexturedImage::createSampler()
+    void TexturedImage::createSampler(GPU* gpu)
     {
         VkSamplerCreateInfo samplerInfo         = {};
         samplerInfo.sType                       = VK_STRUCTURE_TYPE_SAMPLER_CREATE_INFO;
@@ -64,7 +81,7 @@ namespace gm
         samplerInfo.anisotropyEnable            = VK_TRUE;
 
         VkPhysicalDeviceProperties properties;
-        vkGetPhysicalDeviceProperties(m_gpu->get(), &properties);
+        vkGetPhysicalDeviceProperties(gpu->get(), &properties);
 
         samplerInfo.maxAnisotropy               = properties.limits.maxSamplerAnisotropy;
         samplerInfo.borderColor                 = VK_BORDER_COLOR_INT_OPAQUE_BLACK;
@@ -78,5 +95,8 @@ namespace gm
         samplerInfo.maxLod                      = 0.0f;
         samplerInfo.minLod                      = 0.0f;
         samplerInfo.mipLodBias                  = 0.0f;
+
+        GM_CORE_ASSERT(vkCreateSampler(m_device->get(), &samplerInfo, nullptr, &m_sampler) == VK_SUCCESS,
+                       "Failed to create image sampler!");
     }
 }

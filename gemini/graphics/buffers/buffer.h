@@ -23,6 +23,8 @@ namespace gm
         void copyToImage(CommandPool* cmdPool, VkBuffer src, VkImage dst, VkImageLayout dstLayout, const VkExtent3D& extent);
 
         const VkBuffer& get() const { return m_buffer; }
+
+        const VkDeviceSize& getSize() const { return m_size; }
     
     protected:
         void init(VmaAllocator allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage);

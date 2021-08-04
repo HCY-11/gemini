@@ -2,11 +2,11 @@
 
 #include "layers/layer.h"
 
-#include "graphics/pipelines.h"
+#include "graphics/pipeline.h"
 #include "graphics/images/depth_image.h"
 #include "graphics/buffers/framebuffers.h"
 #include "graphics/pools/command_pool.h"
-#include "graphics/entities/entity.h"
+#include "graphics/entities/render_object.h"
 
 namespace gm
 {
@@ -21,7 +21,7 @@ namespace gm
         void onEvent(Event& e) override;
 
     private:
-        void buildPipelines();
+        void buildGraphicsPipeline();
 
         void createAllocator();
 
@@ -36,18 +36,15 @@ namespace gm
         Scope<Surface>                      m_surface                           = nullptr;
         Scope<GPU>                          m_gpu                               = nullptr;
         Scope<Device>                       m_device                            = nullptr;
-
         Scope<Swapchain>                    m_swapchain                         = nullptr;
         Scope<RenderPass>                   m_renderPass                        = nullptr;
+        Scope<Pipeline>                     m_graphicsPipeline                  = nullptr;
         Scope<Framebuffers>                 m_framebuffers                      = nullptr;
         Scope<CommandPool>                  m_commandPool                       = nullptr;
 
         DepthImage*                         m_depthImage                        = nullptr;
 
         VmaAllocator                        m_allocator                         = VK_NULL_HANDLE;
-
-        Pipeline                            m_rasterizerPipeline                = {};
-        PipelineInfo                        m_pipelineInfo                      = {};
 
         std::vector<VkCommandBuffer>        m_commandBuffers                    = {};
 
@@ -56,7 +53,7 @@ namespace gm
         std::vector<VkFence>                m_inFlightFences                    = {};
         std::vector<VkFence>                m_imagesInFlightFences              = {};
 
-        std::vector<Entity*>                m_entities                          = {};
+        std::vector<RenderObject*>          m_renderObjects                     = {};
 
         uint32_t                            m_framesInFlight                    = 0;
         uint32_t                            m_currentFrame                      = 0;

@@ -26,9 +26,9 @@ namespace gm
         m_commandBuffers.resize(m_swapchain->getImageViews().size());
         m_commandPool->allocateCommandBuffers(VK_COMMAND_BUFFER_LEVEL_PRIMARY, m_commandBuffers.size(), m_commandBuffers.data());
 
-        createSyncObjects();
+        buildGraphicsPipeline();
 
-        buildPipelines();
+        createSyncObjects();
 
         m_projectionViewMatrix = Math::createProjectionViewMatrix(m_window, m_camera);
     }
@@ -37,9 +37,9 @@ namespace gm
     {
         vkDeviceWaitIdle(m_device->get());
 
-        for (const auto& entity : m_entities)
+        for (const auto& object : m_renderObjects)
         {
-            delete entity;
+            delete object;
         }
 
         delete m_depthImage;
@@ -47,8 +47,6 @@ namespace gm
         vmaDestroyAllocator(m_allocator);
 
         m_commandPool->freeCommandBuffers(m_commandBuffers.size(), m_commandBuffers.data());
-
-        PipelineBuilder::destroyPipeline(m_device.get(), &m_rasterizerPipeline);
 
         for (uint32_t i = 0; i < m_framesInFlight; i++)
         {
@@ -108,19 +106,21 @@ namespace gm
 
         vkCmdBeginRenderPass(m_commandBuffers[imageIndex], &passBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdBindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, m_rasterizerPipeline.value);
+        vkCmdBindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline->get());
 
-        for (const auto& entity : m_entities)
+        for (const auto& object : m_renderObjects)
         {
             VkDeviceSize offset = 0;
-            vkCmdBindVertexBuffers(m_commandBuffers[imageIndex], 0, 1, &entity->getVBO().get(), &offset);
+            vkCmdBindVertexBuffers(m_commandBuffers[imageIndex], 0, 1, &object->getVBO().get(), &offset);
 
-            vkCmdBindIndexBuffer(m_commandBuffers[imageIndex], entity->getIBO().get(), 0, VK_INDEX_TYPE_UINT16);
+            vkCmdBindIndexBuffer(m_commandBuffers[imageIndex], object->getIBO().get(), 0, VK_INDEX_TYPE_UINT16);
 
-            EntityPushConstant pushConstant = { m_projectionViewMatrix * Math::createModelMatrix(entity) };
-            vkCmdPushConstants(m_commandBuffers[imageIndex], m_rasterizerPipeline.layout, VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(EntityPushConstant), &pushConstant);
+            vkCmdBindDescriptorSets(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline->getLayout(), 0, 1, &object->getSamplerDescriptor().get()[0], 0, nullptr);
 
-            vkCmdDrawIndexed(m_commandBuffers[imageIndex], entity->getIBO().getNumIndices(), 1, entity->getIBO().getFirstIndex(), 0, 0);
+            EntityPushConstant pushConstant = { Math::createModelMatrix(object->getEntity()), m_projectionViewMatrix };
+            vkCmdPushConstants(m_commandBuffers[imageIndex], m_graphicsPipeline->getLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(EntityPushConstant), &pushConstant);
+
+            vkCmdDrawIndexed(m_commandBuffers[imageIndex], object->getIBO().getNumIndices(), 1, object->getIBO().getFirstIndex(), 0, 0);
         }
 
         vkCmdEndRenderPass(m_commandBuffers[imageIndex]);
@@ -175,22 +175,20 @@ namespace gm
     {
         if (e.getType() == EventType::kEntityAdd)
         {
-            Entity* newEntity = static_cast<EntityAddEvent&>(e).getData();
-            newEntity->loadMesh(m_device.get(), m_commandPool.get(), m_allocator);
-            m_entities.push_back(newEntity);
+            m_renderObjects.push_back(
+                new RenderObject(static_cast<EntityAddEvent&>(e).getData(), m_gpu.get(), m_device.get(), m_graphicsPipeline.get(), m_commandPool.get(), m_allocator)
+            );
         }
     }
 
-    void GraphicsLayer::buildPipelines()
+    void GraphicsLayer::buildGraphicsPipeline()
     {
-        PipelineBuilder::addShaderStage(&m_pipelineInfo, VK_SHADER_STAGE_VERTEX_BIT, "gemini/graphics/shaders/vert.spv");
-        PipelineBuilder::addShaderStage(&m_pipelineInfo, VK_SHADER_STAGE_FRAGMENT_BIT, "gemini/graphics/shaders/frag.spv");
+        m_graphicsPipeline = makeScope<Pipeline>(m_gpu.get(), m_device.get(), m_swapchain.get(), m_renderPass.get());
 
-        PipelineBuilder::populateStateInfosDefault(&m_pipelineInfo, m_swapchain.get());
+        m_graphicsPipeline->addShader(new Shader(m_device.get(), "gemini/graphics/shaders/vert.spv", VK_SHADER_STAGE_VERTEX_BIT));
+        m_graphicsPipeline->addShader(new Shader(m_device.get(), "gemini/graphics/shaders/frag.spv", VK_SHADER_STAGE_FRAGMENT_BIT));
 
-        PipelineBuilder::addPushConstant(&m_pipelineInfo, sizeof(EntityPushConstant), VK_SHADER_STAGE_VERTEX_BIT);
-
-        PipelineBuilder::buildPipeline(&m_pipelineInfo, m_device.get(), m_renderPass.get(), &m_rasterizerPipeline);
+        m_graphicsPipeline->build();
     }
 
     void GraphicsLayer::createAllocator()
@@ -242,7 +240,7 @@ namespace gm
 
         m_commandPool->freeCommandBuffers(m_commandBuffers.size(), m_commandBuffers.data());
 
-        PipelineBuilder::destroyPipeline(m_device.get(), &m_rasterizerPipeline);
+        m_graphicsPipeline.reset();
 
         m_renderPass.reset();
 
@@ -256,9 +254,12 @@ namespace gm
 
         m_renderPass = makeScope<RenderPass>(m_device.get(), m_swapchain.get(), m_depthImage);
 
-        PipelineBuilder::populateViewportStateInfo(&m_pipelineInfo, m_swapchain.get());
+        buildGraphicsPipeline();
 
-        PipelineBuilder::buildPipeline(&m_pipelineInfo, m_device.get(), m_renderPass.get(), &m_rasterizerPipeline);
+        for (auto& object : m_renderObjects)
+        {
+            object->initDescriptorSets(m_device.get(), m_graphicsPipeline.get());
+        }
 
         m_framebuffers = makeScope<Framebuffers>(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_depthImage, m_swapchain->getImageViews().size());
 
