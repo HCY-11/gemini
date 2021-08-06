@@ -5,7 +5,7 @@
 #include "graphics/pipeline.h"
 #include "graphics/images/depth_image.h"
 #include "graphics/buffers/framebuffers.h"
-#include "graphics/pools/command_pool.h"
+#include "graphics/command_pool.h"
 #include "graphics/entities/render_object.h"
 
 namespace gm

@@ -7,6 +7,8 @@
 
 #include "graphics/images/textured_image.h"
 
+#include "graphics/entities/entity.h"
+
 #include "graphics/descriptors/descriptor_set.h"
 
 namespace gm
@@ -20,7 +22,7 @@ namespace gm
             m_vbo.loadData(device, cmdPool, allocator, entity->getMesh().vertices);
             m_ibo.loadData(device, cmdPool, allocator, entity->getMesh().indices);
 
-            m_texturedImage.loadData(gpu, device, cmdPool, allocator, entity->getMesh().textureFile);
+            m_texturedImage.loadData(gpu, device, cmdPool, allocator, entity->getMesh().material.albedoFile);
 
             m_samplerDescriptor.init(device, pipeline, m_texturedImage, 0, 1);
         }

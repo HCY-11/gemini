@@ -2,7 +2,7 @@
 
 #include "core/core.h"
 
-#include "graphics/pools/command_pool.h"
+#include "graphics/command_pool.h"
 
 #include "graphics/images/image.h"
 
