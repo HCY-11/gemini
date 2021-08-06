@@ -8,11 +8,11 @@ namespace gm
     {
     public:
         TexturedImage() = default;
-        TexturedImage(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const char* fileName);
+        TexturedImage(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::string& fileName);
 
         ~TexturedImage();
 
-        void loadData(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const char* fileName);
+        void loadData(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::string& fileName);
 
         const VkSampler& getSampler() const { return m_sampler; }
     

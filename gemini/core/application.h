@@ -6,6 +6,7 @@
 #include "events/event.h"
 
 #include "layers/layer_stack.h"
+#include "layers/graphics_layer.h"
 
 #include "graphics/entities/entity.h"
 

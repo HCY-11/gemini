@@ -1,6 +1,10 @@
 #pragma once
 
 #include "core/core.h"
+#include "core/window.h"
+
+#include "graphics/device.h"
+#include "graphics/command_pool.h"
 
 namespace gm
 {

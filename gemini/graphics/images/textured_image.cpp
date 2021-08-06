@@ -4,7 +4,7 @@
 
 namespace gm
 {
-    TexturedImage::TexturedImage(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const char* filePath)
+    TexturedImage::TexturedImage(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::string& filePath)
     {
         loadData(gpu, device, cmdPool, allocator, filePath);
     }
@@ -14,7 +14,7 @@ namespace gm
         vkDestroySampler(m_device->get(), m_sampler, nullptr);
     }
 
-    void TexturedImage::loadData(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const char* filePath)
+    void TexturedImage::loadData(GPU* gpu, Device* device, CommandPool* cmdPool, VmaAllocator allocator, const std::string& filePath)
     {
         int width, height;
         int channels;

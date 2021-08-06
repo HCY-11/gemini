@@ -4,23 +4,31 @@
 
 #include "graphics/entities/vertex.h"
 #include "graphics/entities/transform.h"
+#include "graphics/entities/material.h"
 
 namespace gm
 {
-    struct Mesh
+    struct GM_API Mesh
     {
         std::vector<Vertex> vertices;
         std::vector<uint16_t> indices;
-        const char* textureFile;
+
+        Material material;
 
         Mesh() = default;
-        Mesh(const char* inFilePath, const char* inTextureFile = nullptr) : textureFile(inTextureFile)
+        Mesh(const std::string& inFilePath, const std::string& materialPath)
         {
-            loadFromFile(inFilePath);
+            loadFromFile(inFilePath, materialPath);
         }
 
-        void loadFromFile(const char* filePath)
+        void loadFromFile(const std::string& filePath, const std::string& materialPath)
         {
+            material.albedoFile = materialPath + "albedo.png";
+            material.normalFile = materialPath + "normal.png";
+            material.roughnessFile = materialPath + "roughness.png";
+            material.metallicFile = materialPath + "metallic.png";
+            material.aoFile = materialPath + "ao.png";
+
             tinyobj::attrib_t attrib;
 
             std::vector<tinyobj::shape_t> shapes;

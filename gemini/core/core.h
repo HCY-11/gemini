@@ -56,7 +56,7 @@
 
 #define BIT(n) (1 << n)
 
-#define JOIN_WITH_ROOTDIR(filePath) (static_cast<std::string>(GM_ROOTDIR) + static_cast<std::string>(filePath))
+#define JOIN_WITH_ROOTDIR(filePath) (static_cast<std::string>(GM_ROOTDIR) + filePath)
 
 namespace gm
 {

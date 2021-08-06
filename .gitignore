@@ -12,6 +12,7 @@
 !README.md
 !conanfile.txt
 !CMakeLists.txt
+!*.cmake
 
 # Blacklist
 build/

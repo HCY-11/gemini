@@ -9,7 +9,7 @@ namespace gm
     class Shader
     {
     public:
-        Shader(Device* device, const char* filePath, VkShaderStageFlagBits shaderStage);
+        Shader(Device* device, const std::string& filePath, VkShaderStageFlagBits shaderStage);
         ~Shader() = default;
 
         inline const VkShaderModule& getModule() const { return m_module; }
@@ -25,7 +25,7 @@ namespace gm
     private:
         void createShaderModule(Device* device, const uint32_t* code, uint32_t codeSize);
 
-        std::vector<char> readFromFile(const char* filePath);
+        std::vector<char> readFromFile(const std::string& filePath);
 
     private:
         VkShaderStageFlagBits                       m_stage                     = {};
