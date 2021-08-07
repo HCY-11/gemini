@@ -37,7 +37,7 @@ set(SOURCE_FILES
     ./graphics/images/image.cpp
     ./graphics/images/depth_image.cpp
     ./graphics/images/textured_image.cpp
-    ./graphics/descriptors/descriptor_set.cpp
+    ./graphics/descriptor_set_handler.cpp
     ./graphics/math/math.cpp
 )
 

@@ -28,6 +28,8 @@ namespace gm
             VkImageAspectFlags aspectFlags
         );
 
+        virtual ~Image();
+
         void init(
             Device* device,
             const VkExtent3D& extent,
@@ -43,8 +45,6 @@ namespace gm
         );
 
         void transitionLayout(CommandPool* cmdPool, VkImageLayout newLayout);
-
-        virtual ~Image();
 
         inline const VkImageView& getView() const { return m_view; }
 

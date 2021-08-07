@@ -5,7 +5,6 @@
 
 #include "events/event.h"
 #include "graphics/entities/camera.h"
-
 namespace gm
 {
     struct WindowData

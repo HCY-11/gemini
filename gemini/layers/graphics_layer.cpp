@@ -85,7 +85,7 @@ namespace gm
         cmdBeginInfo.flags                          = VK_COMMAND_BUFFER_USAGE_ONE_TIME_SUBMIT_BIT;
 
         VkClearValue clearColor                     = {};
-        clearColor.color                            = { 1.0f, 1.0f, 1.0f, 1.0f };
+        clearColor.color                            = { 0.0f, 0.0f, 0.0f, 1.0f };
 
         VkClearValue clearDepth                     = {};
         clearDepth.depthStencil.depth               = 1.0f;
@@ -115,10 +115,10 @@ namespace gm
 
             vkCmdBindIndexBuffer(m_commandBuffers[imageIndex], object->getIBO().get(), 0, VK_INDEX_TYPE_UINT16);
 
-            vkCmdBindDescriptorSets(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline->getLayout(), 0, 1, &object->getSamplerDescriptor().get()[0], 0, nullptr);
-
             EntityPushConstant pushConstant = { Math::createModelMatrix(object->getEntity()), m_projectionViewMatrix };
             vkCmdPushConstants(m_commandBuffers[imageIndex], m_graphicsPipeline->getLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(EntityPushConstant), &pushConstant);
+
+            object->getSetHandler().bind(m_commandBuffers[imageIndex], m_graphicsPipeline->getLayout());
 
             vkCmdDrawIndexed(m_commandBuffers[imageIndex], object->getIBO().getNumIndices(), 1, object->getIBO().getFirstIndex(), 0, 0);
         }
@@ -258,7 +258,7 @@ namespace gm
 
         for (auto& object : m_renderObjects)
         {
-            object->initDescriptorSets(m_device.get(), m_graphicsPipeline.get());
+            object->initDescriptorSets(m_graphicsPipeline.get());
         }
 
         m_framebuffers = makeScope<Framebuffers>(m_device.get(), m_renderPass.get(), m_swapchain.get(), m_depthImage, m_swapchain->getImageViews().size());

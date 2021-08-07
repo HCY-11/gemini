@@ -42,6 +42,12 @@ namespace gm
         );
     }
 
+    Image::~Image()
+    {
+        vkDestroyImageView(m_device->get(), m_view, nullptr);
+        vmaDestroyImage(m_allocator, m_image, m_allocation);
+    }
+
     void Image::init(
         Device* device,
         const VkExtent3D& extent,
@@ -141,11 +147,5 @@ namespace gm
         m_layout = newLayout;
 
         cmdPool->endImmediateSubmit(cmdBuf);
-    }
-
-    Image::~Image()
-    {
-        vkDestroyImageView(m_device->get(), m_view, nullptr);
-        vmaDestroyImage(m_allocator, m_image, m_allocation);
     }
 }
