@@ -19,7 +19,6 @@ set(SOURCE_FILES
     ./core/vma.cpp
     ./core/stb.cpp
     ./layers/layer.cpp
-    ./layers/graphics_layer.cpp
     ./layers/layer_stack.cpp
     ./graphics/device.cpp
     ./graphics/gpu.cpp
@@ -39,6 +38,7 @@ set(SOURCE_FILES
     ./graphics/images/textured_image.cpp
     ./graphics/descriptor_set_handler.cpp
     ./graphics/math/math.cpp
+    ./graphics/graphics_layer.cpp
 )
 
 add_library(gemini SHARED 
