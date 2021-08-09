@@ -6,7 +6,8 @@ public:
     SandBoxApp() {
         addEntity(snowden);
 
-        m_camera.position = glm::vec3(0.0f, 0.0f, 10.0f);
+        m_camera.position = glm::vec3(0.0f, 3.0f, 15.0f);
+        m_camera.rotation.x -= 25;
 
         snowden->rotateX(90);
     }

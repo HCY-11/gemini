@@ -31,9 +31,9 @@ namespace gm
         
         matrix = glm::translate(matrix, -camera.position);
 
-        matrix = glm::rotate(matrix, -camera.rotation.x, glm::vec3(1, 0, 0));
-        matrix = glm::rotate(matrix, -camera.rotation.y, glm::vec3(0, 1, 0));
-        matrix = glm::rotate(matrix, -camera.rotation.z, glm::vec3(0, 0, 1));
+        matrix = glm::rotate(matrix, -glm::radians(camera.rotation.x), glm::vec3(1, 0, 0));
+        matrix = glm::rotate(matrix, -glm::radians(camera.rotation.y), glm::vec3(0, 1, 0));
+        matrix = glm::rotate(matrix, -glm::radians(camera.rotation.z), glm::vec3(0, 0, 1));
 
         return matrix;
     }
