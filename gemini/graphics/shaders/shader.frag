@@ -11,11 +11,20 @@ layout (binding = 1) uniform sampler2D roughnessSampler;
 layout (binding = 2) uniform sampler2D metallicSampler;
 layout (binding = 3) uniform sampler2D aoSampler;
 
-const float PI = 3.14159265359;
+struct Light
+{
+    vec3 position;
+    vec3 color;
+    float intensity;
+};
 
-const vec3 LIGHT_POS = vec3(5.0, 7.0, 10.0);
-const vec3 LIGHT_COLOR = vec3(23.47, 21.31, 20.79);
-const vec3 CAM_POS = vec3(0.0, 0.0, 10.0);
+layout (binding = 4) uniform UBO
+{
+    vec3 cameraPosition;
+    Light light;
+} ubo;
+
+const float PI = 3.14159265359;
 
 float N_trowBridgeReitzGGX(vec3 N, vec3 H, float roughness)
 {
@@ -71,16 +80,17 @@ void main()
     float ao = texture(aoSampler, fragTexCoord).r;
 
     vec3 N = normalize(fragNormal);
-    vec3 V = normalize(CAM_POS - fragPos);
-    vec3 wi = normalize(LIGHT_POS - fragPos);
+    vec3 V = normalize(ubo.cameraPosition - fragPos);
+    vec3 wi = normalize(ubo.light.position - fragPos);
     float cosTheta = dot(N, wi);
 
-    vec3 L = normalize(LIGHT_POS - fragPos);
+    vec3 L = normalize(ubo.light.position - fragPos);
     vec3 H = normalize(V + L);
 
-    float dist = length(LIGHT_POS - fragPos);
+    float dist = length(ubo.light.position - fragPos);
+
     float attenuation = 1.0 / (dist * dist);
-    vec3 radiance = LIGHT_COLOR * attenuation * cosTheta;
+    vec3 radiance = ubo.light.intensity * ubo.light.color * attenuation * cosTheta;
 
     vec3 f0 = vec3(0.04);
     f0 = mix(f0, albedo, metallic);
@@ -101,7 +111,7 @@ void main()
     float nDotL = max(dot(N, L), 0.0);
     vec3 L0 = (kD * albedo / PI + specular) * radiance * nDotL;
 
-    vec3 ambient = vec3(0.001) * albedo * ao;
+    vec3 ambient = vec3(0.0001) * albedo * ao;
     vec3 color = ambient + L0;
 
     color = color / (color + vec3(1.0));

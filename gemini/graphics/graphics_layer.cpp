@@ -4,10 +4,11 @@
 
 namespace gm
 {
-    GraphicsLayer::GraphicsLayer(Window* window, Camera& camera, uint32_t framesInFlight, const std::string& name) :
+    GraphicsLayer::GraphicsLayer(Window* window, Camera& camera, Light& light, uint32_t framesInFlight, const std::string& name) :
         Layer(name),
         m_window(window),
         m_camera(camera),
+        m_light(light),
         m_instance(new Instance()), 
         m_surface(new Surface(m_window, m_instance.get())), 
         m_gpu(new GPU(m_instance.get(), m_surface.get())),
@@ -106,21 +107,23 @@ namespace gm
 
         vkCmdBeginRenderPass(m_commandBuffers[imageIndex], &passBeginInfo, VK_SUBPASS_CONTENTS_INLINE);
 
-        vkCmdBindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline->get());
-
-        for (const auto& object : m_renderObjects)
+        for (auto& object : m_renderObjects)
         {
+            vkCmdBindPipeline(m_commandBuffers[imageIndex], VK_PIPELINE_BIND_POINT_GRAPHICS, m_graphicsPipeline->get());
+
             VkDeviceSize offset = 0;
             vkCmdBindVertexBuffers(m_commandBuffers[imageIndex], 0, 1, &object->getVBO().get(), &offset);
 
             vkCmdBindIndexBuffer(m_commandBuffers[imageIndex], object->getIBO().get(), 0, VK_INDEX_TYPE_UINT16);
 
-            EntityPushConstant pushConstant = { Math::createModelMatrix(object->getEntity()), m_projectionViewMatrix };
-            vkCmdPushConstants(m_commandBuffers[imageIndex], m_graphicsPipeline->getLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(EntityPushConstant), &pushConstant);
-
             object->getSetHandler().bind(m_commandBuffers[imageIndex], m_graphicsPipeline->getLayout());
 
+            PushConstant pushConstant = { Math::createModelMatrix(object->getEntity()), m_projectionViewMatrix };
+            vkCmdPushConstants(m_commandBuffers[imageIndex], m_graphicsPipeline->getLayout(), VK_SHADER_STAGE_VERTEX_BIT, 0, sizeof(PushConstant), &pushConstant);
+
             vkCmdDrawIndexed(m_commandBuffers[imageIndex], object->getIBO().getNumIndices(), 1, object->getIBO().getFirstIndex(), 0, 0);
+
+            object->updateUniformBuffer(m_camera, m_light);
         }
 
         vkCmdEndRenderPass(m_commandBuffers[imageIndex]);
@@ -176,7 +179,15 @@ namespace gm
         if (e.getType() == EventType::kEntityAdd)
         {
             m_renderObjects.push_back(
-                new RenderObject(static_cast<EntityAddEvent&>(e).getData(), m_gpu.get(), m_device.get(), m_graphicsPipeline.get(), m_commandPool.get(), m_allocator)
+                new RenderObject(
+                    static_cast<EntityAddEvent&>(e).getData(), 
+                    m_gpu.get(), 
+                    m_device.get(), 
+                    m_graphicsPipeline.get(), 
+                    m_commandPool.get(), 
+                    m_allocator,
+                    m_camera,
+                    m_light)
             );
         }
     }

@@ -16,16 +16,16 @@ namespace gm
 
         GM_CORE_ASSERT(vkAllocateDescriptorSets(m_device->get(), &m_allocInfo, &m_set) == VK_SUCCESS,
                        "Failed to allocate descriptor sets!");
-        
-        write();
     }
 
-    void DescriptorSetHandler::push(TexturedImage* image, uint32_t binding)
+    void DescriptorSetHandler::addSampler(TexturedImage* image, uint32_t binding)
     {
         VkDescriptorImageInfo imageInfo = {};
         imageInfo.imageLayout           = image->getLayout();
         imageInfo.imageView             = image->getView();
         imageInfo.sampler               = image->getSampler();
+
+        m_imageInfos.push_back(imageInfo);
 
         VkWriteDescriptorSet write      = {};
         write.sType                     = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
@@ -34,16 +34,51 @@ namespace gm
         write.dstArrayElement           = 0;
         write.dstBinding                = binding;
 
-        m_imageInfos.push_back(imageInfo);
+        m_writes.push_back(write);
+    }
+
+    void DescriptorSetHandler::addUniformBuffer(UniformBuffer* buffer, uint32_t binding)
+    {
+        VkDescriptorBufferInfo bufferInfo   = {};
+        bufferInfo.buffer                   = buffer->get();
+        bufferInfo.offset                   = m_bufferOffset;
+        bufferInfo.range                    = buffer->getSize();
+
+        m_bufferInfos.push_back(bufferInfo);
+
+        VkWriteDescriptorSet write          = {};
+        write.sType                         = VK_STRUCTURE_TYPE_WRITE_DESCRIPTOR_SET;
+        write.descriptorCount               = 1;
+        write.descriptorType                = VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER;
+        write.dstArrayElement               = 0;
+        write.dstBinding                    = binding;
+
         m_writes.push_back(write);
     }
 
     void DescriptorSetHandler::write()
     {
-        for (size_t i = 0; i < m_writes.size(); i++)
+        uint32_t imageInfoIndex = 0;
+        uint32_t bufferInfoIndex = 0;
+
+        for (auto& write : m_writes)
         {
-            m_writes[i].dstSet                    = m_set;
-            m_writes[i].pImageInfo                = &m_imageInfos[i];
+            switch (write.descriptorType)
+            {
+                case VK_DESCRIPTOR_TYPE_COMBINED_IMAGE_SAMPLER:
+                    write.pImageInfo              = &m_imageInfos[imageInfoIndex];
+                    imageInfoIndex++;
+                    break;
+                case VK_DESCRIPTOR_TYPE_UNIFORM_BUFFER:
+                    write.pBufferInfo             = &m_bufferInfos[bufferInfoIndex];
+                    bufferInfoIndex++;
+                    break;
+                default:
+                    GM_CORE_ERROR("Unsupported descriptor type {0} added!", write.descriptorType);
+                    break;
+            }
+
+            write.dstSet = m_set;
         }
 
         vkUpdateDescriptorSets(m_device->get(), m_writes.size(), m_writes.data(), 0, nullptr);

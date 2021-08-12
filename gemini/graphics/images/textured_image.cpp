@@ -51,12 +51,11 @@ namespace gm
 
         Buffer stagingBuffer(allocator, VMA_MEMORY_USAGE_CPU_ONLY, size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT);
 
-        stagingBuffer.loadData(data);
+        stagingBuffer.loadGenericData(data);
 
         transitionLayout(cmdPool, VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL);
 
         stagingBuffer.copyToImage(cmdPool, 
-                                  stagingBuffer.get(), 
                                   m_image, 
                                   VK_IMAGE_LAYOUT_TRANSFER_DST_OPTIMAL, 
                                   { 

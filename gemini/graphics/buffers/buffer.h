@@ -16,11 +16,11 @@ namespace gm
         Buffer(VmaAllocator allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage, const void* srcData);
         virtual ~Buffer();
 
-        virtual void loadData(const void* srcData);
+        virtual void loadGenericData(const void* srcData);
 
-        void copyToBuffer(CommandPool* cmdPool, VkBuffer src, VkBuffer dst, VkDeviceSize size);
+        void copyToBuffer(CommandPool* cmdPool, VkBuffer dst, VkDeviceSize size);
 
-        void copyToImage(CommandPool* cmdPool, VkBuffer src, VkImage dst, VkImageLayout dstLayout, const VkExtent3D& extent);
+        void copyToImage(CommandPool* cmdPool, VkImage dst, VkImageLayout dstLayout, const VkExtent3D& extent);
 
         const VkBuffer& get() const { return m_buffer; }
 

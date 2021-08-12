@@ -9,12 +9,6 @@
 
 namespace gm
 {
-    struct EntityPushConstant
-    {
-        glm::mat4 model;
-        glm::mat4 projectionView;
-    };
-
     class GM_API Entity
     {
     public:

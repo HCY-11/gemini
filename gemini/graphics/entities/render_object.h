@@ -4,6 +4,7 @@
 
 #include "graphics/buffers/vertex_buffer.h"
 #include "graphics/buffers/index_buffer.h"
+#include "graphics/buffers/uniform_buffer.h"
 
 #include "graphics/images/textured_image.h"
 
@@ -11,36 +12,35 @@
 
 #include "graphics/descriptor_set_handler.h"
 
+#include "graphics/entities/light.h"
+
 namespace gm
 {
     class RenderObject
     {
     public:
-        RenderObject(Entity* entity, GPU* gpu, Device* device, Pipeline* pipeline, CommandPool* cmdPool, VmaAllocator allocator) :
-            m_entity(entity), m_setHandler(device, pipeline)
-        {
-            m_vbo.loadData(device, cmdPool, allocator, entity->getMesh().vertices);
-            m_ibo.loadData(device, cmdPool, allocator, entity->getMesh().indices);
+        RenderObject(
+            Entity* entity, 
+            GPU* gpu, 
+            Device* device, 
+            Pipeline* pipeline, 
+            CommandPool* cmdPool, 
+            VmaAllocator allocator, 
+            const Camera& camera, 
+            const Light& light);
 
-            m_albedo = makeScope<TexturedImage>(gpu, device, cmdPool, allocator, entity->getMesh().material.albedoFile);
-            m_roughness = makeScope<TexturedImage>(gpu, device, cmdPool, allocator, entity->getMesh().material.roughnessFile);
-            m_metallic = makeScope<TexturedImage>(gpu, device, cmdPool, allocator, entity->getMesh().material.metallicFile);
-            m_ao = makeScope<TexturedImage>(gpu, device, cmdPool, allocator, entity->getMesh().material.aoFile);
+        ~RenderObject();
 
-            m_setHandler.push(m_albedo.get(), 0);
-            m_setHandler.push(m_roughness.get(), 1);
-            m_setHandler.push(m_metallic.get(), 2);
-            m_setHandler.push(m_ao.get(), 3);
-
+        inline void initDescriptorSets(Pipeline* pipeline) 
+        { 
+            m_setHandler.allocate(pipeline);
             m_setHandler.write();
         }
 
-        ~RenderObject()
+        inline void updateUniformBuffer(const Camera& camera, const Light& light)
         {
-            delete m_entity;
-        };
-
-        inline void initDescriptorSets(Pipeline* pipeline) { m_setHandler.allocate(pipeline); }
+            m_uniformBuffer->update(camera, light);
+        }
 
         inline const VertexBuffer& getVBO() const { return m_vbo; }
 
@@ -60,6 +60,8 @@ namespace gm
         Scope<TexturedImage>        m_roughness;
         Scope<TexturedImage>        m_metallic;
         Scope<TexturedImage>        m_ao;
+
+        Scope<UniformBuffer>        m_uniformBuffer;
 
         DescriptorSetHandler        m_setHandler;
     };

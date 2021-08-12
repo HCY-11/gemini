@@ -17,7 +17,7 @@ namespace gm
         VkDeviceSize size = vertices.size() * sizeof(Vertex);
         Buffer stagingBuffer(allocator, VMA_MEMORY_USAGE_GPU_ONLY, size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, vertices.data());
 
-        stagingBuffer.copyToBuffer(cmdPool, stagingBuffer.get(), m_buffer, size);
+        stagingBuffer.copyToBuffer(cmdPool, m_buffer, size);
 
         m_numVertices = vertices.size();
     }

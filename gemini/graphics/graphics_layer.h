@@ -7,13 +7,15 @@
 #include "graphics/buffers/framebuffers.h"
 #include "graphics/command_pool.h"
 #include "graphics/entities/render_object.h"
+#include "graphics/entities/push_constant.h"
+#include "graphics/entities/light.h"
 
 namespace gm
 {
     class GraphicsLayer : public Layer
     {
     public:
-        GraphicsLayer(Window* window, Camera& camera, uint32_t framesInFlight = 3, const std::string& name = "Graphics Layer");
+        GraphicsLayer(Window* window, Camera& camera, Light& light, uint32_t framesInFlight = 3, const std::string& name = "Graphics Layer");
         ~GraphicsLayer();
 
         void onUpdate() override;
@@ -59,6 +61,7 @@ namespace gm
         uint32_t                            m_currentFrame                      = 0;
 
         Camera&                             m_camera;
+        Light&                              m_light;
 
         glm::mat4                           m_projectionViewMatrix              = glm::mat4(1.0f);
     };

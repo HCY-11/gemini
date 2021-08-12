@@ -10,7 +10,7 @@ namespace gm
     Buffer::Buffer(VmaAllocator allocator, VmaMemoryUsage memUsage, VkDeviceSize size, VkBufferUsageFlags usage, const void* srcData) : 
         Buffer(allocator, memUsage, size, usage)
     {
-        loadData(srcData);
+        loadGenericData(srcData);
     }
 
     Buffer::~Buffer()
@@ -18,7 +18,7 @@ namespace gm
         vmaDestroyBuffer(m_allocator, m_buffer, m_allocation);
     }
 
-    void Buffer::loadData(const void* srcData)
+    void Buffer::loadGenericData(const void* srcData)
     {
         void* data;
         vmaMapMemory(m_allocator, m_allocation, &data);
@@ -28,20 +28,19 @@ namespace gm
         vmaUnmapMemory(m_allocator, m_allocation);
     }
 
-    void Buffer::copyToBuffer(CommandPool* cmdPool, VkBuffer src, VkBuffer dst, VkDeviceSize size)
+    void Buffer::copyToBuffer(CommandPool* cmdPool, VkBuffer dst, VkDeviceSize size)
     {
         VkCommandBuffer cmdBuf              = cmdPool->beginImmediateSubmit();
 
         VkBufferCopy region                 = {};
         region.size                         = size;
 
-        vkCmdCopyBuffer(cmdBuf, src, dst, 1, &region);
+        vkCmdCopyBuffer(cmdBuf, m_buffer, dst, 1, &region);
 
         cmdPool->endImmediateSubmit(cmdBuf);
     }
 
-
-    void Buffer::copyToImage(CommandPool* cmdPool, VkBuffer src, VkImage dst, VkImageLayout dstLayout, const VkExtent3D& extent)
+    void Buffer::copyToImage(CommandPool* cmdPool, VkImage dst, VkImageLayout dstLayout, const VkExtent3D& extent)
     { 
         VkCommandBuffer cmdBuf                          = cmdPool->beginImmediateSubmit();
 
@@ -57,7 +56,7 @@ namespace gm
         region.imageSubresource.baseArrayLayer          = 0;
         region.imageSubresource.mipLevel                = 0;
 
-        vkCmdCopyBufferToImage(cmdBuf, src, dst, dstLayout, 1, &region);
+        vkCmdCopyBufferToImage(cmdBuf, m_buffer, dst, dstLayout, 1, &region);
 
         cmdPool->endImmediateSubmit(cmdBuf);
     }

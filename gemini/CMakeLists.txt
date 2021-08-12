@@ -29,14 +29,16 @@ set(SOURCE_FILES
     ./graphics/surface.cpp
     ./graphics/command_pool.cpp
     ./graphics/swapchain.cpp
+    ./graphics/descriptor_set_handler.cpp
     ./graphics/buffers/framebuffers.cpp
     ./graphics/buffers/buffer.cpp
     ./graphics/buffers/vertex_buffer.cpp
     ./graphics/buffers/index_buffer.cpp
+    ./graphics/buffers/uniform_buffer.cpp
     ./graphics/images/image.cpp
     ./graphics/images/depth_image.cpp
     ./graphics/images/textured_image.cpp
-    ./graphics/descriptor_set_handler.cpp
+    ./graphics/entities/render_object.cpp
     ./graphics/math/math.cpp
     ./graphics/graphics_layer.cpp
 )

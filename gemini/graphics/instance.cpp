@@ -9,7 +9,7 @@ namespace gm
         const VkDebugUtilsMessengerCallbackDataEXT*      pCallbackData,
         void*                                            pUserData)
     {
-        GM_CORE_INFO("Vulkan: {0}", pCallbackData->pMessage);
+        GM_CORE_ERROR("Vulkan: {0}", pCallbackData->pMessage);
 
         return VK_FALSE;
     }
@@ -134,8 +134,7 @@ namespace gm
                                                                   VK_DEBUG_UTILS_MESSAGE_SEVERITY_ERROR_BIT_EXT |
                                                                   VK_DEBUG_UTILS_MESSAGE_SEVERITY_VERBOSE_BIT_EXT;
 
-        messengerInfo.messageType                               = VK_DEBUG_UTILS_MESSAGE_TYPE_GENERAL_BIT_EXT |
-                                                                  VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT |
+        messengerInfo.messageType                               = VK_DEBUG_UTILS_MESSAGE_TYPE_PERFORMANCE_BIT_EXT |
                                                                   VK_DEBUG_UTILS_MESSAGE_TYPE_VALIDATION_BIT_EXT;
 
         messengerInfo.pfnUserCallback                           = debugCallback;

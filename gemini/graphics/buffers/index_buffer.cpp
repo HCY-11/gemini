@@ -17,10 +17,9 @@ namespace gm
         VkDeviceSize size = indices.size() * sizeof(uint16_t);
         Buffer stagingBuffer(allocator, VMA_MEMORY_USAGE_CPU_ONLY, size, VK_BUFFER_USAGE_TRANSFER_SRC_BIT, indices.data());
 
-        stagingBuffer.copyToBuffer(cmdPool, stagingBuffer.get(), m_buffer, size);
+        stagingBuffer.copyToBuffer(cmdPool, m_buffer, size);
 
         m_numIndices = indices.size();
         m_firstIndex = static_cast<uint32_t>(indices[0]);
-
     }
 }

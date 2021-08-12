@@ -10,11 +10,11 @@ namespace gm
  
     Application::Application()
     {
-        m_window = makeScope<Window>();
+        window = makeScope<Window>();
 
-        m_window->setEventCallback(BIND_EVENT_FUNC(onEvent));
+        window->setEventCallback(BIND_EVENT_FUNC(onEvent));
 
-        pushLayer(new GraphicsLayer(m_window.get(), m_camera));
+        pushLayer(new GraphicsLayer(window.get(), camera, light));
     }
 
     Application::~Application()
@@ -28,7 +28,7 @@ namespace gm
         {
             double start = glfwGetTime();
 
-            m_window->pollEvents();
+            window->pollEvents();
             
             onUpdate();
 
@@ -36,7 +36,7 @@ namespace gm
 
             double stop = glfwGetTime();
 
-            m_deltaTime = static_cast<float>(stop - start);
+            deltaTime = static_cast<float>(stop - start);
         }
     }
 

@@ -36,16 +36,18 @@ namespace gm
 
         void addEntity(Entity* entity);
 
-    protected:
-        Scope<Window>   m_window                    = nullptr;
-
-        Camera          m_camera                    = {};
-
+    private:
         LayerStack      m_layerStack;
 
-        bool            m_isRunning                 = true;
+        bool            m_isRunning                     = true;
 
-        float           m_deltaTime;
+    protected:
+        Scope<Window>   window                          = nullptr;
+
+        Camera          camera                          = {};
+        Light           light                           = {};
+
+        float           deltaTime                       = 0.0f;
     };
 
     Application* createApplication();
