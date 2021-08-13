@@ -16,6 +16,7 @@ struct Light
     vec3 position;
     vec3 color;
     float intensity;
+    float radius;
 };
 
 layout (binding = 4) uniform UBO
@@ -87,7 +88,7 @@ void main()
     vec3 L = normalize(ubo.light.position - fragPos);
     vec3 H = normalize(V + L);
 
-    float dist = length(ubo.light.position - fragPos);
+    float dist = min(length(ubo.light.position - fragPos), ubo.light.radius);
 
     float attenuation = 1.0 / (dist * dist);
     vec3 radiance = ubo.light.intensity * ubo.light.color * attenuation * cosTheta;

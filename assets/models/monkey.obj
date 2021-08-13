@@ -1,6 +1,5 @@
 # This file uses centimeters as units for non-parametric coordinates.
 
-mtllib monkey.mtl
 g default
 v -1.336843 0.468884 0.237478
 v -0.893695 0.137550 0.305373

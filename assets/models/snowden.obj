@@ -1,8 +1,6 @@
 # Wavefront Obj file
 # 
 # verts: 13401 uv-s: 16298
-mtllib snow.mtl
-
 g Volume1
 
 v -0.177062 -0.188865 -3.315847
