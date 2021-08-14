@@ -27,6 +27,7 @@ namespace gm
         m_setHandler.addSampler(m_ao.get(), 3);
 
         UBOData uboData = { camera.position, light };
+        VkDeviceSize size = sizeof(UBOData);
         m_uniformBuffer = makeScope<UniformBuffer>(device, cmdPool, allocator, uboData);
 
         m_setHandler.addUniformBuffer(m_uniformBuffer.get(), 4);

@@ -9,7 +9,7 @@ namespace gm
     struct UBOData
     {
         alignas(16) glm::vec3 cameraPosition;
-        Light light;
+        alignas(16) Light light;
     };
 
     class UniformBuffer : public Buffer

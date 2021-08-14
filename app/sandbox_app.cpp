@@ -8,6 +8,7 @@ public:
         light.position = glm::vec3(3.0f, 7.0f, 10.0f);
 
         light.intensity = 5.0f;
+        light.radius = 30.0f;
 
         monkey->translateX(-2.0f);
         monkey2->translateZ(4.0f);
