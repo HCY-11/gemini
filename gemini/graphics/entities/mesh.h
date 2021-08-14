@@ -21,6 +21,7 @@ namespace gm
             loadFromFile(inFilePath, materialPath);
         }
 
+        // TODO: add a new asset system w/ assimp and add normal mapping
         void loadFromFile(const std::string& filePath, const std::string& materialPath)
         {
             material.albedoFile = materialPath + "albedo.png";
@@ -51,8 +52,7 @@ namespace gm
                 for (size_t j = 0; j < shapes[i].mesh.num_face_vertices.size(); j++)
                 {
                     size_t numVertices = 3;
-                    // For now, assume triangulation
-                    // TODO: allow for faces with different number of vertices
+
                     for (size_t k = 0; k < numVertices; k++)
                     {
                         uint16_t newIndex = indexOffset + k;

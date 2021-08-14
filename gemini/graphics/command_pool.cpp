@@ -62,7 +62,7 @@ namespace gm
         GM_CORE_ASSERT(vkQueueSubmit(m_device->getGraphicsQueue(), 1, &submitInfo, VK_NULL_HANDLE) == VK_SUCCESS,
                        "Failed to submit queue!");
 
-        // TODO: For the future, maybe use fences instead of waiting for queue idle
+        // For the future, maybe use fences instead of waiting for queue idle
         // This would allow for several transfer operations to happen at once
         vkQueueWaitIdle(m_device->getGraphicsQueue());
 
