@@ -16,4 +16,6 @@ int main()
 
     app->run();
     delete app;
+
+    return EXIT_SUCCESS;
 }

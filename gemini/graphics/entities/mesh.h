@@ -16,19 +16,19 @@ namespace gm
         Material material;
 
         Mesh() = default;
-        Mesh(const std::string& inFilePath, const std::string& materialPath)
+        Mesh(const std::filesystem::path& inFilePath, const std::filesystem::path& materialPath)
         {
             loadFromFile(inFilePath, materialPath);
         }
 
         // TODO: add a new asset system w/ assimp and add normal mapping
-        void loadFromFile(const std::string& filePath, const std::string& materialPath)
+        void loadFromFile(const std::filesystem::path& filePath, const std::filesystem::path& materialPath)
         {
-            material.albedoFile = materialPath + "albedo.png";
-            material.normalFile = materialPath + "normal.png";
-            material.roughnessFile = materialPath + "roughness.png";
-            material.metallicFile = materialPath + "metallic.png";
-            material.aoFile = materialPath + "ao.png";
+            material.albedoFile = materialPath / "albedo.png";
+            material.normalFile = materialPath / "normal.png";
+            material.roughnessFile = materialPath / "roughness.png";
+            material.metallicFile = materialPath / "metallic.png";
+            material.aoFile = materialPath / "ao.png";
 
             tinyobj::attrib_t attrib;
 

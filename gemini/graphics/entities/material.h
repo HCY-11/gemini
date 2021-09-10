@@ -6,10 +6,10 @@ namespace gm
 {
     struct Material
     {
-        std::string albedoFile;
-        std::string normalFile;
-        std::string roughnessFile;
-        std::string metallicFile;
-        std::string aoFile;
+        std::filesystem::path albedoFile;
+        std::filesystem::path normalFile;
+        std::filesystem::path roughnessFile;
+        std::filesystem::path metallicFile;
+        std::filesystem::path aoFile;
     };
 }

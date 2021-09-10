@@ -2,7 +2,7 @@
 
 namespace gm
 {
-    Shader::Shader(Device* device, const std::string& filePath, VkShaderStageFlagBits shaderStage) : 
+    Shader::Shader(Device* device, const std::filesystem::path& filePath, VkShaderStageFlagBits shaderStage) : 
         m_stage(shaderStage)
     {
         std::vector<char> spvChars = readFromFile(filePath);
@@ -84,7 +84,7 @@ namespace gm
                        "Failed to create shader module!");
     }
 
-    std::vector<char> Shader::readFromFile(const std::string& filePath)
+    std::vector<char> Shader::readFromFile(const std::filesystem::path& filePath)
     {
         std::ifstream file(JOIN_WITH_ROOTDIR(filePath).c_str(), std::ios::ate | std::ios::binary);
 

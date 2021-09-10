@@ -16,6 +16,7 @@
 
 #include <iostream>
 #include <memory>
+#include <filesystem>
 #include <unordered_map>
 #include <vector>
 #include <cstring>
@@ -56,7 +57,7 @@
 
 #define BIT(n) (1 << n)
 
-#define JOIN_WITH_ROOTDIR(filePath) (static_cast<std::string>(GM_ROOTDIR) + filePath)
+#define JOIN_WITH_ROOTDIR(filePath) (static_cast<std::filesystem::path>(GM_ROOTDIR) / filePath)
 
 namespace gm
 {
