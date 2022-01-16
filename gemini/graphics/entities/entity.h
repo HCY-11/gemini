@@ -21,6 +21,15 @@ namespace gm
             m_mesh.loadFromFile(filePath, materialPath);
         }
 
+        Entity(const std::string& filePath, const std::string& materialPath, 
+               const glm::vec3& position, const glm::vec3& rotation)
+        {
+            m_mesh.loadFromFile(filePath, materialPath);
+
+            translate(position);
+            rotate(rotation);
+        }
+
         ~Entity() = default;
 
         inline void translate(const glm::vec3& dTranslation, float deltaTime = 1.0f) { m_transform.position += dTranslation * deltaTime; }

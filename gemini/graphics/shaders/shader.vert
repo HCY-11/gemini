@@ -18,6 +18,6 @@ void main()
 {
     gl_Position = pushConstant.projectionView * pushConstant.model * vec4(inPosition, 1.0);
     fragTexCoord = inTexCoord;
-    fragPos = mat3(pushConstant.model) * inPosition;
-    fragNormal = mat3(pushConstant.model) * inNormal;
+    fragPos = (pushConstant.model * vec4(inPosition, 1.0)).xyz;
+    fragNormal = (transpose(inverse(pushConstant.model)) * vec4(inNormal, 1.0)).xyz;
 }
