@@ -72,6 +72,8 @@ namespace gm
         }
         else
         {
+            // If the extent is max'd, then we can choose the extent
+            // based on framebuffer size
             int width, height;
             glfwGetFramebufferSize(m_window->get(), &width, &height);
 
@@ -81,8 +83,11 @@ namespace gm
                 static_cast<uint32_t>(height)
             };
 
-            extent.width = std::max(m_info.capabilities.minImageExtent.width, std::min(extent.width, m_info.capabilities.maxImageExtent.width));
-            extent.height = std::max(m_info.capabilities.minImageExtent.height, std::min(extent.height, m_info.capabilities.maxImageExtent.height));
+            // Clamp the width between the minimum and maximum capability extents
+            extent.width = std::clamp(extent.width, 
+                                      m_info.capabilities.minImageExtent.width, m_info.capabilities.maxImageExtent.width);
+            extent.height = std::clamp(extent.height, 
+                                       m_info.capabilities.minImageExtent.height, m_info.capabilities.maxImageExtent.height);
 
             return extent;
         }

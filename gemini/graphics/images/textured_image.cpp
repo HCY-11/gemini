@@ -21,10 +21,7 @@ namespace gm
 
         stbi_uc* data = stbi_load(JOIN_WITH_ROOTDIR(filePath).c_str(), &width, &height, &channels, STBI_rgb_alpha);
 
-        if (data == nullptr)
-        {
-            GM_CORE_ASSERT("Failed to open texture file {0}", filePath);
-        }
+        GM_CORE_ASSERT(data != nullptr, std::string("Failed to open texture file ") + filePath.c_str());
 
         VkDeviceSize size = 4 * width * height;
 
